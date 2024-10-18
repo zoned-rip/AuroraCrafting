@@ -1,0 +1,43 @@
+package gg.auroramc.crafting;
+
+import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.aurora.api.AuroraLogger;
+import gg.auroramc.crafting.command.CommandManager;
+import gg.auroramc.crafting.config.ConfigManager;
+import lombok.Getter;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class AuroraCrafting extends JavaPlugin {
+    @Getter
+    private ConfigManager configManager;
+
+    private CommandManager commandManager;
+
+    private static AuroraLogger l;
+
+    public static AuroraLogger logger() {
+        return l;
+    }
+
+    @Override
+    public void onLoad() {
+        configManager = new ConfigManager(this);
+        l = AuroraAPI.createLogger("AuroraLevels", () -> configManager.getConfig().getDebug());
+    }
+
+    @Override
+    public void onEnable() {
+        commandManager = new CommandManager(this);
+        commandManager.reload();
+    }
+
+    @Override
+    public void onDisable() {
+        commandManager.unregisterCommands();
+    }
+
+    public void reload() {
+        configManager.reload();
+        commandManager.reload();
+    }
+}

@@ -1,0 +1,20 @@
+name: AuroraCrafting
+version: '${version}'
+main: gg.auroramc.crafting.AuroraCrafting
+api-version: 1.21
+authors: [ "erik_sz" ]
+folia-supported: true
+depend:
+  - "Aurora"
+
+permissions:
+  aurora.crafting.*:
+    children:
+      aurora.crafting.use:
+        default: true
+      aurora.crafting.admin.*:
+        default: op
+        children:
+          - aurora.crafting.admin.openrecipe
+          - aurora.crafting.admin.openmenu
+          - aurora.crafting.admin.reload

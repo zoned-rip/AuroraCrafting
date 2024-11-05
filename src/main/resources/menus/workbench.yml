@@ -1,0 +1,26 @@
+config-version: 0
+
+rows: 6
+
+title: "Workbench"
+result-slot: 25
+matrix-slots: [ 10, 11, 12, 19, 20, 21, 28, 29, 30 ]
+
+# DO NOT use AIR here
+invalid-result-item:
+  material: barrier
+  name: "&cInvalid Recipe"
+  lore:
+    - "&4This recipe is invalid."
+
+filler:
+  material: black_stained_glass_pane
+  hide-tooltip: true
+
+
+custom-items:
+  close:
+    material: barrier
+    name: "&cClose"
+    on-click:
+      - "[close]"

@@ -1,5 +1,21 @@
-debug: false
+config-version: 0
 
+debug: false
 language: en
 
-config-version: 0
+command-aliases:
+  craft: [ "craft" ]
+
+recipes:
+  - id: amber
+    result: "oraxen:amber/8"
+    ingredients:
+      - ""
+      - "minecraft:diamond/32"
+      - ""
+      - "minecraft:diamond/32"
+      - "minecraft:diamond/32"
+      - "minecraft:diamond/32"
+      - ""
+      - "minecraft:diamond/32"
+      - ""

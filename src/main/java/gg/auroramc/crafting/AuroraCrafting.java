@@ -2,6 +2,7 @@ package gg.auroramc.crafting;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
+import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
 import lombok.Getter;
@@ -12,6 +13,8 @@ public class AuroraCrafting extends JavaPlugin {
     private ConfigManager configManager;
 
     private CommandManager commandManager;
+    @Getter
+    private RecipeManager recipeManager;
 
     private static AuroraLogger l;
 
@@ -27,6 +30,7 @@ public class AuroraCrafting extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        recipeManager = new RecipeManager(this);
         commandManager = new CommandManager(this);
         commandManager.reload();
     }
@@ -39,5 +43,6 @@ public class AuroraCrafting extends JavaPlugin {
     public void reload() {
         configManager.reload();
         commandManager.reload();
+        recipeManager.reload();
     }
 }

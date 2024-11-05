@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:1.7.0")
+    compileOnly("gg.auroramc:Aurora:1.7.3-SNAPSHOT")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 

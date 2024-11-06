@@ -5,6 +5,7 @@ import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -14,10 +15,16 @@ public class AuroraRecipe {
     private final String id;
     private final ItemPair result;
     private final List<ItemPair> ingredients = new ArrayList<>();
+    private final String permission;
 
     public AuroraRecipe(String id, ItemPair result) {
+        this(id, result, null);
+    }
+
+    public AuroraRecipe(String id, ItemPair result, String permission) {
         this.id = id;
         this.result = result;
+        this.permission = permission;
     }
 
     public void addIngredient(ItemPair itemPair) {
@@ -95,5 +102,9 @@ public class AuroraRecipe {
         }
 
         return items;
+    }
+
+    public boolean hasPermission(Player player) {
+        return permission == null || player.hasPermission(permission);
     }
 }

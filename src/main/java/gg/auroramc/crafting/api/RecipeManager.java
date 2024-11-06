@@ -23,7 +23,7 @@ public class RecipeManager {
     public void reload() {
         recipes.clear();
         plugin.getConfigManager().getConfig().getRecipes().forEach(recipeConfig -> {
-            var recipe = new AuroraRecipe(recipeConfig.getId(), getItemPair(recipeConfig.getResult()));
+            var recipe = new AuroraRecipe(recipeConfig.getId(), getItemPair(recipeConfig.getResult()), recipeConfig.getPermission());
 
             for (var ingredient : recipeConfig.getIngredients()) {
                 recipe.addIngredient(getItemPair(ingredient));

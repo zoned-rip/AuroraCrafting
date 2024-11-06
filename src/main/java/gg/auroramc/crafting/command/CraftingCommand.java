@@ -5,7 +5,6 @@ import co.aikar.commands.annotation.*;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.menu.CraftMenu;
-import gg.auroramc.crafting.menu.CraftingMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

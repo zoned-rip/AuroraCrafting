@@ -23,6 +23,7 @@ public class Config extends AuroraConfig {
     @Getter
     public static final class RecipeConfig {
         private String id;
+        private String permission;
         private String result;
         private List<String> ingredients;
     }

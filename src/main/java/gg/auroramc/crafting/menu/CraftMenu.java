@@ -122,7 +122,7 @@ public class CraftMenu implements InventoryHolder {
 
         // If we don't have a recipe cancel the event
         var recipe = plugin.getRecipeManager().getRecipe(matrix);
-        if (recipe == null) {
+        if (recipe == null || !recipe.hasPermission(player)) {
             event.setCancelled(true);
             return;
         }
@@ -236,11 +236,13 @@ public class CraftMenu implements InventoryHolder {
 
         var recipe = plugin.getRecipeManager().getRecipe(matrix);
 
-        if (recipe != null) {
+        if (recipe != null && recipe.hasPermission(player)) {
             var timesCraftable = recipe.getTimesCraftable(matrix);
             if (timesCraftable > 0) {
                 inventory.setItem(resultSlot, recipe.getResultItem());
             }
+        } else {
+            inventory.setItem(resultSlot, invalidResultItem);
         }
         player.updateInventory();
     }

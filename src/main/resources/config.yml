@@ -8,6 +8,7 @@ command-aliases:
 
 recipes:
   - id: amber
+    permission: "craft.amber"
     result: "oraxen:amber/8"
     ingredients:
       - ""

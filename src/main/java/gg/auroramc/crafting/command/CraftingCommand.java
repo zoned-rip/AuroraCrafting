@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.menu.CraftMenu;
 import gg.auroramc.crafting.menu.CraftingMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class CraftingCommand extends BaseCommand {
     @Description("Opens the crafting menu")
     @CommandPermission("aurora.crafting.use")
     public void onMenu(Player player) {
-        CraftingMenu.craftingMenu(plugin, player).open();
+        CraftMenu.craftMenu(plugin, player).open();
     }
 
     @Subcommand("reload")

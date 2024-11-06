@@ -5,7 +5,9 @@ import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
+import gg.auroramc.crafting.menu.MenuListener;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AuroraCrafting extends JavaPlugin {
@@ -33,6 +35,7 @@ public class AuroraCrafting extends JavaPlugin {
         recipeManager = new RecipeManager(this);
         commandManager = new CommandManager(this);
         commandManager.reload();
+        Bukkit.getPluginManager().registerEvents(new MenuListener(), this);
     }
 
     @Override

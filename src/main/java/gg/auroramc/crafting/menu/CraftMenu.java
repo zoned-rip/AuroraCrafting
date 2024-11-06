@@ -127,6 +127,10 @@ public class CraftMenu implements InventoryHolder {
             return;
         }
 
+        if (event.getInventory().getItem(resultSlot) == invalidResultItem) {
+            event.setCancelled(true);
+        }
+
         // Based on the crafting matrix, let's see how many times can we craft the recipe
         var timesCraftable = recipe.getTimesCraftable(matrix);
         if (timesCraftable == 0) {
@@ -160,7 +164,7 @@ public class CraftMenu implements InventoryHolder {
                 updateMatrix(recipe, timesCraftable, timesCrafted, matrix);
             }, null);
 
-        // Handle crafting for regular clicks
+            // Handle crafting for regular clicks
         } else {
             if (event.getCursor().isEmpty()) {
                 // Allow taking the result and deduct the matrix
@@ -190,7 +194,7 @@ public class CraftMenu implements InventoryHolder {
 
     public void onDrag(InventoryDragEvent event) {
         if (matrixLookup.stream().anyMatch(s -> event.getInventorySlots().contains(s))) {
-            updateResult();
+            player.getScheduler().run(plugin, (t) -> updateResult(), null);
         }
     }
 

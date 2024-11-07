@@ -3,20 +3,21 @@ config-version: 0
 debug: false
 language: en
 
+# Always keep at least one alias for every command
 command-aliases:
   craft: [ "craft" ]
+  recipes: [ "recipes" ]
 
-recipes:
-  - id: amber
-    permission: "craft.amber"
-    result: "oraxen:amber/8"
-    ingredients:
-      - ""
-      - "minecraft:diamond/32"
-      - ""
-      - "minecraft:diamond/32"
-      - "minecraft:diamond/32"
-      - "minecraft:diamond/32"
-      - ""
-      - "minecraft:diamond/32"
-      - ""
+# Should vanilla recipes be craftable in the custom crafting table?
+include-vanilla-recipes: false
+
+# Should "vanilla" recipes registered by other plugins be craftable in the custom crafting table?
+include-other-plugin-recipes: false
+
+# Should the custom crafting table open instead of the vanilla crafting table
+# when the player right clicks on a crafting table?
+open-instead-of-crafting-table: false
+
+# Should the custom crafting table open instead of the vanilla crafting table
+# when the player shift right clicks a crafting table?
+open-shift-click-crafting-table: false

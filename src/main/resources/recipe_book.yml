@@ -1,0 +1,18 @@
+config-version: 0
+
+categories:
+  - id: example
+    # Include every recipes from these files
+    files:
+      - example
+    # You can use specific recipe ids here from any file
+    recipes:
+      - amber
+      - diamond
+    menu:
+      title: "Example recipes"
+      item:
+        material: diamond
+        name: "&6Example"
+        slot: 10
+

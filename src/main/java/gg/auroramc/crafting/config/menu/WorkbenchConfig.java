@@ -8,6 +8,7 @@ import lombok.Getter;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 public class WorkbenchConfig extends AuroraConfig {
@@ -17,7 +18,10 @@ public class WorkbenchConfig extends AuroraConfig {
     private Integer rows = 6;
     private Integer resultSlot = 25;
     private List<Integer> matrixSlots = List.of(10, 11, 12, 19, 20, 21, 28, 29, 30);
+    private Set<Integer> quickCraftingSlots = Set.of(16, 25, 34);
     private ItemConfig invalidResultItem;
+    private ItemConfig emptyQuickCraftItem;
+    private ItemConfig noPermissionQuickCraftItem;
 
     public WorkbenchConfig(AuroraCrafting plugin) {
         super(getFile(plugin));

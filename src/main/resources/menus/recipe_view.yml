@@ -1,0 +1,12 @@
+config-version: 0
+
+result-slot: 26
+
+custom-items:
+  table:
+    material: crafting_table
+    name: "&aCrafting Table"
+    lore:
+      - "&7Click to open a crafting table"
+    on-click:
+      - "[player] auroracrafting:craft"

@@ -5,7 +5,6 @@ import gg.auroramc.crafting.AuroraCrafting;
 import lombok.Getter;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,19 +12,15 @@ public class Config extends AuroraConfig {
     private Boolean debug = false;
     private String language = "en";
     private CommandAliasConfig commandAliases;
-    private List<RecipeConfig> recipes = new ArrayList<>();
+    private Boolean includeVanillaRecipes = false;
+    private Boolean includeOtherPluginRecipes = false;
+    private Boolean openInsteadOfCraftingTable = false;
+    private Boolean openShiftClickCraftingTable = false;
 
     @Getter
     public static final class CommandAliasConfig {
         private List<String> craft = List.of("craft");
-    }
-
-    @Getter
-    public static final class RecipeConfig {
-        private String id;
-        private String permission;
-        private String result;
-        private List<String> ingredients;
+        private List<String> recipes = List.of("recipes");
     }
 
     public Config(AuroraCrafting plugin) {

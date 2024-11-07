@@ -1,0 +1,35 @@
+recipes:
+    # ID of the recipe. Should be unique for each recipe across all files
+  - id: emerald
+    # If the recipe is shapeless or not
+    shapeless: false
+    # Permission required to craft the recipe
+    permission: "craft.emerald"
+    # Result item of the recipe
+    result: "minecraft:emerald/32"
+    # Lore to display in the recipe book until the player has the required permission
+    locked-lore:
+      - "&7You need &aDiamond collection level 3 &7to unlock this recipe."
+    # Ingredients required to craft the recipe
+    ingredients:
+      - ""
+      - "minecraft:diamond/32"
+      - ""
+      - "minecraft:diamond/32"
+      - "minecraft:diamond/32"
+      - "minecraft:diamond/32"
+      - ""
+      - "minecraft:diamond/32"
+      - ""
+  - id: diamond
+    shapeless: true
+    permission: "craft.diamond"
+    locked-lore:
+      - "&7You need &aEmerald collection level 5 &7to unlock this recipe."
+    result: "minecraft:diamond/32"
+    ingredients:
+      - "minecraft:emerald/32"
+      - "minecraft:emerald/32"
+      - "minecraft:emerald/32"
+      - "minecraft:emerald/32"
+      - "minecraft:emerald/32"

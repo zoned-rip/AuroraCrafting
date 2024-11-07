@@ -2,16 +2,34 @@ config-version: 0
 
 rows: 6
 
-title: "Workbench"
-result-slot: 25
+title: "Craft Item"
+result-slot: 23
 matrix-slots: [ 10, 11, 12, 19, 20, 21, 28, 29, 30 ]
+quick-crafting-slots: [ 16, 25, 34 ]
 
 # DO NOT use AIR here
 invalid-result-item:
   material: barrier
-  name: "&cInvalid Recipe"
+  name: "&cRecipe required"
   lore:
-    - "&4This recipe is invalid."
+    - "&7Add the items for a valid recipe in"
+    - "&7the crafting grid to the left!"
+
+empty-quick-craft-item:
+  material: gray_stained_glass_pane
+  name: "&cQuick Crafting Slot"
+  lore:
+    - "&7Quick crafting allows you to craft"
+    - "&7items without assembling the recipe."
+
+no-permission-quick-craft-item:
+  material: red_stained_glass_pane
+  name: "&cQuick Crafting Slot"
+  lore:
+    - "&7Quick crafting allows you to craft"
+    - "&7items without assembling the recipe."
+    - " "
+    - "&cYou do not have permission to use this slot"
 
 filler:
   material: black_stained_glass_pane
@@ -20,7 +38,7 @@ filler:
 
 custom-items:
   close:
-    material: barrier
+    material: arrow
     name: "&cClose"
     on-click:
       - "[close]"

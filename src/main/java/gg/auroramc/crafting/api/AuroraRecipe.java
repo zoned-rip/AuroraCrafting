@@ -4,6 +4,7 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,75 +12,45 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 @Getter
-public class AuroraRecipe {
-    private final String id;
-    private final ItemPair result;
-    private final List<ItemPair> ingredients = new ArrayList<>();
-    private final String permission;
+public abstract class AuroraRecipe {
+    protected final String id;
+    protected final ItemPair result;
+    protected final List<ItemPair> ingredients = new ArrayList<>();
+    protected final String permission;
+    @Setter
+    protected List<String> lockedLore;
+    protected final Map<TypeId, Integer> ingredientCount = new HashMap<>();
 
-    public AuroraRecipe(String id, ItemPair result) {
-        this(id, result, null);
-    }
-
-    public AuroraRecipe(String id, ItemPair result, String permission) {
+    public AuroraRecipe(String id, ItemPair result, String permission, List<String> lockedLore) {
         this.id = id;
         this.result = result;
         this.permission = permission;
+        this.lockedLore = lockedLore;
+
     }
 
     public void addIngredient(ItemPair itemPair) {
-        ingredients.add(itemPair);
+        if (registerIngredient(itemPair)) {
+            ingredientCount.merge(itemPair.id(), itemPair.amount(), Integer::sum);
+        }
     }
+
+    protected abstract boolean registerIngredient(ItemPair itemPair);
 
     public String asLookupKey() {
         var key = new StringBuilder();
+
         for (var ingredient : ingredients) {
             key.append(ingredient.id().toString());
             key.append(";");
         }
+
         return key.toString();
     }
 
-    public int getTimesCraftable(List<ItemStack> items) {
-        int maxCraftable = Integer.MAX_VALUE;
+    public abstract int getTimesCraftable(List<ItemStack> items);
 
-        var matches = true;
-
-        for (int i = 0; i < 9; i++) {
-            var item = items.get(i);
-            var itemTypeId = item.isEmpty() ? TypeId.from(Material.AIR) : AuroraAPI.getItemManager().resolveId(item);
-            if (!itemTypeId.equals(ingredients.get(i).id())) {
-                matches = false;
-                break;
-            } else if (item.getAmount() < ingredients.get(i).amount()) {
-                matches = false;
-                break;
-            } else if(!ingredients.get(i).id().id().equals("air")) {
-                maxCraftable = Math.min(maxCraftable, Math.max(1, item.getAmount()) / Math.max(1, ingredients.get(i).amount()));
-            }
-        }
-
-        if (!matches) return 0;
-
-        return maxCraftable;
-    }
-
-    public ItemStack[] calcRemainingIngredientMatrix(int timesCrafted, List<ItemStack> currentMatrix) {
-        var items = new ItemStack[9];
-
-        for (int i = 0; i < 9; i++) {
-            var ingredient = ingredients.get(i);
-            var item = currentMatrix.get(i);
-            if (item.getAmount() <= ingredient.amount() * timesCrafted) {
-                items[i] = null;
-            } else {
-                item.setAmount(item.getAmount() - ingredient.amount() * timesCrafted);
-                items[i] = item;
-            }
-        }
-
-        return items;
-    }
+    public abstract ItemStack[] calcRemainingIngredientMatrix(int timesCrafted, List<ItemStack> currentMatrix);
 
     public ItemStack[] getTotalResult(int timesCrafted) {
         var item = AuroraAPI.getItemManager().resolveItem(result.id());
@@ -106,5 +77,47 @@ public class AuroraRecipe {
 
     public boolean hasPermission(Player player) {
         return permission == null || player.hasPermission(permission);
+    }
+
+    public int getQuickCraftTimes(Player player) {
+        Map<TypeId, Integer> itemCount = new HashMap<>(player.getInventory().getSize());
+
+        for (var item : player.getInventory().getContents()) {
+            if (item == null || item.getType() == Material.AIR || item.getAmount() == 0) continue;
+            var id = AuroraAPI.getItemManager().resolveId(item);
+            itemCount.merge(id, item.getAmount(), Integer::sum);
+        }
+
+        int maxCraftable = Integer.MAX_VALUE;
+        var matches = true;
+
+        for (var entry : ingredientCount.entrySet()) {
+            var ingredient = entry.getKey();
+            var ingredientAmount = entry.getValue();
+            var itemAmount = itemCount.getOrDefault(ingredient, 0);
+
+            if (itemAmount < ingredientAmount) {
+                matches = false;
+                break;
+            } else if (ingredientAmount != 0) {
+                maxCraftable = Math.min(maxCraftable, itemAmount / ingredientAmount);
+            }
+        }
+
+        return matches ? maxCraftable : 0;
+    }
+
+    /**
+     * Quick craft the recipe for the player
+     * You should check with getQuickCraftTimes before calling this method
+     */
+    public void quickCraft(Player player, int times, boolean addMinusOneResult) {
+        var itemsToRemove = ingredientCount.entrySet().stream().flatMap((entry) -> {
+            var item = AuroraAPI.getItemManager().resolveItem(entry.getKey());
+            return Arrays.stream(ItemUtils.createStacksFromAmount(item, entry.getValue() * times));
+        }).toArray(ItemStack[]::new);
+
+        player.getInventory().removeItemAnySlot(itemsToRemove);
+        player.getInventory().addItem(this.getTotalResult(addMinusOneResult ? times - 1 : times));
     }
 }

@@ -17,19 +17,21 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CraftMenu implements InventoryHolder {
     private final AuroraCrafting plugin;
     private final Player player;
     private final Inventory inventory;
     private final List<Integer> matrixSlots;
+    private final Set<Integer> quickCraftSlots;
     private final Set<Integer> matrixLookup;
     private final int resultSlot;
     private final ItemStack invalidResultItem;
     private final ItemStack fillerItem;
+    private final ItemStack noPermQuickCraftItem;
+    private final ItemStack emptyQuickCraftItem;
+    private Map<Integer, AuroraRecipe> quickCraftRecipes = new HashMap<>();
 
     public static CraftMenu craftMenu(AuroraCrafting plugin, Player player) {
         return new CraftMenu(plugin, player);
@@ -43,10 +45,13 @@ public class CraftMenu implements InventoryHolder {
         this.matrixSlots = config.getMatrixSlots();
         this.matrixLookup = Set.copyOf(matrixSlots);
         this.resultSlot = config.getResultSlot();
+        this.quickCraftSlots = config.getQuickCraftingSlots();
 
         this.inventory = Bukkit.createInventory(this, config.getRows() * 9, Text.component(config.getTitle()));
         this.invalidResultItem = ItemBuilder.of(config.getInvalidResultItem()).toItemStack(player);
         this.fillerItem = ItemBuilder.of(config.getFiller()).toItemStack(player);
+        this.noPermQuickCraftItem = ItemBuilder.of(config.getNoPermissionQuickCraftItem()).toItemStack(player);
+        this.emptyQuickCraftItem = ItemBuilder.of(config.getEmptyQuickCraftItem()).toItemStack(player);
 
         for (int i = 0; i < inventory.getSize(); i++) {
             if (!matrixLookup.contains(i)) {
@@ -54,6 +59,29 @@ public class CraftMenu implements InventoryHolder {
             }
         }
         inventory.setItem(resultSlot, invalidResultItem);
+        setUpQuickCraft();
+    }
+
+    private void setUpQuickCraft() {
+        this.quickCraftRecipes.clear();
+        var quickCraftRecipes = plugin.getRecipeManager().getCraftableRecipes(player, quickCraftSlots.size());
+        var quickCraftSlots = new ArrayList<>(this.quickCraftSlots);
+        quickCraftSlots.sort(Integer::compareTo);
+
+        for (int i = 0; i < quickCraftSlots.size(); i++) {
+            var slot = quickCraftSlots.get(i);
+            if (i < quickCraftRecipes.size()) {
+                var recipe = quickCraftRecipes.get(i);
+                inventory.setItem(slot, recipe.getResultItem());
+                this.quickCraftRecipes.put(slot, recipe);
+            } else {
+                if (player.hasPermission("aurora.quickcraft." + slot)) {
+                    inventory.setItem(slot, emptyQuickCraftItem);
+                } else {
+                    inventory.setItem(slot, noPermQuickCraftItem);
+                }
+            }
+        }
     }
 
     public void open() {
@@ -62,7 +90,7 @@ public class CraftMenu implements InventoryHolder {
 
     private boolean isCustomSlotClick(InventoryClickEvent event) {
         return event.getClickedInventory() == inventory
-                && !matrixLookup.contains(event.getSlot()) && event.getSlot() != resultSlot;
+                && !matrixLookup.contains(event.getSlot()) && event.getSlot() != resultSlot && !quickCraftSlots.contains(event.getSlot());
     }
 
     private boolean isUpdateRequired(InventoryClickEvent event) {
@@ -77,10 +105,21 @@ public class CraftMenu implements InventoryHolder {
     }
 
     private boolean isIllegalShiftClick(InventoryClickEvent event) {
-        return event.getClickedInventory() != inventory
+        boolean result = event.getClickedInventory() != inventory
                 && event.isShiftClick()
                 && event.getCurrentItem() != null
                 && (event.getCurrentItem().isSimilar(inventory.getItem(resultSlot)) || event.getCurrentItem().isSimilar(fillerItem));
+
+        for (int slot : quickCraftSlots) {
+            if (event.getClickedInventory() != inventory && event.isShiftClick()
+                    && event.getCurrentItem() != null
+                    && event.getCurrentItem().isSimilar(inventory.getItem(slot))) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 
     public void onClick(InventoryClickEvent event) {
@@ -92,6 +131,10 @@ public class CraftMenu implements InventoryHolder {
 
         // Otherwise we don't care what the players do in their inventory
         if (event.getClickedInventory() != inventory) {
+            // Should cancel DROP actions though to make quick crafting safe
+            if (event.getAction().name().startsWith("DROP")) {
+                event.setCancelled(true);
+            }
             return;
         }
 
@@ -108,9 +151,103 @@ public class CraftMenu implements InventoryHolder {
             return;
         }
 
-        // At this point, we checked everything. If the player didn't click on the result we don't care.
-        if (event.getSlot() != resultSlot) return;
 
+        // At this point, we checked everything. If the player didn't click on the result we don't care.
+        if (event.getSlot() == resultSlot) {
+            handleResultClick(event);
+        } else if (quickCraftSlots.contains(event.getSlot())) {
+            handleQuickCraftSlot(event);
+        }
+    }
+
+    private void handleQuickCraftSlot(InventoryClickEvent event) {
+        // If the player clicked on the quick craft slot but used some weird ass click action, cancel the event
+        if (isDumbAssClick(event)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        for (var slot : quickCraftSlots) {
+            if (event.getCurrentItem() == emptyQuickCraftItem || event.getCurrentItem() == noPermQuickCraftItem) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        var recipe = quickCraftRecipes.get(event.getSlot());
+        if (recipe == null) {
+            event.setCancelled(true);
+            return;
+        }
+
+        var timesCraftable = recipe.getQuickCraftTimes(player);
+        if (timesCraftable == 0) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (event.isShiftClick()) {
+            // Check the player inventory for space. If one crafting result fits, allow the shift click
+            int currentSpace = InventoryUtils.calculateSpaceForItem(player.getInventory(), event.getCurrentItem());
+            if (currentSpace < recipe.getResult().amount()) {
+                event.setCancelled(true);
+                return;
+            }
+            // Add the remaining items to the player inventory, but only the amount that fits, deduct the matrix
+            final int availableSpace = currentSpace - recipe.getResult().amount();
+            final int timesCrafted = Math.min((availableSpace / recipe.getResult().amount()) + 1, timesCraftable);
+
+            // If only the shift click is craftable, just update the matrix and return
+            if (timesCrafted == 1) {
+                player.getScheduler().run(plugin, (t) -> {
+                    recipe.quickCraft(player, 1, true);
+                    setUpQuickCraft();
+                    player.updateInventory();
+                }, null);
+                return;
+            }
+
+            // If there is more space, add the remaining items to the player inventory and update the matrix
+            player.getScheduler().run(plugin, (t) -> {
+                recipe.quickCraft(player, timesCrafted, true);
+                setUpQuickCraft();
+                player.updateInventory();
+            }, null);
+        } else {
+            if (event.getCursor().isEmpty()) {
+                // Allow taking the result and deduct the matrix
+                player.getScheduler().run(plugin,
+                        (t) -> {
+                            recipe.quickCraft(player, 1, true);
+                            setUpQuickCraft();
+                            player.updateInventory();
+                        }, null);
+            } else {
+                var cursor = event.getCursor();
+                var result = event.getCurrentItem();
+
+                // Allow stacking the result and deduct the matrix
+                if (cursor.isSimilar(result)) {
+                    var maxAmount = cursor.getMaxStackSize() - cursor.getAmount();
+                    if (recipe.getResult().amount() <= maxAmount) {
+                        player.getScheduler().run(plugin, (t) -> {
+                            if (player.getItemOnCursor().isSimilar(result)) {
+                                player.getItemOnCursor().setAmount(cursor.getAmount() + recipe.getResult().amount());
+                            }
+                            recipe.quickCraft(player, 1, true);
+                            setUpQuickCraft();
+                            player.updateInventory();
+                        }, null);
+                    }
+                }
+
+                event.setCancelled(true);
+            }
+        }
+
+    }
+
+    private void handleResultClick(InventoryClickEvent event) {
         // If the player clicked on the result slot but used some weird ass click action, cancel the event
         if (isDumbAssClick(event)) {
             event.setCancelled(true);
@@ -121,7 +258,7 @@ public class CraftMenu implements InventoryHolder {
         var matrix = getMatrix(event.getInventory(), matrixSlots);
 
         // If we don't have a recipe cancel the event
-        var recipe = plugin.getRecipeManager().getRecipe(matrix);
+        var recipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
         if (recipe == null || !recipe.hasPermission(player)) {
             event.setCancelled(true);
             return;
@@ -129,6 +266,7 @@ public class CraftMenu implements InventoryHolder {
 
         if (event.getInventory().getItem(resultSlot) == invalidResultItem) {
             event.setCancelled(true);
+            return;
         }
 
         // Based on the crafting matrix, let's see how many times can we craft the recipe
@@ -238,7 +376,7 @@ public class CraftMenu implements InventoryHolder {
         // Calc new potential result
         var matrix = getMatrix(inventory, matrixSlots);
 
-        var recipe = plugin.getRecipeManager().getRecipe(matrix);
+        var recipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
 
         if (recipe != null && recipe.hasPermission(player)) {
             var timesCraftable = recipe.getTimesCraftable(matrix);

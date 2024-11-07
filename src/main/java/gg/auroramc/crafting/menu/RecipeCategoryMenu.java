@@ -56,19 +56,27 @@ public class RecipeCategoryMenu {
             if (i < recipes.size()) {
                 var recipe = recipes.get(i);
                 var item = recipe.getResultItem();
-                menu.addItem(ItemBuilder.item(item).slot(slot).loreCompute(() -> {
-                    var lore = new ArrayList<Component>();
-                    if (item.hasItemMeta()) {
-                        var meta = item.getItemMeta();
-                        if (meta.hasLore()) {
-                            lore.addAll(meta.lore());
+                if (recipe.hasPermission(player) || !mc.getSecretRecipeDisplay().getEnabled()) {
+                    menu.addItem(ItemBuilder.item(item).slot(slot).loreCompute(() -> {
+                        var lore = new ArrayList<Component>();
+                        if (item.hasItemMeta()) {
+                            var meta = item.getItemMeta();
+                            if (meta.hasLore()) {
+                                lore.addAll(meta.lore());
+                            }
                         }
-                    }
-                    lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
-                    return lore;
-                }).build(player), (e) -> {
-                    RecipeMenu.recipeMenu(plugin, player, recipe, true).open();
-                });
+                        lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
+                        return lore;
+                    }).build(player), (e) -> {
+                        RecipeMenu.recipeMenu(plugin, player, recipe, true).open();
+                    });
+                } else {
+                    menu.addItem(ItemBuilder.of(mc.getSecretRecipeDisplay().getItem()).slot(slot).loreCompute(() -> {
+                        var lore = new ArrayList<>(mc.getSecretRecipeDisplay().getItem().getLore());
+                        lore.addAll(recipe.getLockedLore());
+                        return lore.stream().map(l -> Text.component(player, l)).toList();
+                    }).build(player));
+                }
             } else {
                 menu.addItem(ItemBuilder.item(ItemBuilder.filler(Material.AIR)).slot(slot).build(player));
             }

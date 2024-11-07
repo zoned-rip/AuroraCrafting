@@ -5,6 +5,7 @@ import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
+import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.menu.MenuListener;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -36,6 +37,9 @@ public class AuroraCrafting extends JavaPlugin {
         commandManager = new CommandManager(this);
         commandManager.reload();
         Bukkit.getPluginManager().registerEvents(new MenuListener(), this);
+        if (configManager.getConfig().getOpenInsteadOfCraftingTable() || configManager.getConfig().getOpenShiftClickCraftingTable()) {
+            Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
+        }
     }
 
     @Override

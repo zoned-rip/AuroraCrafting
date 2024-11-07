@@ -27,6 +27,8 @@ public class RecipesCommand extends BaseCommand {
         var recipe = plugin.getRecipeManager().getRecipeById(recipeId);
         if (recipe == null) return;
 
-        RecipeMenu.recipeMenu(plugin, player, recipe, false).open();
+        if(recipe.hasPermission(player) || !plugin.getConfigManager().getRecipeBookCategoryConfig().getSecretRecipeDisplay().getEnabled()) {
+            RecipeMenu.recipeMenu(plugin, player, recipe, false).open();
+        }
     }
 }

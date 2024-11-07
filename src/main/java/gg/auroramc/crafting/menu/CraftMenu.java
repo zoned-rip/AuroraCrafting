@@ -6,6 +6,7 @@ import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.AuroraRecipe;
+import gg.auroramc.crafting.api.VanillaRecipeWrapper;
 import gg.auroramc.crafting.util.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -117,7 +119,8 @@ public class CraftMenu implements InventoryHolder {
         return event.getAction() != InventoryAction.MOVE_TO_OTHER_INVENTORY
                 && event.getAction() != InventoryAction.PICKUP_ALL
                 && event.getAction() != InventoryAction.PLACE_SOME
-                && event.getAction() != InventoryAction.PLACE_ALL;
+                && event.getAction() != InventoryAction.PLACE_ALL
+                && event.getAction() != InventoryAction.PLACE_ONE;
     }
 
     private boolean isIllegalShiftClick(InventoryClickEvent event) {
@@ -278,7 +281,19 @@ public class CraftMenu implements InventoryHolder {
         var matrix = getMatrix(event.getInventory(), matrixSlots);
 
         // If we don't have a recipe cancel the event
-        var recipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
+        var maybeRecipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
+
+        if (maybeRecipe == null && plugin.getConfigManager().getConfig().getIncludeVanillaRecipes()) {
+            var vanillaRecipe = Bukkit.getServer().getCraftingRecipe(matrix.toArray(ItemStack[]::new), player.getWorld());
+            if (vanillaRecipe instanceof CraftingRecipe craftingRecipe) {
+                if (craftingRecipe.getKey().getNamespace().equals("minecraft") || plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes()) {
+                    maybeRecipe = new VanillaRecipeWrapper(craftingRecipe);
+                }
+            }
+        }
+
+        final var recipe = maybeRecipe;
+
         if (recipe == null || !recipe.hasPermission(player)) {
             event.setCancelled(true);
             return;
@@ -300,13 +315,13 @@ public class CraftMenu implements InventoryHolder {
         if (event.isShiftClick()) {
             // Check the player inventory for space. If one crafting result fits, allow the shift click
             int currentSpace = InventoryUtils.calculateSpaceForItem(player.getInventory(), event.getCurrentItem());
-            if (currentSpace < recipe.getResult().amount()) {
+            if (currentSpace < maybeRecipe.getResult().amount()) {
                 event.setCancelled(true);
                 return;
             }
             // Add the remaining items to the player inventory, but only the amount that fits, deduct the matrix
-            final int availableSpace = currentSpace - recipe.getResult().amount();
-            final int timesCrafted = Math.min((availableSpace / recipe.getResult().amount()) + 1, timesCraftable);
+            final int availableSpace = currentSpace - maybeRecipe.getResult().amount();
+            final int timesCrafted = Math.min((availableSpace / maybeRecipe.getResult().amount()) + 1, timesCraftable);
 
             // If only the shift click is craftable, just update the matrix and return
             if (timesCrafted == 1) {
@@ -342,7 +357,7 @@ public class CraftMenu implements InventoryHolder {
                 // Allow stacking the result and deduct the matrix
                 if (cursor.isSimilar(result)) {
                     var maxAmount = cursor.getMaxStackSize() - cursor.getAmount();
-                    if (recipe.getResult().amount() <= maxAmount) {
+                    if (maybeRecipe.getResult().amount() <= maxAmount) {
                         player.getScheduler().run(plugin, (t) -> {
                             if (player.getItemOnCursor().isSimilar(result)) {
                                 player.getItemOnCursor().setAmount(cursor.getAmount() + recipe.getResult().amount());
@@ -412,7 +427,21 @@ public class CraftMenu implements InventoryHolder {
                 inventory.setItem(resultSlot, recipe.getResultItem());
             }
         } else {
-            inventory.setItem(resultSlot, invalidResultItem);
+            if (plugin.getConfigManager().getConfig().getIncludeVanillaRecipes()) {
+                var vanillaRecipe = Bukkit.getCraftingRecipe(matrix.toArray(ItemStack[]::new), player.getWorld());
+                if (vanillaRecipe instanceof CraftingRecipe craftingRecipe) {
+                    if (!craftingRecipe.getKey().getNamespace().equals("minecraft") && !plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes()) {
+                        inventory.setItem(resultSlot, invalidResultItem);
+                    } else {
+                        var result = vanillaRecipe.getResult();
+                        inventory.setItem(resultSlot, result);
+                    }
+                } else {
+                    inventory.setItem(resultSlot, invalidResultItem);
+                }
+            } else {
+                inventory.setItem(resultSlot, invalidResultItem);
+            }
         }
         player.updateInventory();
     }

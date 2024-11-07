@@ -1,6 +1,9 @@
 package gg.auroramc.crafting.menu;
 
+import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
+import gg.auroramc.aurora.api.menu.MenuEntry;
+import gg.auroramc.aurora.api.menu.MenuItem;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
@@ -32,6 +35,7 @@ public class CraftMenu implements InventoryHolder {
     private final ItemStack noPermQuickCraftItem;
     private final ItemStack emptyQuickCraftItem;
     private Map<Integer, AuroraRecipe> quickCraftRecipes = new HashMap<>();
+    private Map<Integer, MenuEntry> customItems = new HashMap<>();
 
     public static CraftMenu craftMenu(AuroraCrafting plugin, Player player) {
         return new CraftMenu(plugin, player);
@@ -60,6 +64,20 @@ public class CraftMenu implements InventoryHolder {
         }
         inventory.setItem(resultSlot, invalidResultItem);
         setUpQuickCraft();
+
+        for (var itemConfig : config.getCustomItems().values()) {
+            var menuItem = ItemBuilder.of(itemConfig).build(player);
+            for(var slot : menuItem.getSlots()) {
+                if(matrixLookup.contains(slot) || slot == resultSlot || quickCraftSlots.contains(slot)) {
+                    continue;
+                }
+                customItems.put(slot, new MenuEntry(menuItem));
+            }
+        }
+
+        for(var entry : customItems.entrySet()) {
+            inventory.setItem(entry.getKey(), entry.getValue().getItem().getItemStack());
+        }
     }
 
     private void setUpQuickCraft() {
@@ -141,6 +159,10 @@ public class CraftMenu implements InventoryHolder {
         // Prevent interacting with the other parts of the custom gui
         if (isCustomSlotClick(event)) {
             event.setCancelled(true);
+
+            if(customItems.containsKey(event.getSlot())) {
+                customItems.get(event.getSlot()).handleEvent(event);
+            }
             return;
         }
 

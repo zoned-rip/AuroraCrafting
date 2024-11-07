@@ -33,7 +33,7 @@ public class RecipeBookMenu {
                             })
                             .build(player),
                     (e) -> {
-                        RecipeCategoryMenu.recipeCategoryMenu(plugin, player, category.getId()).open();
+                        RecipeCategoryMenu.recipeCategoryMenu(plugin, player, category).open();
                     });
         }
 

@@ -1,5 +1,7 @@
 config-version: 0
 
+rows: 6
+
 category-icon:
   enabled: true
   item:
@@ -38,10 +40,6 @@ items:
     material: arrow
     name: "&7Back"
     slot: 45
-  close:
-    material: barrier
-    name: "&cClose"
-    slot: 53
   next-page:
     material: paper
     name: "&fNext Page"
@@ -54,3 +52,9 @@ items:
     material: paper
     name: "&f{current}/{max}"
     slot: 49
+
+custom-items:
+  close:
+    material: barrier
+    name: "&cClose"
+    slot: 53

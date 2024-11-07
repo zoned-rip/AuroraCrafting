@@ -13,6 +13,7 @@ import java.util.Map;
 @Getter
 public class RecipeBookCategoryConfig extends AuroraConfig {
     private CategoryIcon categoryIcon;
+    private Integer rows = 6;
     private List<String> appendLore = new ArrayList<>();
     private List<Integer> displayArea = List.of(
             10, 11, 12, 13, 14, 15, 16,
@@ -23,6 +24,7 @@ public class RecipeBookCategoryConfig extends AuroraConfig {
     private SecretDisplay secretRecipeDisplay;
     private ItemConfig filler;
     private Map<String, ItemConfig> items;
+    private Map<String, ItemConfig> customItems;
 
     @Getter
     public static final class CategoryIcon {

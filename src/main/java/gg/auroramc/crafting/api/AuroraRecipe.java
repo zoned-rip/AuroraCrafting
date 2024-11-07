@@ -3,6 +3,7 @@ package gg.auroramc.crafting.api;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.util.ItemUtils;
+import gg.auroramc.crafting.config.RecipeBookConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ public abstract class AuroraRecipe {
     protected List<String> lockedLore;
     protected final Map<TypeId, Integer> ingredientCount = new HashMap<>();
     @Setter
-    private String category;
+    private RecipeBookConfig.RecipeCategory category;
 
     public AuroraRecipe(String id, ItemPair result, String permission, List<String> lockedLore) {
         this.id = id;

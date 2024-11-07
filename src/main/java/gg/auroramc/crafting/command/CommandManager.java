@@ -24,14 +24,17 @@ public class CommandManager {
     }
 
     private void setupCommands() {
-        if(!this.hasSetup) {
+        if (!this.hasSetup) {
             commandManager.getLocales().setDefaultLocale(Locale.ENGLISH);
             commandManager.usePerIssuerLocale(false);
 
             var aliases = plugin.getConfigManager().getConfig().getCommandAliases();
 
             commandManager.getCommandReplacements().addReplacement("craftingAlias", a(aliases.getCraft()));
-            }
+            commandManager.getCommandReplacements().addReplacement("recipesAlias", a(aliases.getRecipes()));
+
+            commandManager.getCommandCompletions().registerCompletion("recipes", c -> plugin.getRecipeManager().getRecipeIds());
+        }
 
         var msg = plugin.getConfigManager().getMessageConfig();
         commandManager.getLocales().addMessage(Locale.ENGLISH, MinecraftMessageKeys.NO_PLAYER_FOUND, m(msg.getPlayerNotFound()));
@@ -49,6 +52,7 @@ public class CommandManager {
 
         if (!this.hasSetup) {
             this.commandManager.registerCommand(new CraftingCommand(plugin));
+            this.commandManager.registerCommand(new RecipesCommand(plugin));
             this.hasSetup = true;
         }
     }

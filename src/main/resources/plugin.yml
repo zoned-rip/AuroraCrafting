@@ -12,6 +12,8 @@ permissions:
     children:
       aurora.crafting.use:
         default: true
+      aurora.crafting.recipes:
+        default: true
       aurora.crafting.admin.*:
         default: op
         children:

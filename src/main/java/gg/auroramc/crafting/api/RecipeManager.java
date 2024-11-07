@@ -150,4 +150,8 @@ public class RecipeManager {
 
         return craftableRecipes;
     }
+
+    public Collection<String> getRecipeIds() {
+        return recipeIdLookup.keySet();
+    }
 }

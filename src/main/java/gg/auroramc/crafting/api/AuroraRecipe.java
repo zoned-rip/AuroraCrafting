@@ -20,6 +20,8 @@ public abstract class AuroraRecipe {
     @Setter
     protected List<String> lockedLore;
     protected final Map<TypeId, Integer> ingredientCount = new HashMap<>();
+    @Setter
+    private String category;
 
     public AuroraRecipe(String id, ItemPair result, String permission, List<String> lockedLore) {
         this.id = id;

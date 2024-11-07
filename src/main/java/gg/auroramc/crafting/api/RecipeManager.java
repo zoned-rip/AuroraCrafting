@@ -66,6 +66,7 @@ public class RecipeManager {
                 for (var category : plugin.getConfigManager().getRecipeBookConfig().getCategories()) {
                     if (category.getRecipes().contains(recipeConfig.getId()) || category.getFiles().contains(recipeConfig.getSourceFile())) {
                         recipeCategoryLookup.get(category.getId()).add(recipe);
+                        recipe.setCategory(category.getId());
                     }
                 }
             }

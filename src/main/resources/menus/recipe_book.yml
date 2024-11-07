@@ -1,5 +1,8 @@
 config-version: 0
 
+title: "Recipe Book"
+rows: 6
+
 # These lines will be added to the category item lore
 append-lore:
   - " "

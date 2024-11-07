@@ -12,6 +12,8 @@ import java.util.Map;
 
 @Getter
 public class RecipeBookMenuConfig extends AuroraConfig {
+    private String title = "Recipe Book";
+    private Integer rows = 6;
     private List<String> appendLore = new ArrayList<>();
     private ItemConfig filler;
     private Map<String, ItemConfig> customItems;

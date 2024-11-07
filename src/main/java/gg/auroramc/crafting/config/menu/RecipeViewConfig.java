@@ -10,8 +10,10 @@ import java.util.Map;
 
 @Getter
 public class RecipeViewConfig extends AuroraConfig {
+    private String title = "Recipe";
     private Integer resultSlot = 26;
     private Map<String, ItemConfig> customItems;
+    private Map<String, ItemConfig> items;
 
     public RecipeViewConfig(AuroraCrafting plugin) {
         super(getFile(plugin));

@@ -1,9 +1,7 @@
 package gg.auroramc.crafting.menu;
 
-import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.aurora.api.menu.MenuEntry;
-import gg.auroramc.aurora.api.menu.MenuItem;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;

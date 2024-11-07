@@ -1,6 +1,15 @@
 config-version: 0
 
+title: "Recipe"
 result-slot: 26
+
+items:
+  back:
+    material: arrow
+    name: "&7Back"
+    slot: 48
+    lore:
+      - "&7Click to go back"
 
 custom-items:
   table:

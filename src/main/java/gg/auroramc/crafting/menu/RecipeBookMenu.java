@@ -7,6 +7,8 @@ import gg.auroramc.crafting.AuroraCrafting;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+
 @AllArgsConstructor
 public class RecipeBookMenu {
     private final AuroraCrafting plugin;
@@ -27,7 +29,7 @@ public class RecipeBookMenu {
         for (var category : categories) {
             menu.addItem(ItemBuilder.of(category.getMenu().getItem())
                             .loreCompute(() -> {
-                                var lore = category.getMenu().getItem().getLore();
+                                var lore = new ArrayList<>(category.getMenu().getItem().getLore());
                                 lore.addAll(mc.getAppendLore());
                                 return lore.stream().map(l -> Text.component(player, l)).toList();
                             })

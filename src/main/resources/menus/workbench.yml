@@ -40,5 +40,6 @@ custom-items:
   close:
     material: arrow
     name: "&cClose"
+    slot: 49
     on-click:
       - "[close]"

@@ -31,7 +31,7 @@ public class RecipeMenu {
         for (int i = 0; i < workbenchConfig.getMatrixSlots().size(); i++) {
             var slot = workbenchConfig.getMatrixSlots().get(i);
             var item = i < ingredientItems.size() ? ingredientItems.get(i) : ItemStack.empty();
-            menu.addItem(ItemBuilder.item(item).slot(slot).build(player));
+            menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player));
         }
 
         menu.addItem(ItemBuilder.item(recipe.getResultItem()).slot(mc.getResultSlot()).build(player));

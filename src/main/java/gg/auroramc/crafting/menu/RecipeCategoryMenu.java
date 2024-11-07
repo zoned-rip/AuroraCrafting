@@ -42,12 +42,12 @@ public class RecipeCategoryMenu {
 
         if (mc.getCategoryIcon().getEnabled()) {
             var itemConfig = category.getMenu().getItem().merge(mc.getCategoryIcon().getItem());
-            menu.addItem(ItemBuilder.of(itemConfig).defaultSlot(4).loreCompute(() -> {
-                var lore = itemConfig.getLore();
-                lore.addAll(mc.getAppendLore());
-                return lore.stream().map(l -> Text.component(player, l)).toList();
-            }).build(player));
+            menu.addItem(ItemBuilder.of(itemConfig).defaultSlot(4).build(player));
         }
+
+        menu.addItem(ItemBuilder.of(mc.getItems().get("back")).build(player), (e) -> {
+            RecipeBookMenu.recipeBookMenu(plugin, player).open();
+        });
 
         var recipes = getPageRecipes(mc.getDisplayArea().size());
 
@@ -63,8 +63,8 @@ public class RecipeCategoryMenu {
                         if (meta.hasLore()) {
                             lore.addAll(meta.lore());
                         }
-                        lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
                     }
+                    lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
                     return lore;
                 }).build(player), (e) -> {
                     RecipeMenu.recipeMenu(plugin, player, recipe, true).open();

@@ -65,15 +65,15 @@ public class CraftMenu implements InventoryHolder {
 
         for (var itemConfig : config.getCustomItems().values()) {
             var menuItem = ItemBuilder.of(itemConfig).build(player);
-            for(var slot : menuItem.getSlots()) {
-                if(matrixLookup.contains(slot) || slot == resultSlot || quickCraftSlots.contains(slot)) {
+            for (var slot : menuItem.getSlots()) {
+                if (matrixLookup.contains(slot) || slot == resultSlot || quickCraftSlots.contains(slot)) {
                     continue;
                 }
                 customItems.put(slot, new MenuEntry(menuItem));
             }
         }
 
-        for(var entry : customItems.entrySet()) {
+        for (var entry : customItems.entrySet()) {
             inventory.setItem(entry.getKey(), entry.getValue().getItem().getItemStack());
         }
     }
@@ -158,7 +158,7 @@ public class CraftMenu implements InventoryHolder {
         if (isCustomSlotClick(event)) {
             event.setCancelled(true);
 
-            if(customItems.containsKey(event.getSlot())) {
+            if (customItems.containsKey(event.getSlot())) {
                 customItems.get(event.getSlot()).handleEvent(event);
             }
             return;
@@ -310,7 +310,10 @@ public class CraftMenu implements InventoryHolder {
 
             // If only the shift click is craftable, just update the matrix and return
             if (timesCrafted == 1) {
-                player.getScheduler().run(plugin, (t) -> updateMatrix(recipe, timesCraftable, 1, matrix), null);
+                player.getScheduler().run(plugin, (t) -> {
+                    setUpQuickCraft();
+                    updateMatrix(recipe, timesCraftable, 1, matrix);
+                }, null);
                 return;
             }
 
@@ -319,6 +322,7 @@ public class CraftMenu implements InventoryHolder {
                 player.getInventory().addItem(
                         ItemUtils.createStacksFromAmount(
                                 recipe.getResultItem(), (timesCrafted - 1) * recipe.getResult().amount()));
+                setUpQuickCraft();
                 updateMatrix(recipe, timesCraftable, timesCrafted, matrix);
             }, null);
 
@@ -327,7 +331,10 @@ public class CraftMenu implements InventoryHolder {
             if (event.getCursor().isEmpty()) {
                 // Allow taking the result and deduct the matrix
                 player.getScheduler().run(plugin,
-                        (t) -> updateMatrix(recipe, timesCraftable, 1, matrix), null);
+                        (t) -> {
+                            setUpQuickCraft();
+                            updateMatrix(recipe, timesCraftable, 1, matrix);
+                        }, null);
             } else {
                 var cursor = event.getCursor();
                 var result = event.getCurrentItem();
@@ -340,6 +347,7 @@ public class CraftMenu implements InventoryHolder {
                             if (player.getItemOnCursor().isSimilar(result)) {
                                 player.getItemOnCursor().setAmount(cursor.getAmount() + recipe.getResult().amount());
                             }
+                            setUpQuickCraft();
                             updateMatrix(recipe, timesCraftable, 1, matrix);
                         }, null);
                     }

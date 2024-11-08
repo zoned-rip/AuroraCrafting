@@ -21,6 +21,8 @@ public class MessageConfig extends AuroraConfig {
     private String mustBeNumber = "&cArgument must be a number!";
     private String playerNotFound = "&cPlayer not found!";
     private String commandError = "&cAn error occurred while executing this command!";
+    private String merchantOpened = "&aOpened merchant: &2{id} &afor player: &2{player}&a!";
+    private String merchantFailedToOpen = "&cFailed to open merchant: &4{id} &cfor player: &4{player}&c!";
 
     public MessageConfig(AuroraCrafting plugin, String language) {
         super(getFile(plugin, language));

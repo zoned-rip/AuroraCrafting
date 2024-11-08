@@ -1,19 +1,14 @@
 package gg.auroramc.crafting.config;
 
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.config.menu.RecipeBookCategoryConfig;
-import gg.auroramc.crafting.config.menu.RecipeBookMenuConfig;
-import gg.auroramc.crafting.config.menu.RecipeViewConfig;
-import gg.auroramc.crafting.config.menu.WorkbenchConfig;
+import gg.auroramc.crafting.config.menu.*;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,12 +19,15 @@ public class ConfigManager {
     private Config config;
     private RecipeBookConfig recipeBookConfig;
     private MessageConfig messageConfig;
+    private MerchantsConfig merchantsConfig;
 
     // menus
     private WorkbenchConfig workbenchConfig;
     private RecipeViewConfig recipeViewConfig;
     private RecipeBookMenuConfig recipeBookMenuConfig;
     private RecipeBookCategoryConfig recipeBookCategoryConfig;
+    private MerchantsMenuConfig merchantsMenuConfig;
+
     private List<RecipesConfig.RecipeConfig> recipes;
 
     public ConfigManager(AuroraCrafting plugin) {
@@ -50,6 +48,10 @@ public class ConfigManager {
         messageConfig = new MessageConfig(plugin, config.getLanguage());
         messageConfig.load();
 
+        MerchantsConfig.saveDefault(plugin);
+        merchantsConfig = new MerchantsConfig(plugin);
+        merchantsConfig.load();
+
         RecipeBookConfig.saveDefault(plugin);
         recipeBookConfig = new RecipeBookConfig(plugin);
         recipeBookConfig.load();
@@ -69,6 +71,10 @@ public class ConfigManager {
         RecipeBookCategoryConfig.saveDefault(plugin);
         recipeBookCategoryConfig = new RecipeBookCategoryConfig(plugin);
         recipeBookCategoryConfig.load();
+
+        MerchantsMenuConfig.saveDefault(plugin);
+        merchantsMenuConfig = new MerchantsMenuConfig(plugin);
+        merchantsMenuConfig.load();
 
         recipes = getRecipesConfigs().stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())

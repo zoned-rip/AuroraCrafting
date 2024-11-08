@@ -7,6 +7,7 @@ language: en
 command-aliases:
   craft: [ "craft" ]
   recipes: [ "recipes" ]
+  merchants: [ "merchants" ]
 
 # Should vanilla recipes be craftable in the custom crafting table?
 include-vanilla-recipes: false

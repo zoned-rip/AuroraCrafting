@@ -10,6 +10,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CommandManager {
     private final AuroraCrafting plugin;
@@ -32,8 +33,14 @@ public class CommandManager {
 
             commandManager.getCommandReplacements().addReplacement("craftingAlias", a(aliases.getCraft()));
             commandManager.getCommandReplacements().addReplacement("recipesAlias", a(aliases.getRecipes()));
+            commandManager.getCommandReplacements().addReplacement("merchantsAlias", a(aliases.getMerchants()));
 
             commandManager.getCommandCompletions().registerCompletion("recipes", c -> plugin.getRecipeManager().getRecipeIds());
+            commandManager.getCommandCompletions().registerCompletion("merchants", c -> plugin.getConfigManager().getMerchantsConfig()
+                    .getMerchants().entrySet().stream().filter(e -> {
+                        var merchant = e.getValue();
+                        return merchant.getPermission() == null || c.getSender().hasPermission(merchant.getPermission());
+                    }).map(Map.Entry::getKey).toList());
         }
 
         var msg = plugin.getConfigManager().getMessageConfig();
@@ -53,6 +60,7 @@ public class CommandManager {
         if (!this.hasSetup) {
             this.commandManager.registerCommand(new CraftingCommand(plugin));
             this.commandManager.registerCommand(new RecipesCommand(plugin));
+            this.commandManager.registerCommand(new MerchantsCommand(plugin));
             this.hasSetup = true;
         }
     }

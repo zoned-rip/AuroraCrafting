@@ -21,6 +21,7 @@ public class Config extends AuroraConfig {
     public static final class CommandAliasConfig {
         private List<String> craft = List.of("craft");
         private List<String> recipes = List.of("recipes");
+        private List<String> merchants = List.of("merchants");
     }
 
     public Config(AuroraCrafting plugin) {

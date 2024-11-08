@@ -14,9 +14,12 @@ permissions:
         default: true
       aurora.crafting.recipes:
         default: true
+      aurora.crafting.merchants:
+        default: true
       aurora.crafting.admin.*:
         default: op
         children:
           - aurora.crafting.admin.openrecipe
           - aurora.crafting.admin.openmenu
           - aurora.crafting.admin.reload
+          - aurora.crafting.merchants.admin.open

@@ -16,6 +16,8 @@ public class Config extends AuroraConfig {
     private Boolean includeOtherPluginRecipes = false;
     private Boolean openInsteadOfCraftingTable = false;
     private Boolean openShiftClickCraftingTable = false;
+    private Integer clickCooldown = 75;
+    private Integer shiftClickCooldown = 200;
 
     @Getter
     public static final class CommandAliasConfig {

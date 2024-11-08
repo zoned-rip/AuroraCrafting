@@ -8,6 +8,7 @@ import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.AuroraRecipe;
 import gg.auroramc.crafting.api.VanillaRecipeWrapper;
 import gg.auroramc.crafting.util.InventoryUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
@@ -27,8 +28,11 @@ public class CraftMenu implements InventoryHolder {
     private final Player player;
     private final Inventory inventory;
     private final List<Integer> matrixSlots;
+    @Getter
     private final Set<Integer> quickCraftSlots;
+    @Getter
     private final Set<Integer> matrixLookup;
+    @Getter
     private final int resultSlot;
     private final ItemStack invalidResultItem;
     private final ItemStack fillerItem;
@@ -153,6 +157,9 @@ public class CraftMenu implements InventoryHolder {
             // Should cancel DROP actions though to make quick crafting safe
             if (event.getAction().name().startsWith("DROP")) {
                 event.setCancelled(true);
+            } else if (isUpdateRequired(event)) {
+                player.getScheduler().run(plugin, (t) -> updateResult(), null);
+                return;
             }
             return;
         }

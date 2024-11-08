@@ -24,3 +24,8 @@ open-instead-of-crafting-table: false
 # when the player shift right clicks a crafting table?
 # Enabling this needs a server restart to take effect.
 open-shift-click-crafting-table: false
+
+# Only change these if you know what you're doing
+# These values are in milliseconds and they are only applying for the workbench gui
+click-cooldown: 75
+shift-click-cooldown: 200

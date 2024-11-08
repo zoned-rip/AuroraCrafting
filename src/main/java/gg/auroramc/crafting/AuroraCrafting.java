@@ -36,7 +36,7 @@ public class AuroraCrafting extends JavaPlugin {
         recipeManager = new RecipeManager(this);
         commandManager = new CommandManager(this);
         commandManager.reload();
-        Bukkit.getPluginManager().registerEvents(new MenuListener(), this);
+        Bukkit.getPluginManager().registerEvents(new MenuListener(this), this);
         if (configManager.getConfig().getOpenInsteadOfCraftingTable() || configManager.getConfig().getOpenShiftClickCraftingTable()) {
             Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
         }

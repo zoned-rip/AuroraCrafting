@@ -24,10 +24,12 @@ public class MenuListener implements Listener {
         var holder = event.getInventory().getHolder();
         if (holder instanceof CraftMenu menu) {
             if (isOnCooldown(event.getWhoClicked().getUniqueId())) {
+                event.setCancelled(true);
                 return;
             }
 
             if (isOnShiftCooldown(event.getWhoClicked().getUniqueId())) {
+                event.setCancelled(true);
                 return;
             }
 

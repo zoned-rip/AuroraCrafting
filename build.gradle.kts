@@ -28,11 +28,18 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.auroramc.gg/repository/maven-public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
+    // Quests
+    maven("https://repo.codemc.io/repository/maven-public/")
+    // BetonQuest
+    maven("https://nexus.betonquest.org/repository/betonquest/")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:1.7.3-SNAPSHOT")
+    compileOnly("gg.auroramc:Aurora:2.0.1")
+    compileOnly("gg.auroramc:AuroraQuests:1.3.1")
+    compileOnly("me.pikamug.quests:quests-core:5.1.4")
+    compileOnly("org.betonquest:betonquest:2.1.3")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 

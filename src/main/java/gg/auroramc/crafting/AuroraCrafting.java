@@ -6,6 +6,7 @@ import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
+import gg.auroramc.crafting.hooks.HookManager;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.menu.MenuListener;
 import lombok.Getter;
@@ -35,6 +36,8 @@ public class AuroraCrafting extends JavaPlugin {
         instance = this;
         configManager = new ConfigManager(this);
         l = AuroraAPI.createLogger("AuroraLevels", () -> configManager.getConfig().getDebug());
+
+        HookManager.loadHooks(this);
     }
 
     @Override
@@ -46,6 +49,8 @@ public class AuroraCrafting extends JavaPlugin {
         if (configManager.getConfig().getOpenInsteadOfCraftingTable() || configManager.getConfig().getOpenShiftClickCraftingTable()) {
             Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
         }
+
+        HookManager.enableHooks(this);
     }
 
     @Override

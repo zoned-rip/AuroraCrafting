@@ -1,0 +1,29 @@
+package gg.auroramc.crafting.hooks.auroraquests;
+
+import gg.auroramc.aurora.api.AuroraAPI;
+import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
+import gg.auroramc.crafting.hooks.Hook;
+import gg.auroramc.quests.api.AuroraQuestsProvider;
+import gg.auroramc.quests.api.quest.TaskType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import java.util.Map;
+
+public class AuroraQuestsHook implements Hook, Listener {
+    @Override
+    public void hook(AuroraCrafting plugin) {
+
+    }
+
+    @EventHandler
+    public void onCraft(PlayerCraftItemEvent event) {
+        AuroraQuestsProvider.getQuestManager().progress(
+                event.getPlayer(),
+                TaskType.CRAFT,
+                event.getAmount(),
+                Map.of("type", AuroraAPI.getItemManager().resolveId(event.getItem()))
+        );
+    }
+}

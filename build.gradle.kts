@@ -30,8 +30,9 @@ repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
     // Quests
     maven("https://repo.codemc.io/repository/maven-public/")
-    // BetonQuest
+    // BetonQuest (2)
     maven("https://nexus.betonquest.org/repository/betonquest/")
+    maven("https://repo.dmulloy2.net/nexus/repository/public/")
 }
 
 dependencies {
@@ -39,7 +40,9 @@ dependencies {
     compileOnly("gg.auroramc:Aurora:2.0.1")
     compileOnly("gg.auroramc:AuroraQuests:1.3.1")
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
+    // BetonQuest (3)
     compileOnly("org.betonquest:betonquest:2.1.3")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 

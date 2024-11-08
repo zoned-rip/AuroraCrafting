@@ -133,19 +133,21 @@ public class RecipeManager {
     public @NotNull List<AuroraRecipe> getCraftableRecipes(Player player, int maxCount) {
         var craftableRecipes = new ArrayList<AuroraRecipe>();
 
+        var itemCount = AuroraRecipe.buildItemCounts(player);
+
         for (var recipe : shapedRecipeLookup.values()) {
-            if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(player) > 0) {
+            if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
-                if(maxCount >= craftableRecipes.size()) break;
+                if (maxCount >= craftableRecipes.size()) break;
             }
         }
 
-        if(maxCount <= craftableRecipes.size()) return craftableRecipes;
+        if (maxCount <= craftableRecipes.size()) return craftableRecipes;
 
         for (var recipe : shapelessRecipeLookup.values()) {
-            if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(player) > 0) {
+            if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
-                if(maxCount >= craftableRecipes.size()) break;
+                if (maxCount >= craftableRecipes.size()) break;
             }
         }
 

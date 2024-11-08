@@ -197,11 +197,9 @@ public class CraftMenu implements InventoryHolder {
             return;
         }
 
-        for (var slot : quickCraftSlots) {
-            if (event.getCurrentItem() == emptyQuickCraftItem || event.getCurrentItem() == noPermQuickCraftItem) {
-                event.setCancelled(true);
-                return;
-            }
+        if (event.getCurrentItem() == emptyQuickCraftItem || event.getCurrentItem() == noPermQuickCraftItem) {
+            event.setCancelled(true);
+            return;
         }
 
         var recipe = quickCraftRecipes.get(event.getSlot());
@@ -233,6 +231,7 @@ public class CraftMenu implements InventoryHolder {
                     recipe.quickCraft(player, 1, true);
                     setUpQuickCraft();
                     player.updateInventory();
+                    plugin.callCraftEvent(player, recipe.getResultItem(), recipe.getResult().amount());
                 }, null);
                 return;
             }
@@ -242,6 +241,7 @@ public class CraftMenu implements InventoryHolder {
                 recipe.quickCraft(player, timesCrafted, true);
                 setUpQuickCraft();
                 player.updateInventory();
+                plugin.callCraftEvent(player, recipe.getResultItem(), timesCrafted * recipe.getResult().amount());
             }, null);
         } else {
             if (event.getCursor().isEmpty()) {
@@ -251,6 +251,7 @@ public class CraftMenu implements InventoryHolder {
                             recipe.quickCraft(player, 1, true);
                             setUpQuickCraft();
                             player.updateInventory();
+                            plugin.callCraftEvent(player, recipe.getResultItem(), recipe.getResult().amount());
                         }, null);
             } else {
                 var cursor = event.getCursor();
@@ -267,6 +268,7 @@ public class CraftMenu implements InventoryHolder {
                             recipe.quickCraft(player, 1, true);
                             setUpQuickCraft();
                             player.updateInventory();
+                            plugin.callCraftEvent(player, recipe.getResultItem(), recipe.getResult().amount());
                         }, null);
                     }
                 }
@@ -335,17 +337,19 @@ public class CraftMenu implements InventoryHolder {
                 player.getScheduler().run(plugin, (t) -> {
                     setUpQuickCraft();
                     updateMatrix(recipe, timesCraftable, 1, matrix);
+                    plugin.callCraftEvent(player, recipe.getResultItem(), recipe.getResult().amount());
                 }, null);
                 return;
             }
 
             // If there is more space, add the remaining items to the player inventory and update the matrix
             player.getScheduler().run(plugin, (t) -> {
-                player.getInventory().addItem(
-                        ItemUtils.createStacksFromAmount(
-                                recipe.getResultItem(), (timesCrafted - 1) * recipe.getResult().amount()));
+                var amount = (timesCrafted - 1) * recipe.getResult().amount();
+                var stacks = ItemUtils.createStacksFromAmount(recipe.getResultItem(), amount);
+                player.getInventory().addItem(stacks);
                 setUpQuickCraft();
                 updateMatrix(recipe, timesCraftable, timesCrafted, matrix);
+                plugin.callCraftEvent(player, recipe.getResultItem(), amount + recipe.getResult().amount());
             }, null);
 
             // Handle crafting for regular clicks
@@ -356,6 +360,7 @@ public class CraftMenu implements InventoryHolder {
                         (t) -> {
                             setUpQuickCraft();
                             updateMatrix(recipe, timesCraftable, 1, matrix);
+                            plugin.callCraftEvent(player, recipe.getResultItem(), recipe.getResult().amount());
                         }, null);
             } else {
                 var cursor = event.getCursor();
@@ -371,6 +376,7 @@ public class CraftMenu implements InventoryHolder {
                             }
                             setUpQuickCraft();
                             updateMatrix(recipe, timesCraftable, 1, matrix);
+                            plugin.callCraftEvent(player, recipe.getResultItem(), recipe.getResult().amount());
                         }, null);
                     }
                 }

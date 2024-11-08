@@ -83,6 +83,10 @@ public abstract class AuroraRecipe {
     }
 
     public int getQuickCraftTimes(Player player) {
+        return getQuickCraftTimes(buildItemCounts(player));
+    }
+
+    static Map<TypeId, Integer> buildItemCounts(Player player) {
         Map<TypeId, Integer> itemCount = new HashMap<>(player.getInventory().getSize());
 
         for (var item : player.getInventory().getContents()) {
@@ -91,6 +95,10 @@ public abstract class AuroraRecipe {
             itemCount.merge(id, item.getAmount(), Integer::sum);
         }
 
+        return itemCount;
+    }
+
+    public int getQuickCraftTimes(Map<TypeId, Integer> itemCount) {
         int maxCraftable = Integer.MAX_VALUE;
         var matches = true;
 

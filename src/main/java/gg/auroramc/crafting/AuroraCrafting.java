@@ -3,12 +3,15 @@ package gg.auroramc.crafting;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.crafting.api.RecipeManager;
+import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.menu.MenuListener;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AuroraCrafting extends JavaPlugin {
@@ -19,6 +22,8 @@ public class AuroraCrafting extends JavaPlugin {
     @Getter
     private RecipeManager recipeManager;
 
+    @Getter
+    private static AuroraCrafting instance;
     private static AuroraLogger l;
 
     public static AuroraLogger logger() {
@@ -27,6 +32,7 @@ public class AuroraCrafting extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        instance = this;
         configManager = new ConfigManager(this);
         l = AuroraAPI.createLogger("AuroraLevels", () -> configManager.getConfig().getDebug());
     }
@@ -51,5 +57,9 @@ public class AuroraCrafting extends JavaPlugin {
         configManager.reload();
         commandManager.reload();
         recipeManager.reload();
+    }
+
+    public void callCraftEvent(Player player, ItemStack item, int amount) {
+        Bukkit.getPluginManager().callEvent(new PlayerCraftItemEvent(player, item, amount));
     }
 }

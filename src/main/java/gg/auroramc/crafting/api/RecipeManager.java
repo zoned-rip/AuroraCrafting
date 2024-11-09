@@ -138,16 +138,15 @@ public class RecipeManager {
         for (var recipe : shapedRecipeLookup.values()) {
             if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
-                if (maxCount >= craftableRecipes.size()) break;
+                if (craftableRecipes.size() >= maxCount) break;
             }
         }
 
-        if (maxCount <= craftableRecipes.size()) return craftableRecipes;
 
         for (var recipe : shapelessRecipeLookup.values()) {
             if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
-                if (maxCount >= craftableRecipes.size()) break;
+                if (craftableRecipes.size() >= maxCount) break;
             }
         }
 

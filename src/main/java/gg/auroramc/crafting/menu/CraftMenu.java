@@ -93,9 +93,13 @@ public class CraftMenu implements InventoryHolder {
         for (int i = 0; i < quickCraftSlots.size(); i++) {
             var slot = quickCraftSlots.get(i);
             if (i < quickCraftRecipes.size()) {
-                var recipe = quickCraftRecipes.get(i);
-                inventory.setItem(slot, recipe.getResultItem());
-                this.quickCraftRecipes.put(slot, recipe);
+                if (player.hasPermission("aurora.quickcraft." + slot)) {
+                    var recipe = quickCraftRecipes.get(i);
+                    inventory.setItem(slot, recipe.getResultItem());
+                    this.quickCraftRecipes.put(slot, recipe);
+                } else {
+                    inventory.setItem(slot, noPermQuickCraftItem);
+                }
             } else {
                 if (player.hasPermission("aurora.quickcraft." + slot)) {
                     inventory.setItem(slot, emptyQuickCraftItem);
@@ -193,6 +197,11 @@ public class CraftMenu implements InventoryHolder {
     private void handleQuickCraftSlot(InventoryClickEvent event) {
         // If the player clicked on the quick craft slot but used some weird ass click action, cancel the event
         if (isDumbAssClick(event)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!player.hasPermission("aurora.quickcraft." + event.getSlot())) {
             event.setCancelled(true);
             return;
         }

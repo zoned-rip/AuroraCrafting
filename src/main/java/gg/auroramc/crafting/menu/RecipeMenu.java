@@ -13,10 +13,10 @@ public class RecipeMenu {
     private final AuroraCrafting plugin;
     private final Player player;
     private final AuroraRecipe recipe;
-    private final boolean hasBackButton;
+    private final Runnable backAction;
 
-    public static RecipeMenu recipeMenu(AuroraCrafting plugin, Player player, AuroraRecipe recipe, boolean hasBackButton) {
-        return new RecipeMenu(plugin, player, recipe, hasBackButton);
+    public static RecipeMenu recipeMenu(AuroraCrafting plugin, Player player, AuroraRecipe recipe, Runnable backAction) {
+        return new RecipeMenu(plugin, player, recipe, backAction);
     }
 
     public void open() {
@@ -27,18 +27,30 @@ public class RecipeMenu {
         menu.addFiller(ItemBuilder.of(workbenchConfig.getFiller()).toItemStack(player));
 
         var ingredientItems = recipe.getIngredientItems();
+        var ingredientTypes = recipe.getIngredients();
 
         for (int i = 0; i < workbenchConfig.getMatrixSlots().size(); i++) {
             var slot = workbenchConfig.getMatrixSlots().get(i);
             var item = i < ingredientItems.size() ? ingredientItems.get(i) : ItemStack.empty();
+            var type = i < ingredientTypes.size() ? ingredientTypes.get(i) : null;
+            if (type != null) {
+                var recipe = plugin.getRecipeManager().getRecipeByResult(type.id());
+                if (recipe != null && recipe.hasPermission(player)) {
+                    menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player), (e) -> {
+                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeMenu.recipeMenu(plugin, player, this.recipe, this.backAction).open()).open();
+                    });
+                    continue;
+                }
+            }
+
             menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player));
         }
 
         menu.addItem(ItemBuilder.item(recipe.getResultItem()).slot(mc.getResultSlot()).build(player));
 
-        if (hasBackButton && recipe.getCategory() != null) {
+        if (backAction != null && recipe.getCategory() != null) {
             menu.addItem(ItemBuilder.of(mc.getItems().get("back")).build(player), (e) -> {
-                RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory()).open();
+                backAction.run();
             });
         }
 

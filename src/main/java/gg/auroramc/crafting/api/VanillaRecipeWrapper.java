@@ -4,7 +4,6 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import org.bukkit.Material;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;
 import java.util.Comparator;

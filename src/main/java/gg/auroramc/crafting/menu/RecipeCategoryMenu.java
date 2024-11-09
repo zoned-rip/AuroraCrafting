@@ -68,7 +68,7 @@ public class RecipeCategoryMenu {
                         lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
                         return lore;
                     }).build(player), (e) -> {
-                        RecipeMenu.recipeMenu(plugin, player, recipe, true).open();
+                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory()).open()).open();
                     });
                 } else {
                     menu.addItem(ItemBuilder.of(mc.getSecretRecipeDisplay().getItem()).slot(slot).loreCompute(() -> {

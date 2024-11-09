@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.menu.RecipeBookMenu;
+import gg.auroramc.crafting.menu.RecipeCategoryMenu;
 import gg.auroramc.crafting.menu.RecipeMenu;
 import org.bukkit.entity.Player;
 
@@ -27,8 +28,8 @@ public class RecipesCommand extends BaseCommand {
         var recipe = plugin.getRecipeManager().getRecipeById(recipeId);
         if (recipe == null) return;
 
-        if(recipe.hasPermission(player) || !plugin.getConfigManager().getRecipeBookCategoryConfig().getSecretRecipeDisplay().getEnabled()) {
-            RecipeMenu.recipeMenu(plugin, player, recipe, false).open();
+        if (recipe.hasPermission(player) || !plugin.getConfigManager().getRecipeBookCategoryConfig().getSecretRecipeDisplay().getEnabled()) {
+            RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory()).open()).open();
         }
     }
 }

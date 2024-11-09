@@ -17,6 +17,7 @@ public class RecipeManager {
     private final Map<String, AuroraRecipe> shapelessRecipeLookup = new HashMap<>();
     private final Map<String, AuroraRecipe> recipeIdLookup = new HashMap<>();
     private final Map<String, List<AuroraRecipe>> recipeCategoryLookup = new HashMap<>();
+    private final Map<TypeId, AuroraRecipe> recipeResultLookup = new HashMap<>();
 
     public RecipeManager(AuroraCrafting plugin) {
         this.plugin = plugin;
@@ -57,6 +58,8 @@ public class RecipeManager {
             } else {
                 shapedRecipeLookup.put(key, recipe);
             }
+
+            recipeResultLookup.put(recipe.getResult().id(), recipe);
 
             if (recipe.getId() != null && !recipe.getId().isEmpty()) {
                 if (recipeIdLookup.put(recipeConfig.getId(), recipe) != null) {
@@ -142,7 +145,6 @@ public class RecipeManager {
             }
         }
 
-
         for (var recipe : shapelessRecipeLookup.values()) {
             if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
@@ -155,5 +157,9 @@ public class RecipeManager {
 
     public Collection<String> getRecipeIds() {
         return recipeIdLookup.keySet();
+    }
+
+    public @Nullable AuroraRecipe getRecipeByResult(TypeId result) {
+        return recipeResultLookup.get(result);
     }
 }

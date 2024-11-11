@@ -19,9 +19,11 @@ public class CraftingTableInteractListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CRAFTING_TABLE) {
             if (plugin.getConfigManager().getConfig().getOpenInsteadOfCraftingTable()) {
+                if (!event.getPlayer().hasPermission("aurora.crafting.use.interact")) return;
                 event.setCancelled(true);
                 CraftMenu.craftMenu(plugin, event.getPlayer()).open();
             } else if (plugin.getConfigManager().getConfig().getOpenShiftClickCraftingTable() && event.getPlayer().isSneaking()) {
+                if (!event.getPlayer().hasPermission("aurora.crafting.use.interact")) return;
                 event.setCancelled(true);
                 CraftMenu.craftMenu(plugin, event.getPlayer()).open();
             }

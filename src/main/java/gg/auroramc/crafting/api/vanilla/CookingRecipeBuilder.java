@@ -7,7 +7,7 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 
 public abstract class CookingRecipeBuilder<T extends CookingRecipe<T>> extends RecipeBuilder<CookingRecipeBuilder<T>> {
-    protected RecipeChoice input = RecipeChoice.empty();
+    protected RecipeChoice input = EmptyRecipeChoice.get();
     protected float experience = 0;
     protected int cookingTime = 200;
     protected CookingBookCategory category = CookingBookCategory.MISC;

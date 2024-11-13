@@ -6,9 +6,9 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingTransformRecipe;
 
 public class SmithingTransformRecipeBuilder extends RecipeBuilder<SmithingTransformRecipeBuilder> {
-    private RecipeChoice template = RecipeChoice.empty();
-    private RecipeChoice base = RecipeChoice.empty();
-    private RecipeChoice addition = RecipeChoice.empty();
+    private RecipeChoice template = EmptyRecipeChoice.get();
+    private RecipeChoice base = EmptyRecipeChoice.get();
+    private RecipeChoice addition = EmptyRecipeChoice.get();
     private boolean copyDataComponents = false;
 
     public SmithingTransformRecipeBuilder(String id) {

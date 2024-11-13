@@ -3,9 +3,13 @@ package gg.auroramc.crafting.api;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.crafting.AuroraCrafting;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmithingRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,30 +55,7 @@ public class RecipeManager {
                 recipe.addIngredient(getItemPair(ingredient));
             }
 
-            var key = recipe.asLookupKey();
-
-            if (recipe instanceof ShapelessAuroraRecipe) {
-                shapelessRecipeLookup.put(key, recipe);
-            } else {
-                shapedRecipeLookup.put(key, recipe);
-            }
-
-            recipeResultLookup.put(recipe.getResult().id(), recipe);
-
-            if (recipe.getId() != null && !recipe.getId().isEmpty()) {
-                if (recipeIdLookup.put(recipeConfig.getId(), recipe) != null) {
-                    AuroraCrafting.logger().severe("Duplicate recipe id found: " + recipeConfig.getId());
-                }
-
-                for (var category : plugin.getConfigManager().getRecipeBookConfig().getCategories()) {
-                    if (category.getRecipes().contains(recipeConfig.getId()) || category.getFiles().contains(recipeConfig.getSourceFile())) {
-                        recipeCategoryLookup.get(category.getId()).add(recipe);
-                        recipe.setCategory(category);
-                    }
-                }
-            }
-
-            AuroraCrafting.logger().debug("Loaded recipe: " + recipeConfig.getId());
+            registerRecipe(recipe, recipeConfig.getSourceFile());
         });
     }
 
@@ -161,5 +142,40 @@ public class RecipeManager {
 
     public @Nullable AuroraRecipe getRecipeByResult(TypeId result) {
         return recipeResultLookup.get(result);
+    }
+
+    public void registerRecipe(AuroraRecipe recipe, String sourceFile) {
+        var key = recipe.asLookupKey();
+
+        if (recipe instanceof ShapelessAuroraRecipe) {
+            shapelessRecipeLookup.put(key, recipe);
+        } else {
+            shapedRecipeLookup.put(key, recipe);
+        }
+
+        recipeResultLookup.put(recipe.getResult().id(), recipe);
+
+        if (recipe.getId() != null && !recipe.getId().isEmpty()) {
+            if (recipeIdLookup.put(recipe.getId(), recipe) != null) {
+                AuroraCrafting.logger().severe("Duplicate recipe id found: " + recipe.getId());
+            }
+
+            for (var category : plugin.getConfigManager().getRecipeBookConfig().getCategories()) {
+                if (category.getRecipes().contains(recipe.getId()) || category.getFiles().contains(sourceFile)) {
+                    recipeCategoryLookup.get(category.getId()).add(recipe);
+                    recipe.setCategory(category);
+                }
+            }
+        }
+
+        AuroraCrafting.logger().debug("Loaded recipe: " + recipe.getId());
+    }
+
+    public Collection<AuroraRecipe> getShapedRecipes() {
+        return shapedRecipeLookup.values();
+    }
+
+    public Collection<AuroraRecipe> getShapelessRecipes() {
+        return shapelessRecipeLookup.values();
     }
 }

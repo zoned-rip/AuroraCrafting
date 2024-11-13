@@ -30,6 +30,13 @@ public class ConfigManager {
 
     private List<RecipesConfig.RecipeConfig> recipes;
 
+    private List<CookingRecipesConfig.RecipeConfig> blastingRecipes;
+    private List<CookingRecipesConfig.RecipeConfig> smokingRecipes;
+    private List<CookingRecipesConfig.RecipeConfig> furnaceRecipes;
+    private List<CookingRecipesConfig.RecipeConfig> campfireRecipes;
+
+    private List<SmithingTransformRecipesConfig.RecipeConfig> smithingTransformRecipes;
+
     public ConfigManager(AuroraCrafting plugin) {
         this.plugin = plugin;
         reload();
@@ -79,6 +86,26 @@ public class ConfigManager {
         recipes = getRecipesConfigs().stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
+
+        blastingRecipes = getCookingRecipesConfigs("blasting_recipes").stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        smokingRecipes = getCookingRecipesConfigs("smoking_recipes").stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        furnaceRecipes = getCookingRecipesConfigs("furnace_recipes").stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        campfireRecipes = getCookingRecipesConfigs("campfire_recipes").stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        smithingTransformRecipes = getSmithingTransformRecipesConfigs().stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
     }
 
     @SneakyThrows
@@ -96,6 +123,52 @@ public class ConfigManager {
                     .map(Path::toFile)
                     .map((file) -> {
                         RecipesConfig recipesConfig = new RecipesConfig(file);
+                        recipesConfig.load();
+                        return recipesConfig;
+                    })
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @SneakyThrows
+    private List<CookingRecipesConfig> getCookingRecipesConfigs(String folder) {
+        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), folder);
+
+        if (Files.notExists(recipesFolder)) {
+            Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+            plugin.saveResource(folder + "/example.yml", false);
+        }
+
+        try (Stream<Path> paths = Files.walk(recipesFolder, 1)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
+                    .map(Path::toFile)
+                    .map((file) -> {
+                        CookingRecipesConfig recipesConfig = new CookingRecipesConfig(file);
+                        recipesConfig.load();
+                        return recipesConfig;
+                    })
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @SneakyThrows
+    private List<SmithingTransformRecipesConfig> getSmithingTransformRecipesConfigs() {
+        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "smithing_recipes");
+
+        if (Files.notExists(recipesFolder)) {
+            Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+            plugin.saveResource("smithing_recipes/example.yml", false);
+        }
+
+        try (Stream<Path> paths = Files.walk(recipesFolder, 1)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
+                    .map(Path::toFile)
+                    .map((file) -> {
+                        SmithingTransformRecipesConfig recipesConfig = new SmithingTransformRecipesConfig(file);
                         recipesConfig.load();
                         return recipesConfig;
                     })

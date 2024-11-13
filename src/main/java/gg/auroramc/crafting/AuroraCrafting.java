@@ -9,6 +9,7 @@ import gg.auroramc.crafting.config.ConfigManager;
 import gg.auroramc.crafting.hooks.HookManager;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.menu.MenuListener;
+import gg.auroramc.crafting.util.RecipeRegistrar;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -50,6 +51,8 @@ public class AuroraCrafting extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
         }
 
+        RecipeRegistrar.reloadRecipes(configManager);
+
         HookManager.enableHooks(this);
     }
 
@@ -62,6 +65,7 @@ public class AuroraCrafting extends JavaPlugin {
         configManager.reload();
         commandManager.reload();
         recipeManager.reload();
+        RecipeRegistrar.reloadRecipes(configManager);
     }
 
     public void callCraftEvent(Player player, ItemStack item, int amount) {

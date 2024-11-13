@@ -1,4 +1,4 @@
-config-version: 0
+config-version: 1
 
 debug: false
 language: en
@@ -24,6 +24,9 @@ open-instead-of-crafting-table: false
 # when the player shift right clicks a crafting table?
 # Enabling this needs a server restart to take effect.
 open-shift-click-crafting-table: false
+
+# Should players auto discover vanilla recipes?
+auto-discover-vanilla-recipes: false
 
 # Only change these if you know what you're doing
 # These values are in milliseconds and they are only applying for the workbench gui

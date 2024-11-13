@@ -6,6 +6,7 @@ import gg.auroramc.crafting.config.CookingRecipesConfig;
 import gg.auroramc.crafting.config.SmithingTransformRecipesConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class RecipeRegistrar {
-    private static final Map<RecipeType, Set<String>> registeredRecipes = Maps.newHashMap();
+    private static final Map<RecipeType, Set<NamespacedKey>> registeredRecipes = Maps.newHashMap();
 
     private static NamespacedKey key(String id) {
         return new NamespacedKey("aurora", id);
@@ -23,16 +24,16 @@ public class RecipeRegistrar {
         var oldSet = registeredRecipes.get(recipeType);
         if (oldSet != null) {
             for (var oldRecipe : oldSet) {
-                Bukkit.removeRecipe(key(oldRecipe));
+                Bukkit.removeRecipe(oldRecipe);
             }
         }
 
-        var newSet = new HashSet<String>(recipes.size());
+        var newSet = new HashSet<NamespacedKey>(recipes.size());
 
         for (var recipe : recipes) {
             boolean added = Bukkit.addRecipe(RecipeAdapter.adapt(recipeType, recipe));
             if (added) {
-                newSet.add(recipe.getId());
+                newSet.add(key(recipe.getId()));
             }
         }
 
@@ -43,22 +44,33 @@ public class RecipeRegistrar {
         var oldSet = registeredRecipes.get(recipeType);
         if (oldSet != null) {
             for (var oldRecipe : oldSet) {
-                Bukkit.removeRecipe(key(oldRecipe));
+                Bukkit.removeRecipe(oldRecipe);
             }
         }
 
-        var newSet = new HashSet<String>(recipes.size());
+        var newSet = new HashSet<NamespacedKey>(recipes.size());
 
         for (var recipe : recipes) {
             boolean added = Bukkit.addRecipe(RecipeAdapter.adapt(recipeType, recipe));
             if (added) {
-                newSet.add(recipe.getId());
+                newSet.add(key(recipe.getId()));
             }
         }
 
         registeredRecipes.put(recipeType, newSet);
     }
 
+    public static void discoverRecipes(Player player) {
+        var alreadyDiscovered = player.getDiscoveredRecipes();
+
+        for (var entry : registeredRecipes.entrySet()) {
+            for (var key : entry.getValue()) {
+                if (!alreadyDiscovered.contains(key)) {
+                    player.discoverRecipe(key);
+                }
+            }
+        }
+    }
 
     public static void updateClientRecipes() {
         Bukkit.updateRecipes();

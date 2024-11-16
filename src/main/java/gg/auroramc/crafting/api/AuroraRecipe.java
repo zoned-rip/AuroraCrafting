@@ -3,6 +3,7 @@ package gg.auroramc.crafting.api;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.util.ItemUtils;
+import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.config.RecipeBookConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -128,7 +129,12 @@ public abstract class AuroraRecipe {
             return Arrays.stream(ItemUtils.createStacksFromAmount(item, entry.getValue() * times));
         }).toArray(ItemStack[]::new);
 
-        player.getInventory().removeItemAnySlot(itemsToRemove);
-        player.getInventory().addItem(this.getTotalResult(addMinusOneResult ? times - 1 : times));
+        var failedToRemoveMap = player.getInventory().removeItemAnySlot(itemsToRemove);
+
+        if (failedToRemoveMap.isEmpty()) {
+            player.getInventory().addItem(this.getTotalResult(addMinusOneResult ? times - 1 : times));
+        } else {
+            AuroraCrafting.logger().warning("Failed to quick craft recipe " + id + " for player " + player.getName() + ", because ingredient couldn't be taken");
+        }
     }
 }

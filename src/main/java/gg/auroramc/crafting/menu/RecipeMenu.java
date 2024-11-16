@@ -46,7 +46,7 @@ public class RecipeMenu {
             menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player));
         }
 
-        menu.addItem(ItemBuilder.item(recipe.getResultItem()).slot(mc.getResultSlot()).build(player));
+        menu.addItem(ItemBuilder.item(recipe.getResultItem()).amount(recipe.getResult().amount()).slot(mc.getResultSlot()).build(player));
 
         if (backAction != null && recipe.getCategory() != null) {
             menu.addItem(ItemBuilder.of(mc.getItems().get("back")).build(player), (e) -> {

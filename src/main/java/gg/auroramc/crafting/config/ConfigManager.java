@@ -8,7 +8,9 @@ import lombok.SneakyThrows;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +30,7 @@ public class ConfigManager {
     private RecipeBookCategoryConfig recipeBookCategoryConfig;
     private MerchantsMenuConfig merchantsMenuConfig;
 
-    private List<RecipesConfig.RecipeConfig> recipes;
+    private Map<String, RecipesConfig> recipes;
 
     private List<CookingRecipesConfig.RecipeConfig> blastingRecipes;
     private List<CookingRecipesConfig.RecipeConfig> smokingRecipes;
@@ -83,9 +85,7 @@ public class ConfigManager {
         merchantsMenuConfig = new MerchantsMenuConfig(plugin);
         merchantsMenuConfig.load();
 
-        recipes = getRecipesConfigs().stream()
-                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
-                .collect(Collectors.toList());
+        recipes = getRecipesConfigs();
 
         blastingRecipes = getCookingRecipesConfigs("blasting_recipes").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
@@ -109,24 +109,29 @@ public class ConfigManager {
     }
 
     @SneakyThrows
-    private List<RecipesConfig> getRecipesConfigs() {
+    private Map<String, RecipesConfig> getRecipesConfigs() {
         Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "recipes");
 
         if (Files.notExists(recipesFolder)) {
             Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
         }
 
+        var recipes = new HashMap<String, RecipesConfig>();
+
         try (Stream<Path> paths = Files.walk(recipesFolder, 1)) {
-            return paths
+            var fileList = paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
                     .map(Path::toFile)
-                    .map((file) -> {
-                        RecipesConfig recipesConfig = new RecipesConfig(file);
-                        recipesConfig.load();
-                        return recipesConfig;
-                    })
-                    .collect(Collectors.toList());
+                    .toList();
+
+            for (var file : fileList) {
+                RecipesConfig recipesConfig = new RecipesConfig(file);
+                recipesConfig.load();
+                recipes.put(file.getName().replace(".yml", ""), recipesConfig);
+            }
+
+            return recipes;
         }
     }
 

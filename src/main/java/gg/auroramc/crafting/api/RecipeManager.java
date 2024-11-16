@@ -34,29 +34,53 @@ public class RecipeManager {
         recipeIdLookup.clear();
         recipeCategoryLookup.clear();
 
-        for (var category : plugin.getConfigManager().getRecipeBookConfig().getCategories()) {
-            if (category.getId() == null || category.getId().isEmpty()) {
-                AuroraCrafting.logger().severe("Category id can't null or empty!");
-                continue;
+        var recipes = new HashMap<String, List<AuroraRecipe>>();
+
+        for (var recipeFile : plugin.getConfigManager().getRecipes().values()) {
+            for (var recipeConfig : recipeFile.getRecipes()) {
+                var recipe = RecipeFactory.createRecipe(
+                        recipeConfig.getId(),
+                        getItemPair(recipeConfig.getResult()),
+                        recipeConfig.getShapeless(),
+                        recipeConfig.getPermission(),
+                        recipeConfig.getLockedLore()
+                );
+
+                for (var ingredient : recipeConfig.getIngredients()) {
+                    recipe.addIngredient(getItemPair(ingredient));
+                }
+
+                registerRecipe(recipe, recipeConfig.getSourceFile());
+                recipes.computeIfAbsent(recipeConfig.getSourceFile(), k -> new ArrayList<>()).add(recipe);
             }
-            recipeCategoryLookup.put(category.getId(), new ArrayList<>());
         }
 
-        plugin.getConfigManager().getRecipes().forEach(recipeConfig -> {
-            var recipe = RecipeFactory.createRecipe(
-                    recipeConfig.getId(),
-                    getItemPair(recipeConfig.getResult()),
-                    recipeConfig.getShapeless(),
-                    recipeConfig.getPermission(),
-                    recipeConfig.getLockedLore()
-            );
-
-            for (var ingredient : recipeConfig.getIngredients()) {
-                recipe.addIngredient(getItemPair(ingredient));
+        for (var category : plugin.getConfigManager().getRecipeBookConfig().getCategories()) {
+            if (category.getId() == null || category.getId().isEmpty()) {
+                AuroraCrafting.logger().severe("Category id can't be null or empty!");
+                continue;
             }
 
-            registerRecipe(recipe, recipeConfig.getSourceFile());
-        });
+            var list = recipeCategoryLookup.computeIfAbsent(category.getId(), k -> new ArrayList<>());
+
+            for (var fileName : category.getFiles()) {
+                var recipeList = recipes.get(fileName);
+                if (recipeList != null) {
+                    for (var recipe : recipeList) {
+                        recipe.setCategory(category);
+                        list.add(recipe);
+                    }
+                }
+            }
+
+            for (var recipeId : category.getRecipes()) {
+                var recipe = recipeIdLookup.get(recipeId);
+                if (recipe != null) {
+                    recipe.setCategory(category);
+                    list.add(recipe);
+                }
+            }
+        }
     }
 
     private ItemPair getItemPair(String item) {
@@ -158,13 +182,6 @@ public class RecipeManager {
         if (recipe.getId() != null && !recipe.getId().isEmpty()) {
             if (recipeIdLookup.put(recipe.getId(), recipe) != null) {
                 AuroraCrafting.logger().severe("Duplicate recipe id found: " + recipe.getId());
-            }
-
-            for (var category : plugin.getConfigManager().getRecipeBookConfig().getCategories()) {
-                if (category.getRecipes().contains(recipe.getId()) || category.getFiles().contains(sourceFile)) {
-                    recipeCategoryLookup.get(category.getId()).add(recipe);
-                    recipe.setCategory(category);
-                }
             }
         }
 

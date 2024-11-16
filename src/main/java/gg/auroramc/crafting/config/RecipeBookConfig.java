@@ -7,9 +7,7 @@ import lombok.Getter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 public class RecipeBookConfig extends AuroraConfig {
@@ -18,8 +16,8 @@ public class RecipeBookConfig extends AuroraConfig {
     @Getter
     public static final class RecipeCategory {
         private String id;
-        private Set<String> files = new HashSet<>();
-        private Set<String> recipes = new HashSet<>();
+        private List<String> files = new ArrayList<>();
+        private List<String> recipes = new ArrayList<>();
         private Menu menu;
     }
 

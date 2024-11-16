@@ -37,7 +37,7 @@ public class AuroraCrafting extends JavaPlugin {
     public void onLoad() {
         instance = this;
         configManager = new ConfigManager(this);
-        l = AuroraAPI.createLogger("AuroraLevels", () -> configManager.getConfig().getDebug());
+        l = AuroraAPI.createLogger("AuroraCrafting", () -> configManager.getConfig().getDebug());
 
         HookManager.loadHooks(this);
     }

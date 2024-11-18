@@ -92,17 +92,17 @@ public class RecipeCategoryMenu {
                     Placeholder.of("{max}", maxPage)
             );
 
-            menu.addItem(ItemBuilder.of(mc.getItems().get("previous_page")).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(mc.getItems().get("previous-page")).build(player), (e) -> {
                 if (page > 0) {
                     page--;
                     open();
                 }
             });
 
-            menu.addItem(ItemBuilder.of(mc.getItems().get("current_page"))
+            menu.addItem(ItemBuilder.of(mc.getItems().get("current-page"))
                     .placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(mc.getItems().get("next_page")).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(mc.getItems().get("next-page")).build(player), (e) -> {
                 if (page < maxPage) {
                     page++;
                     open();

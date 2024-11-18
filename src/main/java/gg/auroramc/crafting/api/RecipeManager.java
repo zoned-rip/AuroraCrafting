@@ -126,7 +126,7 @@ public class RecipeManager {
             idList.add(id);
         }
 
-        idList.sort(Comparator.comparing(TypeId::id));
+        idList.sort(Comparator.comparing(TypeId::toString));
 
         var key = new StringBuilder();
 

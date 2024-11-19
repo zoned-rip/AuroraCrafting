@@ -2,6 +2,7 @@ package gg.auroramc.crafting;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
+import gg.auroramc.aurora.api.command.CommandDispatcher;
 import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
 import gg.auroramc.crafting.command.CommandManager;
@@ -10,6 +11,7 @@ import gg.auroramc.crafting.hooks.HookManager;
 import gg.auroramc.crafting.listener.ConnectionListener;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.menu.MenuListener;
+import gg.auroramc.crafting.menu.RecipeMenu;
 import gg.auroramc.crafting.util.RecipeRegistrar;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -56,6 +58,20 @@ public class AuroraCrafting extends JavaPlugin {
         RecipeRegistrar.reloadRecipes(configManager);
 
         HookManager.enableHooks(this);
+
+        CommandDispatcher.registerActionHandler("recipe", (player, input) -> {
+            var split = input.split("---");
+            var recipeId = split[0].trim();
+            var recipe = recipeManager.getRecipeById(recipeId);
+            if (recipe == null) return;
+            if (split.length > 1) {
+                RecipeMenu.recipeMenu(this, player, recipe, () -> {
+                    CommandDispatcher.dispatch(player, split[1].trim());
+                }).open();
+            } else {
+                RecipeMenu.recipeMenu(this, player, recipe, null).open();
+            }
+        });
     }
 
     @Override

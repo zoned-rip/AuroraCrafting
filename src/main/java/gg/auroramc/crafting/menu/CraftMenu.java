@@ -11,10 +11,7 @@ import gg.auroramc.crafting.util.InventoryUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -150,6 +147,11 @@ public class CraftMenu implements InventoryHolder {
     }
 
     public void onClick(InventoryClickEvent event) {
+        if (event.getClick() == ClickType.DOUBLE_CLICK) {
+            event.setCancelled(true);
+            return;
+        }
+
         // Stop dumb shift clicks
         if (isIllegalShiftClick(event)) {
             event.setCancelled(true);
@@ -184,7 +186,6 @@ public class CraftMenu implements InventoryHolder {
             player.getScheduler().run(plugin, (t) -> updateResult(), null);
             return;
         }
-
 
         // At this point, we checked everything. If the player didn't click on the result we don't care.
         if (event.getSlot() == resultSlot) {
@@ -322,6 +323,11 @@ public class CraftMenu implements InventoryHolder {
             return;
         }
 
+        if (event.getCurrentItem() == invalidResultItem) {
+            event.setCancelled(true);
+            return;
+        }
+
         // Based on the crafting matrix, let's see how many times can we craft the recipe
         var timesCraftable = recipe.getTimesCraftable(matrix);
         if (timesCraftable == 0) {
@@ -433,7 +439,8 @@ public class CraftMenu implements InventoryHolder {
         } else {
             inventory.setItem(resultSlot, invalidResultItem);
         }
-        player.updateInventory();
+
+        updateResult();
     }
 
     private void updateResult() {

@@ -22,6 +22,7 @@ public class RecipeMenu {
     public void open() {
         var workbenchConfig = plugin.getConfigManager().getWorkbenchConfig();
         var mc = plugin.getConfigManager().getRecipeViewConfig();
+        var mcc = plugin.getConfigManager().getRecipeBookCategoryConfig();
 
         var menu = new AuroraMenu(player, mc.getTitle(), workbenchConfig.getRows() * 9, false);
         menu.addFiller(ItemBuilder.of(workbenchConfig.getFiller()).toItemStack(player));
@@ -35,7 +36,7 @@ public class RecipeMenu {
             var type = i < ingredientTypes.size() ? ingredientTypes.get(i) : null;
             if (type != null) {
                 var recipe = plugin.getRecipeManager().getRecipeByResult(type.id());
-                if (recipe != null && recipe.hasPermission(player)) {
+                if (recipe != null && (recipe.hasPermission(player) || !mcc.getSecretRecipeDisplay().getEnabled())) {
                     menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player), (e) -> {
                         RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeMenu.recipeMenu(plugin, player, this.recipe, this.backAction).open()).open();
                     });

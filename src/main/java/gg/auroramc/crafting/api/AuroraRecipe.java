@@ -124,17 +124,58 @@ public abstract class AuroraRecipe {
      * You should check with getQuickCraftTimes before calling this method
      */
     public void quickCraft(Player player, int times, boolean addMinusOneResult) {
-        var itemsToRemove = ingredientCount.entrySet().stream().flatMap((entry) -> {
-            var item = AuroraAPI.getItemManager().resolveItem(entry.getKey());
-            return Arrays.stream(ItemUtils.createStacksFromAmount(item, entry.getValue() * times));
-        }).toArray(ItemStack[]::new);
+        // Calculate the total ingredients required
+        var totalIngredients = ingredientCount.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue() * times)) // Multiply by the number of times
+                .toList();
 
-        var failedToRemoveMap = player.getInventory().removeItemAnySlot(itemsToRemove);
+        // Remove items based on their IDs
+        var failedToRemove = false;
+        for (var entry : totalIngredients) {
+            TypeId itemId = entry.getKey();
+            int requiredAmount = entry.getValue();
 
-        if (failedToRemoveMap.isEmpty()) {
+            // Iterate through the player's inventory to remove items
+            var inventory = player.getInventory();
+            for (int slot = 0; slot < inventory.getSize(); slot++) {
+                ItemStack itemStack = inventory.getItem(slot);
+                if (itemStack == null) continue;
+
+                // Resolve the item ID for the current stack
+                TypeId currentItemId = AuroraAPI.getItemManager().resolveId(itemStack);
+                if (currentItemId != null && currentItemId.equals(itemId)) {
+                    int stackAmount = itemStack.getAmount();
+
+                    if (stackAmount >= requiredAmount) {
+                        // Reduce the stack size or remove the item
+                        itemStack.setAmount(stackAmount - requiredAmount);
+                        if (itemStack.getAmount() <= 0) {
+                            inventory.setItem(slot, null); // Remove the item if the stack is empty
+                        }
+                        requiredAmount = 0; // All required items have been removed
+                        break;
+                    } else {
+                        // Remove the entire stack and reduce the required amount
+                        inventory.setItem(slot, null);
+                        requiredAmount -= stackAmount;
+                    }
+                }
+            }
+
+            // If we couldn't remove all required items, mark it as failed
+            if (requiredAmount > 0) {
+                failedToRemove = true;
+                break;
+            }
+        }
+
+        if (!failedToRemove) {
+            // Add the crafted result to the inventory
             player.getInventory().addItem(this.getTotalResult(addMinusOneResult ? times - 1 : times));
         } else {
-            AuroraCrafting.logger().warning("Failed to quick craft recipe " + id + " for player " + player.getName() + ", because ingredient couldn't be taken");
+            // Log a warning if the recipe couldn't be completed
+            AuroraCrafting.logger().severe("Failed to quick craft recipe " + id + " for player " + player.getName() +
+                    ", because ingredients couldn't be fully taken. THIS IS A DUPE!");
         }
     }
 }

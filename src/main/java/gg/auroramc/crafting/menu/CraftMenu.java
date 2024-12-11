@@ -201,6 +201,10 @@ public class CraftMenu implements InventoryHolder {
             event.setCancelled(true);
             return;
         }
+        if (event.getClick() == ClickType.RIGHT) {
+            event.setCancelled(true);
+            return;
+        }
 
         if (!player.hasPermission("aurora.quickcraft." + event.getSlot())) {
             event.setCancelled(true);
@@ -292,6 +296,10 @@ public class CraftMenu implements InventoryHolder {
     private void handleResultClick(InventoryClickEvent event) {
         // If the player clicked on the result slot but used some weird ass click action, cancel the event
         if (isDumbAssClick(event)) {
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getClick() == ClickType.RIGHT) {
             event.setCancelled(true);
             return;
         }
@@ -402,6 +410,16 @@ public class CraftMenu implements InventoryHolder {
     }
 
     public void onDrag(InventoryDragEvent event) {
+        for (var rawSlot : event.getRawSlots()) {
+            var inv = event.getView().getInventory(rawSlot);
+            if (inv == inventory) {
+                if (!matrixLookup.contains(rawSlot)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+
         if (matrixLookup.stream().anyMatch(s -> event.getInventorySlots().contains(s))) {
             player.getScheduler().run(plugin, (t) -> updateResult(), null);
         }

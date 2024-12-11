@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.1.8"
+version = "1.1.9"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -40,7 +40,7 @@ dependencies {
     compileOnly("gg.auroramc:Aurora:2.0.5")
     compileOnly("gg.auroramc:AuroraQuests:1.3.8")
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
-    // BetonQuest (3)
+    // BetonQuest (2)
     compileOnly("org.betonquest:betonquest:2.1.3")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
 

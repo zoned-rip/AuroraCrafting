@@ -3,6 +3,7 @@ package gg.auroramc.crafting.menu;
 import gg.auroramc.crafting.AuroraCrafting;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -60,7 +61,7 @@ public class MenuListener implements Listener {
         return System.currentTimeMillis() - time < plugin.getConfigManager().getConfig().getShiftClickCooldown();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDrag(InventoryDragEvent event) {
         var holder = event.getInventory().getHolder();
         if (holder instanceof CraftMenu menu) {

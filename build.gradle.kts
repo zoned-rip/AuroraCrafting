@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.1.9"
+version = "1.1.10"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -63,6 +63,10 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<ShadowJar> {
     archiveFileName.set("AuroraCrafting-${project.version}.jar")
+
+    manifest {
+        attributes["paperweight-mappings-namespace"] = "mojang"
+    }
 
     relocate("co.aikar.commands", "gg.auroramc.crafting.libs.acf")
     relocate("co.aikar.locales", "gg.auroramc.crafting.libs.locales")

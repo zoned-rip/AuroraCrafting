@@ -22,6 +22,7 @@ public class ConfigManager {
     private RecipeBookConfig recipeBookConfig;
     private MessageConfig messageConfig;
     private MerchantsConfig merchantsConfig;
+    private DisabledRecipesConfig disabledRecipesConfig;
 
     // menus
     private WorkbenchConfig workbenchConfig;
@@ -60,6 +61,10 @@ public class ConfigManager {
         MerchantsConfig.saveDefault(plugin);
         merchantsConfig = new MerchantsConfig(plugin);
         merchantsConfig.load();
+
+        DisabledRecipesConfig.saveDefault(plugin);
+        disabledRecipesConfig = new DisabledRecipesConfig(plugin);
+        disabledRecipesConfig.load();
 
         RecipeBookConfig.saveDefault(plugin);
         recipeBookConfig = new RecipeBookConfig(plugin);

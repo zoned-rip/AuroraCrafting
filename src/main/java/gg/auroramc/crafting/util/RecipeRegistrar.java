@@ -99,12 +99,12 @@ public class RecipeRegistrar {
     }
 
     public static void reloadRecipes(ConfigManager configManager) {
+        removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes());
         handleCookingDiff(RecipeType.BLASTING, configManager.getBlastingRecipes());
         handleCookingDiff(RecipeType.CAMPFIRE, configManager.getCampfireRecipes());
         handleCookingDiff(RecipeType.SMOKING, configManager.getSmokingRecipes());
         handleCookingDiff(RecipeType.FURNACE, configManager.getFurnaceRecipes());
         handleSmithingDiff(RecipeType.SMITHING_TRANSFORM, configManager.getSmithingTransformRecipes());
-        removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes());
         updateClientRecipes();
     }
 }

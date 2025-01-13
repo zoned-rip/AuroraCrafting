@@ -5,8 +5,12 @@ import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.ShulkerBox;
+import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
@@ -56,6 +60,10 @@ public class VanillaRecipeWrapper extends AuroraRecipe {
     public ItemStack getResultItem() {
         if (recipe.getKey().getNamespace().equals("minecraft") && recipe.getKey().getKey().equals("armor_dye")) {
             return getDyeResult();
+        } else if (recipe.getResult().getType().name().endsWith("SHULKER_BOX")) {
+            return getShulkerResult();
+        } else if (recipe.getResult().getType().name().endsWith("BUNDLE")) {
+            return getBundleResult();
         }
 
         return super.getResultItem();
@@ -65,8 +73,90 @@ public class VanillaRecipeWrapper extends AuroraRecipe {
     public ItemStack[] getTotalResult(int timesCrafted) {
         if (recipe.getKey().getNamespace().equals("minecraft") && recipe.getKey().getKey().equals("armor_dye")) {
             ItemUtils.createStacksFromAmount(getDyeResult(), timesCrafted);
+        } else if (recipe.getResult().getType().name().endsWith("SHULKER_BOX")) {
+            return ItemUtils.createStacksFromAmount(getShulkerResult(), timesCrafted);
+        } else if (recipe.getResult().getType().name().endsWith("BUNDLE")) {
+            return ItemUtils.createStacksFromAmount(getBundleResult(), timesCrafted);
         }
         return super.getTotalResult(timesCrafted);
+    }
+
+    private ItemStack getBundleResult() {
+        ItemStack originalBundle = null;
+
+        // Find the bundle in the matrix
+        for (var item : matrix) {
+            if (item.getType().name().endsWith("BUNDLE")) { // Check for bundles by name
+                originalBundle = item.clone();
+                originalBundle.setAmount(1);
+            }
+        }
+
+        if (originalBundle == null) {
+            AuroraCrafting.logger().warning("Failed to find bundle in matrix");
+            return null;
+        }
+
+        var result = recipe.getResult().clone();
+
+        // Check if the result is a bundle (supports colored/custom bundles)
+        if (result.getType().name().endsWith("BUNDLE") && result.getItemMeta() instanceof BundleMeta bundleMeta) {
+            try {
+                // Get the contents of the original bundle
+                BundleMeta originalMeta = (BundleMeta) originalBundle.getItemMeta();
+                if (originalMeta == null) {
+                    AuroraCrafting.logger().warning("Failed to get bundle meta from original bundle");
+                    return null;
+                }
+
+                // Set the same contents on the result bundle
+                bundleMeta.setItems(originalMeta.getItems());
+                result.setItemMeta(bundleMeta);
+                return result;
+            } catch (Exception e) {
+                AuroraCrafting.logger().warning("Failed to set bundle contents: " + e.getMessage());
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private ItemStack getShulkerResult() {
+        ItemStack originalShulker = null;
+
+        for (var item : matrix) {
+            if (item.getType().name().endsWith("SHULKER_BOX")) {
+                originalShulker = item.clone();
+                originalShulker.setAmount(1);
+            }
+        }
+
+        if (originalShulker == null) {
+            AuroraCrafting.logger().warning("Failed to find shulker box in matrix");
+            return null;
+        }
+
+        var result = recipe.getResult().clone();
+
+        if (result.getItemMeta() instanceof BlockStateMeta blockStateMeta) {
+            if (blockStateMeta.getBlockState() instanceof ShulkerBox shulkerBox) {
+                try {
+                    shulkerBox.getInventory().clear();
+                    shulkerBox.getInventory().setContents(
+                            ((ShulkerBox) ((BlockStateMeta) originalShulker.getItemMeta()).getBlockState()).getInventory().getContents()
+                    );
+                    blockStateMeta.setBlockState(shulkerBox);
+                    result.setItemMeta(blockStateMeta);
+                    return result;
+                } catch (Exception e) {
+                    AuroraCrafting.logger().warning("Failed to set shulker box inventory");
+                    return null;
+                }
+            }
+        }
+
+        return null;
     }
 
     private ItemStack getDyeResult() {

@@ -1,17 +1,23 @@
 package gg.auroramc.crafting.config.menu;
 
 import gg.auroramc.aurora.api.config.AuroraConfig;
+import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.crafting.AuroraCrafting;
 import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 @Getter
 public class WorkbenchConfig extends AuroraConfig {
+    @IgnoreField
+    private final String id;
+
     private ItemConfig filler;
     private Map<String, ItemConfig> customItems;
     private String title = "Workbench";
@@ -22,18 +28,18 @@ public class WorkbenchConfig extends AuroraConfig {
     private ItemConfig invalidResultItem;
     private ItemConfig emptyQuickCraftItem;
     private ItemConfig noPermissionQuickCraftItem;
+    private String commandCompletion;
 
-    public WorkbenchConfig(AuroraCrafting plugin) {
-        super(getFile(plugin));
+    public WorkbenchConfig(File file, String id) {
+        super(file);
+        this.id = id;
     }
 
-    public static File getFile(AuroraCrafting plugin) {
-        return new File(plugin.getDataFolder() + "/menus", "workbench.yml");
-    }
-
-    public static void saveDefault(AuroraCrafting plugin) {
-        if (!getFile(plugin).exists()) {
-            plugin.saveResource("menus/workbench.yml", false);
+    @Override
+    public void load() {
+        super.load();
+        if(commandCompletion == null) {
+            commandCompletion = id;
         }
     }
 }

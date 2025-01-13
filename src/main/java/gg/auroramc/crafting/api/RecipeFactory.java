@@ -10,4 +10,12 @@ public class RecipeFactory {
             return new ShapedAuroraRecipe(id, result, permission, lockedLore);
         }
     }
+
+    public static AuroraRecipe createRecipe(String id, ItemPair result, boolean shapeless, String workbench, String permission, List<String> lockedLore) {
+        if (shapeless) {
+            return new ShapelessAuroraRecipe(id, result, workbench, permission, lockedLore);
+        } else {
+            return new ShapedAuroraRecipe(id, result, workbench, permission, lockedLore);
+        }
+    }
 }

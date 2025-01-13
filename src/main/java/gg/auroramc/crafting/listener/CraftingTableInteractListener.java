@@ -18,19 +18,18 @@ public class CraftingTableInteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CRAFTING_TABLE) {
             if (plugin.getConfigManager().getConfig().getOpenInsteadOfCraftingTable()) {
                 if (!event.getPlayer().hasPermission("aurora.crafting.use.interact")) return;
                 event.setCancelled(true);
-                CraftMenu.craftMenu(plugin, event.getPlayer()).open();
+                CraftMenu.craftMenu(plugin, event.getPlayer(), plugin.getConfigManager().getConfig().getDefaultWorkbench()).open();
             } else if (plugin.getConfigManager().getConfig().getOpenShiftClickCraftingTable() && event.getPlayer().isSneaking()) {
                 if (!event.getPlayer().hasPermission("aurora.crafting.use.interact")) return;
                 event.setCancelled(true);
-                CraftMenu.craftMenu(plugin, event.getPlayer()).open();
+                CraftMenu.craftMenu(plugin, event.getPlayer(), plugin.getConfigManager().getConfig().getDefaultWorkbench()).open();
             }
         }
-
     }
 }

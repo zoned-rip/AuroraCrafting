@@ -3,6 +3,7 @@ package gg.auroramc.crafting;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.aurora.api.command.CommandDispatcher;
+import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
 import gg.auroramc.crafting.command.CommandManager;
@@ -10,6 +11,7 @@ import gg.auroramc.crafting.config.ConfigManager;
 import gg.auroramc.crafting.hooks.HookManager;
 import gg.auroramc.crafting.listener.ConnectionListener;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
+import gg.auroramc.crafting.menu.CraftMenu;
 import gg.auroramc.crafting.menu.MenuListener;
 import gg.auroramc.crafting.menu.RecipeMenu;
 import gg.auroramc.crafting.util.RecipeRegistrar;
@@ -39,6 +41,7 @@ public class AuroraCrafting extends JavaPlugin {
     public void onLoad() {
         instance = this;
         configManager = new ConfigManager(this);
+        configManager.reload();
         l = AuroraAPI.createLogger("AuroraCrafting", () -> configManager.getConfig().getDebug());
 
         HookManager.loadHooks(this);
@@ -70,6 +73,22 @@ public class AuroraCrafting extends JavaPlugin {
                 }).open();
             } else {
                 RecipeMenu.recipeMenu(this, player, recipe, null).open();
+            }
+        });
+
+        CommandDispatcher.registerActionHandler("workbench-force", (player, input) -> {
+            var workbenchId = input.trim();
+            if (!configManager.getWorkbenchConfig().containsKey(workbenchId)) return;
+            CraftMenu.craftMenu(this, player, workbenchId).open();
+        });
+
+        CommandDispatcher.registerActionHandler("workbench", (player, input) -> {
+            var workbenchId = input.trim();
+            if (!configManager.getWorkbenchConfig().containsKey(workbenchId)) return;
+            if (player.hasPermission("aurora.crafting.use." + workbenchId)) {
+                CraftMenu.craftMenu(this, player, workbenchId).open();
+            } else {
+                Chat.sendMessage(player, configManager.getMessageConfig().getNoPermission());
             }
         });
     }

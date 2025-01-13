@@ -1,5 +1,7 @@
 config-version: 0
 
+command-completion: "default"
+
 rows: 6
 
 title: "Craft Item"
@@ -35,7 +37,6 @@ filler:
   material: black_stained_glass_pane
   name: ""
   hide-tooltip: true
-
 
 custom-items:
   filler:

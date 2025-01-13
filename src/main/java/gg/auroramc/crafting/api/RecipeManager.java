@@ -42,6 +42,7 @@ public class RecipeManager {
                         recipeConfig.getId(),
                         getItemPair(recipeConfig.getResult()),
                         recipeConfig.getShapeless(),
+                        recipeConfig.getWorkbench(),
                         recipeConfig.getPermission(),
                         recipeConfig.getLockedLore()
                 );
@@ -138,20 +139,20 @@ public class RecipeManager {
         return key.toString();
     }
 
-    public @NotNull List<AuroraRecipe> getCraftableRecipes(Player player, int maxCount) {
+    public @NotNull List<AuroraRecipe> getCraftableRecipes(Player player, int maxCount, String workbench) {
         var craftableRecipes = new ArrayList<AuroraRecipe>();
 
         var itemCount = AuroraRecipe.buildItemCounts(player);
 
         for (var recipe : shapedRecipeLookup.values()) {
-            if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
+            if (recipe.hasPermission(player, workbench) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
                 if (craftableRecipes.size() >= maxCount) break;
             }
         }
 
         for (var recipe : shapelessRecipeLookup.values()) {
-            if (recipe.hasPermission(player) && recipe.getQuickCraftTimes(itemCount) > 0) {
+            if (recipe.hasPermission(player, workbench) && recipe.getQuickCraftTimes(itemCount) > 0) {
                 craftableRecipes.add(recipe);
                 if (craftableRecipes.size() >= maxCount) break;
             }
@@ -173,8 +174,10 @@ public class RecipeManager {
 
         if (recipe instanceof ShapelessAuroraRecipe) {
             shapelessRecipeLookup.put(key, recipe);
+            AuroraCrafting.logger().debug("Registered shapeless recipe: " + key + " for workbench: " + recipe.getWorkbench());
         } else {
             shapedRecipeLookup.put(key, recipe);
+            AuroraCrafting.logger().debug("Registered shaped recipe: " + key + " for workbench: " + recipe.getWorkbench());
         }
 
         recipeResultLookup.put(recipe.getResult().id(), recipe);

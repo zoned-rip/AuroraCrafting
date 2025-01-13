@@ -1,4 +1,4 @@
-config-version: 1
+config-version: 2
 
 debug: false
 language: en
@@ -10,20 +10,27 @@ command-aliases:
   merchants: [ "merchants" ]
 
 # Should vanilla recipes be craftable in the custom crafting table?
-include-vanilla-recipes: false
+# List the workbenches you want to include vanilla recipes in
+include-vanilla-recipes: []
 
 # Should "vanilla" recipes registered by other plugins be craftable in the custom crafting table?
-include-other-plugin-recipes: false
+# List the workbenches you want to include vanilla recipes in
+include-other-plugin-recipes: []
 
 # Should the custom crafting table open instead of the vanilla crafting table
 # when the player right clicks on a crafting table?
 # Enabling this needs a server restart to take effect.
+# This uses the "default" workbench
 open-instead-of-crafting-table: false
 
 # Should the custom crafting table open instead of the vanilla crafting table
 # when the player shift right clicks a crafting table?
 # Enabling this needs a server restart to take effect.
+# This uses the "default" workbench
 open-shift-click-crafting-table: false
+
+# This will be opened if the above options are enabled
+default-workbench: "default"
 
 # Should players auto discover vanilla recipes?
 auto-discover-vanilla-recipes: false

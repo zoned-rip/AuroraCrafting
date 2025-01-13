@@ -3,6 +3,7 @@ package gg.auroramc.crafting.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import gg.auroramc.aurora.api.message.Chat;
+import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.menu.CraftMenu;
 import org.bukkit.command.CommandSender;
@@ -18,9 +19,18 @@ public class CraftingCommand extends BaseCommand {
 
     @Default
     @Description("Opens the crafting menu")
+    @CommandCompletion("@workbenches @nothing")
     @CommandPermission("aurora.crafting.use")
-    public void onMenu(Player player) {
-        CraftMenu.craftMenu(plugin, player).open();
+    public void onMenu(Player player, @Default("default") String workbenchId) {
+        if (player.hasPermission("aurora.crafting.use." + workbenchId)) {
+            if (plugin.getConfigManager().getWorkbenchConfig().containsKey(workbenchId)) {
+                CraftMenu.craftMenu(plugin, player, workbenchId).open();
+            } else {
+                Chat.sendMessage(player, plugin.getConfigManager().getMessageConfig().getWorkbenchNotFound(), Placeholder.of("{workbench}", workbenchId));
+            }
+        } else {
+            Chat.sendMessage(player, plugin.getConfigManager().getMessageConfig().getNoPermission());
+        }
     }
 
     @Subcommand("reload")
@@ -29,5 +39,41 @@ public class CraftingCommand extends BaseCommand {
     public void onReload(CommandSender sender) {
         plugin.reload();
         Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getReloaded());
+    }
+
+    @Subcommand("open")
+    @Description("Force open a crafting menu")
+    @CommandCompletion("@players @workbenches @nothing")
+    @CommandPermission("aurora.crafting.admin.open")
+    public void onOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent) {
+        if (plugin.getConfigManager().getWorkbenchConfig().containsKey(workbenchId)) {
+            if (target.hasPermission("aurora.crafting.use." + workbenchId)) {
+                target.getScheduler().run(plugin, (t) -> {
+                    CraftMenu.craftMenu(plugin, target, workbenchId).open();
+                    if (!silent) {
+                        Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getForceOpened(), Placeholder.of("{workbench}", workbenchId), Placeholder.of("{player}", target.getName()));
+                    }
+                }, null);
+            }
+        } else {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getWorkbenchNotFound(), Placeholder.of("{workbench}", workbenchId));
+        }
+    }
+
+    @Subcommand("forceopen")
+    @Description("Force open a crafting menu")
+    @CommandCompletion("@players @workbenches @nothing")
+    @CommandPermission("aurora.crafting.admin.open")
+    public void onForceOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent) {
+        if (plugin.getConfigManager().getWorkbenchConfig().containsKey(workbenchId)) {
+            target.getScheduler().run(plugin, (t) -> {
+                CraftMenu.craftMenu(plugin, target, workbenchId).open();
+                if (!silent) {
+                    Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getForceOpened(), Placeholder.of("{workbench}", workbenchId), Placeholder.of("{player}", target.getName()));
+                }
+            }, null);
+        } else {
+            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getWorkbenchNotFound(), Placeholder.of("{workbench}", workbenchId));
+        }
     }
 }

@@ -24,13 +24,18 @@ public abstract class AuroraRecipe {
     protected final Map<TypeId, Integer> ingredientCount = new HashMap<>();
     @Setter
     private RecipeBookConfig.RecipeCategory category;
+    private final String workbench;
 
     public AuroraRecipe(String id, ItemPair result, String permission, List<String> lockedLore) {
+        this(id, result, "default", permission, lockedLore);
+    }
+
+    public AuroraRecipe(String id, ItemPair result, String workbench, String permission, List<String> lockedLore) {
         this.id = id;
         this.result = result;
         this.permission = permission;
         this.lockedLore = lockedLore;
-
+        this.workbench = workbench;
     }
 
     public void addIngredient(ItemPair itemPair) {
@@ -77,6 +82,12 @@ public abstract class AuroraRecipe {
         }
 
         return items;
+    }
+
+    public boolean hasPermission(Player player, String workbenchId) {
+        var canCraft = permission == null || player.hasPermission(permission);
+        var canUseWorkbench = workbench.equals(workbenchId) && player.hasPermission("aurora.crafting.use." + workbenchId);
+        return canCraft && canUseWorkbench;
     }
 
     public boolean hasPermission(Player player) {

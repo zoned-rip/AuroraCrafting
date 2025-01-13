@@ -38,16 +38,18 @@ public class CraftMenu implements InventoryHolder {
     private Map<Integer, AuroraRecipe> quickCraftRecipes = new HashMap<>();
     private Map<Integer, MenuEntry> customItems = new HashMap<>();
     private boolean updateQuickCraftOnPlace = false;
+    private final String workbenchId;
 
-    public static CraftMenu craftMenu(AuroraCrafting plugin, Player player) {
-        return new CraftMenu(plugin, player);
+    public static CraftMenu craftMenu(AuroraCrafting plugin, Player player, String workbenchId) {
+        return new CraftMenu(plugin, player, workbenchId);
     }
 
-    public CraftMenu(AuroraCrafting plugin, Player player) {
+    public CraftMenu(AuroraCrafting plugin, Player player, String workbenchId) {
         this.plugin = plugin;
         this.player = player;
+        this.workbenchId = workbenchId;
 
-        var config = plugin.getConfigManager().getWorkbenchConfig();
+        var config = plugin.getConfigManager().getWorkbenchConfig().get(workbenchId);
         this.matrixSlots = config.getMatrixSlots();
         this.matrixLookup = Set.copyOf(matrixSlots);
         this.resultSlot = config.getResultSlot();
@@ -84,7 +86,7 @@ public class CraftMenu implements InventoryHolder {
 
     private void setUpQuickCraft() {
         this.quickCraftRecipes.clear();
-        var quickCraftRecipes = plugin.getRecipeManager().getCraftableRecipes(player, quickCraftSlots.size());
+        var quickCraftRecipes = plugin.getRecipeManager().getCraftableRecipes(player, quickCraftSlots.size(), workbenchId);
         var quickCraftSlots = new ArrayList<>(this.quickCraftSlots);
         quickCraftSlots.sort(Integer::compareTo);
 
@@ -320,11 +322,11 @@ public class CraftMenu implements InventoryHolder {
         // If we don't have a recipe cancel the event
         var maybeRecipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
 
-        if (maybeRecipe == null && plugin.getConfigManager().getConfig().getIncludeVanillaRecipes()) {
+        if (maybeRecipe == null && plugin.getConfigManager().getConfig().getIncludeVanillaRecipes().contains(workbenchId)) {
             var matrixArray = matrix.toArray(ItemStack[]::new);
             var vanillaRecipe = Bukkit.getServer().getCraftingRecipe(matrixArray, player.getWorld());
             if (vanillaRecipe instanceof CraftingRecipe craftingRecipe) {
-                if (craftingRecipe.getKey().getNamespace().equals("minecraft") || plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes()) {
+                if (craftingRecipe.getKey().getNamespace().equals("minecraft") || plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes().contains(workbenchId)) {
                     maybeRecipe = new VanillaRecipeWrapper(craftingRecipe, matrixArray);
                 }
             }
@@ -332,7 +334,7 @@ public class CraftMenu implements InventoryHolder {
 
         final var recipe = maybeRecipe;
 
-        if (recipe == null || !recipe.hasPermission(player)) {
+        if (recipe == null || !recipe.hasPermission(player, workbenchId)) {
             event.setCancelled(true);
             return;
         }
@@ -481,16 +483,16 @@ public class CraftMenu implements InventoryHolder {
 
         var recipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
 
-        if (recipe != null && recipe.hasPermission(player)) {
+        if (recipe != null && recipe.hasPermission(player, workbenchId)) {
             var timesCraftable = recipe.getTimesCraftable(matrix);
             if (timesCraftable > 0) {
                 inventory.setItem(resultSlot, recipe.getResultItem());
             }
         } else {
-            if (plugin.getConfigManager().getConfig().getIncludeVanillaRecipes()) {
+            if (plugin.getConfigManager().getConfig().getIncludeVanillaRecipes().contains(workbenchId)) {
                 var vanillaRecipe = Bukkit.getCraftingRecipe(matrix.toArray(ItemStack[]::new), player.getWorld());
                 if (vanillaRecipe instanceof CraftingRecipe craftingRecipe) {
-                    if (!craftingRecipe.getKey().getNamespace().equals("minecraft") && !plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes()) {
+                    if (!craftingRecipe.getKey().getNamespace().equals("minecraft") && !plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes().contains(workbenchId)) {
                         inventory.setItem(resultSlot, invalidResultItem);
                     } else {
                         var result = new VanillaRecipeWrapper(craftingRecipe, matrix.toArray(ItemStack[]::new)).getResultItem();

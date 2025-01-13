@@ -16,6 +16,8 @@ permissions:
     children:
       aurora.crafting.use:
         default: true
+      aurora.crafting.use.default:
+        default: true
       aurora.crafting.use.interact:
         default: true
       aurora.crafting.recipes:
@@ -27,3 +29,4 @@ permissions:
         children:
           - aurora.crafting.admin.reload
           - aurora.crafting.merchants.admin.open
+          - aurora.crafting.admin.open

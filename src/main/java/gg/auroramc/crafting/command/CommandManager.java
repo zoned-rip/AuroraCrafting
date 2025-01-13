@@ -6,6 +6,7 @@ import co.aikar.commands.PaperCommandManager;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.config.menu.WorkbenchConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class CommandManager {
             commandManager.getCommandReplacements().addReplacement("merchantsAlias", a(aliases.getMerchants()));
 
             commandManager.getCommandCompletions().registerCompletion("recipes", c -> plugin.getRecipeManager().getRecipeIds());
+            commandManager.getCommandCompletions().registerCompletion("workbenches", c -> plugin.getConfigManager().getWorkbenchConfig().values().stream().map(WorkbenchConfig::getCommandCompletion).toList());
             commandManager.getCommandCompletions().registerCompletion("merchants", c -> plugin.getConfigManager().getMerchantsConfig()
                     .getMerchants().entrySet().stream().filter(e -> {
                         var merchant = e.getValue();

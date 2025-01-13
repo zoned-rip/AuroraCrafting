@@ -15,6 +15,10 @@ public class ShapelessAuroraRecipe extends AuroraRecipe {
         super(id, result, permission, lockedLore);
     }
 
+    public ShapelessAuroraRecipe(String id, ItemPair result, String workbench, String permission, List<String> lockedLore) {
+        super(id, result, workbench, permission, lockedLore);
+    }
+
     public boolean registerIngredient(ItemPair itemPair) {
         if (itemPair.id().id().equals("air")) return false;
         ingredients.add(itemPair);

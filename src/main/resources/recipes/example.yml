@@ -7,6 +7,8 @@ recipes:
     permission: "craft.emerald"
     # Result item of the recipe
     result: "minecraft:emerald/32"
+    # Which workbench can use this recipe? Defaults to "default" if not specified
+    workbench: "default"
     # Lore to display in the recipe book until the player has the required permission
     locked-lore:
       - "&7You need &aDiamond collection level 3 &7to unlock this recipe."

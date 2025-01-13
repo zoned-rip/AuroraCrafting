@@ -25,7 +25,7 @@ public class ConfigManager {
     private DisabledRecipesConfig disabledRecipesConfig;
 
     // menus
-    private WorkbenchConfig workbenchConfig;
+    private Map<String, WorkbenchConfig> workbenchConfig;
     private RecipeViewConfig recipeViewConfig;
     private RecipeBookMenuConfig recipeBookMenuConfig;
     private RecipeBookCategoryConfig recipeBookCategoryConfig;
@@ -42,7 +42,6 @@ public class ConfigManager {
 
     public ConfigManager(AuroraCrafting plugin) {
         this.plugin = plugin;
-        reload();
     }
 
     public void reload() {
@@ -66,13 +65,11 @@ public class ConfigManager {
         disabledRecipesConfig = new DisabledRecipesConfig(plugin);
         disabledRecipesConfig.load();
 
+        workbenchConfig = loadWorkBenches();
+
         RecipeBookConfig.saveDefault(plugin);
         recipeBookConfig = new RecipeBookConfig(plugin);
         recipeBookConfig.load();
-
-        WorkbenchConfig.saveDefault(plugin);
-        workbenchConfig = new WorkbenchConfig(plugin);
-        workbenchConfig.load();
 
         RecipeViewConfig.saveDefault(plugin);
         recipeViewConfig = new RecipeViewConfig(plugin);
@@ -111,6 +108,39 @@ public class ConfigManager {
         smithingTransformRecipes = getSmithingTransformRecipesConfigs().stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    private Map<String, WorkbenchConfig> loadWorkBenches() {
+        if (!new File(plugin.getDataFolder() + "workbenches").exists()) {
+            if (new File(plugin.getDataFolder() + "/menus", "workbench.yml").exists()) {
+                Files.createDirectories(Path.of(plugin.getDataFolder().getPath(), "workbenches"));
+                Files.move(Path.of(plugin.getDataFolder().getPath(), "menus", "workbench.yml"), Path.of(plugin.getDataFolder().getPath(), "workbenches", "default.yml"));
+            } else {
+                if (!Files.exists(Path.of(plugin.getDataFolder().getPath(), "workbenches", "default.yml"))) {
+                    plugin.saveResource("workbenches/default.yml", false);
+                }
+
+            }
+        }
+
+        var map = new HashMap<String, WorkbenchConfig>();
+
+        try (Stream<Path> paths = Files.walk(Path.of(plugin.getDataFolder().getPath(), "workbenches"), 1)) {
+            var fileList = paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".yml"))
+                    .map(Path::toFile)
+                    .toList();
+
+            for (var file : fileList) {
+                var workbenchConfig = new WorkbenchConfig(file, file.getName().replace(".yml", ""));
+                workbenchConfig.load();
+                map.put(file.getName().replace(".yml", ""), workbenchConfig);
+            }
+
+            return map;
+        }
     }
 
     @SneakyThrows

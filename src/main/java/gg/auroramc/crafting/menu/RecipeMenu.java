@@ -20,7 +20,7 @@ public class RecipeMenu {
     }
 
     public void open() {
-        var workbenchConfig = plugin.getConfigManager().getWorkbenchConfig();
+        var workbenchConfig = plugin.getConfigManager().getWorkbenchConfig().get(recipe.getWorkbench());
         var mc = plugin.getConfigManager().getRecipeViewConfig();
         var mcc = plugin.getConfigManager().getRecipeBookCategoryConfig();
 

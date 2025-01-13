@@ -2,6 +2,7 @@ package gg.auroramc.crafting.config;
 
 import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
+import gg.auroramc.crafting.AuroraCrafting;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ public class RecipesConfig extends AuroraConfig {
     public static final class RecipeConfig {
         private String id;
         private String permission;
+        private String workbench = "default";
         private Boolean shapeless = false;
         private String result;
         private List<String> ingredients;
@@ -38,6 +40,14 @@ public class RecipesConfig extends AuroraConfig {
     @Override
     public void load() {
         super.load();
-        recipes.forEach(recipe -> recipe.setSourceFile(fileName));
+        recipes.forEach(recipe -> {
+            recipe.setSourceFile(fileName);
+            var matrixSize = AuroraCrafting.getInstance().getConfigManager().getWorkbenchConfig().get(recipe.getWorkbench()).getMatrixSlots().size();
+            if (!recipe.getShapeless() && recipe.getIngredients().size() < matrixSize) {
+                for (int i = recipe.getIngredients().size(); i < matrixSize; i++) {
+                    recipe.getIngredients().add("");
+                }
+            }
+        });
     }
 }

@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("gg.auroramc:Aurora:2.0.5")
     compileOnly("gg.auroramc:AuroraQuests:1.3.8")
     compileOnly("me.pikamug.quests:quests-core:5.1.4")

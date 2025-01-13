@@ -37,6 +37,7 @@ public class CraftMenu implements InventoryHolder {
     private final ItemStack emptyQuickCraftItem;
     private Map<Integer, AuroraRecipe> quickCraftRecipes = new HashMap<>();
     private Map<Integer, MenuEntry> customItems = new HashMap<>();
+    private boolean updateQuickCraftOnPlace = false;
 
     public static CraftMenu craftMenu(AuroraCrafting plugin, Player player) {
         return new CraftMenu(plugin, player);
@@ -158,6 +159,13 @@ public class CraftMenu implements InventoryHolder {
             return;
         }
 
+        if (event.getClickedInventory() == player.getInventory()) {
+            if (updateQuickCraftOnPlace && (event.getAction() == InventoryAction.PLACE_ALL || event.getAction() == InventoryAction.PLACE_ONE || event.getAction() == InventoryAction.PLACE_SOME)) {
+                player.getScheduler().run(plugin, (t) -> setUpQuickCraft(), null);
+                updateQuickCraftOnPlace = false;
+            }
+        }
+
         // Otherwise we don't care what the players do in their inventory
         if (event.getClickedInventory() != inventory) {
             // Should cancel DROP actions though to make quick crafting safe
@@ -260,6 +268,7 @@ public class CraftMenu implements InventoryHolder {
         } else {
             if (event.getCursor().isEmpty()) {
                 // Allow taking the result and deduct the matrix
+                updateQuickCraftOnPlace = true;
                 player.getScheduler().run(plugin,
                         (t) -> {
                             recipe.quickCraft(player, 1, true);
@@ -275,6 +284,7 @@ public class CraftMenu implements InventoryHolder {
                 if (cursor.isSimilar(result)) {
                     var maxAmount = cursor.getMaxStackSize() - cursor.getAmount();
                     if (recipe.getResult().amount() <= maxAmount) {
+                        updateQuickCraftOnPlace = true;
                         player.getScheduler().run(plugin, (t) -> {
                             if (player.getItemOnCursor().isSimilar(result)) {
                                 player.getItemOnCursor().setAmount(cursor.getAmount() + recipe.getResult().amount());
@@ -380,6 +390,7 @@ public class CraftMenu implements InventoryHolder {
         } else {
             if (event.getCursor().isEmpty()) {
                 // Allow taking the result and deduct the matrix
+                updateQuickCraftOnPlace = true;
                 player.getScheduler().run(plugin,
                         (t) -> {
                             setUpQuickCraft();
@@ -394,6 +405,7 @@ public class CraftMenu implements InventoryHolder {
                 if (cursor.isSimilar(result)) {
                     var maxAmount = cursor.getMaxStackSize() - cursor.getAmount();
                     if (maybeRecipe.getResult().amount() <= maxAmount) {
+                        updateQuickCraftOnPlace = true;
                         player.getScheduler().run(plugin, (t) -> {
                             if (player.getItemOnCursor().isSimilar(result)) {
                                 player.getItemOnCursor().setAmount(cursor.getAmount() + recipe.getResult().amount());

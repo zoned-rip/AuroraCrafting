@@ -311,10 +311,11 @@ public class CraftMenu implements InventoryHolder {
         var maybeRecipe = plugin.getRecipeManager().getRecipeByMatrix(matrix);
 
         if (maybeRecipe == null && plugin.getConfigManager().getConfig().getIncludeVanillaRecipes()) {
-            var vanillaRecipe = Bukkit.getServer().getCraftingRecipe(matrix.toArray(ItemStack[]::new), player.getWorld());
+            var matrixArray = matrix.toArray(ItemStack[]::new);
+            var vanillaRecipe = Bukkit.getServer().getCraftingRecipe(matrixArray, player.getWorld());
             if (vanillaRecipe instanceof CraftingRecipe craftingRecipe) {
                 if (craftingRecipe.getKey().getNamespace().equals("minecraft") || plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes()) {
-                    maybeRecipe = new VanillaRecipeWrapper(craftingRecipe);
+                    maybeRecipe = new VanillaRecipeWrapper(craftingRecipe, matrixArray);
                 }
             }
         }
@@ -480,7 +481,7 @@ public class CraftMenu implements InventoryHolder {
                     if (!craftingRecipe.getKey().getNamespace().equals("minecraft") && !plugin.getConfigManager().getConfig().getIncludeOtherPluginRecipes()) {
                         inventory.setItem(resultSlot, invalidResultItem);
                     } else {
-                        var result = vanillaRecipe.getResult();
+                        var result = new VanillaRecipeWrapper(craftingRecipe, matrix.toArray(ItemStack[]::new)).getResultItem();
                         inventory.setItem(resultSlot, result);
                     }
                 } else {

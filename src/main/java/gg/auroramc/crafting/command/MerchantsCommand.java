@@ -32,12 +32,14 @@ public class MerchantsCommand extends BaseCommand {
         var opened = openMerchant(player, merchantId);
 
         if (!silent) {
+            var openedMerchantId = merchantId == null ? "main-gui" : merchantId;
+
             if (opened) {
                 Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getMerchantOpened(),
-                        Placeholder.of("{player}", player.getName()), Placeholder.of("{id}", merchantId));
+                        Placeholder.of("{player}", player.getName()), Placeholder.of("{id}", openedMerchantId));
             } else {
                 Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getMerchantFailedToOpen(),
-                        Placeholder.of("{player}", player.getName()), Placeholder.of("{id}", merchantId));
+                        Placeholder.of("{player}", player.getName()), Placeholder.of("{id}", openedMerchantId));
             }
         }
     }

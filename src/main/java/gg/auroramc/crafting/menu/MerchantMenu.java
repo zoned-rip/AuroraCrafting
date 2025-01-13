@@ -4,6 +4,7 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.message.Placeholder;
 import gg.auroramc.aurora.api.message.Text;
+import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.config.MerchantsConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -50,7 +51,12 @@ public class MerchantMenu {
 
         merchant.setRecipes(trades);
 
-        player.openMerchant(merchant, false);
+        if (Bukkit.isOwnedByCurrentRegion(player)) {
+            player.openMerchant(merchant, true);
+        } else {
+            player.getScheduler().run(AuroraCrafting.getInstance(),
+                    (t) -> player.openMerchant(merchant, false), null);
+        }
     }
 
     private ItemStack getItemStack(String id) {

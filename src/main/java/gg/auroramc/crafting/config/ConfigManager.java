@@ -44,7 +44,7 @@ public class ConfigManager {
         this.plugin = plugin;
     }
 
-    public void reload() {
+    public void  reload() {
         if (!new File(plugin.getDataFolder(), "config.yml").exists()) {
             plugin.saveResource("recipes/example.yml", false);
         }
@@ -153,7 +153,7 @@ public class ConfigManager {
 
         var recipes = new HashMap<String, RecipesConfig>();
 
-        try (Stream<Path> paths = Files.walk(recipesFolder, 1)) {
+        try (Stream<Path> paths = Files.walk(recipesFolder, 5)) {
             var fileList = paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
@@ -179,7 +179,7 @@ public class ConfigManager {
             plugin.saveResource(folder + "/example.yml", false);
         }
 
-        try (Stream<Path> paths = Files.walk(recipesFolder, 1)) {
+        try (Stream<Path> paths = Files.walk(recipesFolder, 5)) {
             return paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
@@ -202,7 +202,7 @@ public class ConfigManager {
             plugin.saveResource("smithing_recipes/example.yml", false);
         }
 
-        try (Stream<Path> paths = Files.walk(recipesFolder, 1)) {
+        try (Stream<Path> paths = Files.walk(recipesFolder, 5)) {
             return paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))

@@ -37,8 +37,8 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.0.5")
-    compileOnly("gg.auroramc:AuroraQuests:1.3.8")
+    compileOnly("gg.auroramc:Aurora:2.1.2")
+    compileOnly("gg.auroramc:AuroraQuests:1.3.14")
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
     // BetonQuest (2)
     compileOnly("org.betonquest:betonquest:2.1.3")

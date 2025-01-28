@@ -11,9 +11,7 @@ import gg.auroramc.crafting.config.ConfigManager;
 import gg.auroramc.crafting.hooks.HookManager;
 import gg.auroramc.crafting.listener.ConnectionListener;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
-import gg.auroramc.crafting.menu.CraftMenu;
-import gg.auroramc.crafting.menu.MenuListener;
-import gg.auroramc.crafting.menu.RecipeMenu;
+import gg.auroramc.crafting.menu.*;
 import gg.auroramc.crafting.util.RecipeRegistrar;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -74,6 +72,10 @@ public class AuroraCrafting extends JavaPlugin {
             } else {
                 RecipeMenu.recipeMenu(this, player, recipe, null).open();
             }
+        });
+
+        CommandDispatcher.registerActionHandler("recipes", (player, input) -> {
+            RecipeBookMenu.recipeBookMenu(this, player).open();
         });
 
         CommandDispatcher.registerActionHandler("workbench-force", (player, input) -> {

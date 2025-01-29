@@ -14,6 +14,7 @@ import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.menu.*;
 import gg.auroramc.crafting.util.RecipeRegistrar;
 import lombok.Getter;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -93,6 +94,8 @@ public class AuroraCrafting extends JavaPlugin {
                 Chat.sendMessage(player, configManager.getMessageConfig().getNoPermission());
             }
         });
+
+        new Metrics(this, 24580);
     }
 
     @Override

@@ -45,6 +45,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
@@ -70,6 +71,7 @@ tasks.withType<ShadowJar> {
 
     relocate("co.aikar.commands", "gg.auroramc.crafting.libs.acf")
     relocate("co.aikar.locales", "gg.auroramc.crafting.libs.locales")
+    relocate("org.bstats", "gg.auroramc.crafting.libs.bstats")
 
     exclude("acf-*.properties")
 }

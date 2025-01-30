@@ -18,6 +18,7 @@ public class QuestsHook implements Hook, Listener {
     @Override
     public void hook(AuroraCrafting plugin) {
         qp = (BukkitQuestsPlugin) Bukkit.getServer().getPluginManager().getPlugin("Quests");
+        AuroraCrafting.logger().info("Hooked into Quests to progress crafting tasks");
     }
 
     @EventHandler

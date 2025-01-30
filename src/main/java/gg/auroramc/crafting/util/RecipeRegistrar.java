@@ -19,6 +19,25 @@ public class RecipeRegistrar {
         return new NamespacedKey("aurora", id);
     }
 
+    public static int reRegisterCurrenRecipes() {
+        int count = 0;
+
+        for (var entry : registeredRecipes.entrySet()) {
+            for (var key : entry.getValue()) {
+                var res = Bukkit.addRecipe(Bukkit.getRecipe(key));
+                if (res) {
+                    count++;
+                }
+            }
+        }
+
+        if (count > 0) {
+            updateClientRecipes();
+        }
+
+        return count;
+    }
+
     public static void handleCookingDiff(RecipeType recipeType, List<CookingRecipesConfig.RecipeConfig> recipes) {
         var oldSet = registeredRecipes.get(recipeType);
         if (oldSet != null) {

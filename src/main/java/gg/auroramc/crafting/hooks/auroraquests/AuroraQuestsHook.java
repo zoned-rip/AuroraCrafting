@@ -14,7 +14,7 @@ import java.util.Map;
 public class AuroraQuestsHook implements Hook, Listener {
     @Override
     public void hook(AuroraCrafting plugin) {
-
+        AuroraCrafting.logger().info("Hooked into AuroraQuests to progress crafting tasks");
     }
 
     @EventHandler

@@ -36,6 +36,8 @@ public class BetonQuestHook implements Hook, Listener {
                 "completeIfDoneOrNotify",
                 MethodType.methodType(boolean.class, Profile.class)
         );
+
+        AuroraCrafting.logger().info("Hooked into BetonQuests to progress crafting tasks");
     }
 
     @SneakyThrows

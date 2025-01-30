@@ -33,8 +33,6 @@ repositories {
     // BetonQuest (2)
     maven("https://nexus.betonquest.org/repository/betonquest/")
     maven("https://repo.dmulloy2.net/nexus/repository/public/")
-    // Nexo
-    maven("https://repo.nexomc.com/releases")
 }
 
 dependencies {
@@ -46,8 +44,6 @@ dependencies {
     // BetonQuest (2)
     compileOnly("org.betonquest:betonquest:2.1.3")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
-    // Nexo
-    compileOnly("com.nexomc:nexo:0.7.0")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")

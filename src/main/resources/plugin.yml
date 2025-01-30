@@ -10,7 +10,6 @@ softdepend:
   - AuroraQuests
   - Quests
   - BetonQuest
-  - Nexo
 
 permissions:
   aurora.crafting.*:

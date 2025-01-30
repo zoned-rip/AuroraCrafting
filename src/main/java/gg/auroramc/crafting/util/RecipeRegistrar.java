@@ -19,25 +19,6 @@ public class RecipeRegistrar {
         return new NamespacedKey("aurora", id);
     }
 
-    public static int reRegisterCurrenRecipes() {
-        int count = 0;
-
-        for (var entry : registeredRecipes.entrySet()) {
-            for (var key : entry.getValue()) {
-                var res = Bukkit.addRecipe(Bukkit.getRecipe(key));
-                if (res) {
-                    count++;
-                }
-            }
-        }
-
-        if (count > 0) {
-            updateClientRecipes();
-        }
-
-        return count;
-    }
-
     public static void handleCookingDiff(RecipeType recipeType, List<CookingRecipesConfig.RecipeConfig> recipes) {
         var oldSet = registeredRecipes.get(recipeType);
         if (oldSet != null) {
@@ -94,20 +75,7 @@ public class RecipeRegistrar {
         Bukkit.updateRecipes();
     }
 
-    public static void removeVanillaRecipes(Set<String> recipes, boolean force) {
-        if (force) {
-            for (var recipe : recipes) {
-                var recipeKey = NamespacedKey.fromString(recipe);
-                var oldRecipe = Bukkit.getRecipe(recipeKey);
-
-                var success = Bukkit.removeRecipe(recipeKey);
-                if (success && oldRecipe != null) {
-                    removedRecipes.put(recipe, oldRecipe);
-                }
-            }
-            return;
-        }
-
+    public static void removeVanillaRecipes(Set<String> recipes) {
         var removedEntries = new HashMap<>(removedRecipes);
         for (var recipe : removedEntries.entrySet()) {
             if (!recipes.contains(recipe.getKey())) {
@@ -131,7 +99,7 @@ public class RecipeRegistrar {
     }
 
     public static void reloadRecipes(ConfigManager configManager) {
-        removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes(), false);
+        removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes());
         handleCookingDiff(RecipeType.BLASTING, configManager.getBlastingRecipes());
         handleCookingDiff(RecipeType.CAMPFIRE, configManager.getCampfireRecipes());
         handleCookingDiff(RecipeType.SMOKING, configManager.getSmokingRecipes());

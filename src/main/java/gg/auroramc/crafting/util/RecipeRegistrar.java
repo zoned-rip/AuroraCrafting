@@ -94,7 +94,20 @@ public class RecipeRegistrar {
         Bukkit.updateRecipes();
     }
 
-    public static void removeVanillaRecipes(Set<String> recipes) {
+    public static void removeVanillaRecipes(Set<String> recipes, boolean force) {
+        if (force) {
+            for (var recipe : recipes) {
+                var recipeKey = NamespacedKey.fromString(recipe);
+                var oldRecipe = Bukkit.getRecipe(recipeKey);
+
+                var success = Bukkit.removeRecipe(recipeKey);
+                if (success && oldRecipe != null) {
+                    removedRecipes.put(recipe, oldRecipe);
+                }
+            }
+            return;
+        }
+
         var removedEntries = new HashMap<>(removedRecipes);
         for (var recipe : removedEntries.entrySet()) {
             if (!recipes.contains(recipe.getKey())) {
@@ -118,7 +131,7 @@ public class RecipeRegistrar {
     }
 
     public static void reloadRecipes(ConfigManager configManager) {
-        removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes());
+        removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes(), false);
         handleCookingDiff(RecipeType.BLASTING, configManager.getBlastingRecipes());
         handleCookingDiff(RecipeType.CAMPFIRE, configManager.getCampfireRecipes());
         handleCookingDiff(RecipeType.SMOKING, configManager.getSmokingRecipes());

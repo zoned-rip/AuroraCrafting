@@ -24,6 +24,8 @@ public class NexoHook implements Hook, Listener {
         var count = RecipeRegistrar.reRegisterCurrenRecipes();
         AuroraCrafting.logger().info("Registered " + count + " vanilla recipes");
 
+        RecipeRegistrar.removeVanillaRecipes(plugin.getConfigManager().getDisabledRecipesConfig().getRecipes(), true);
+
         if (count > 0 && plugin.getConfigManager().getConfig().getAutoDiscoverVanillaRecipes()) {
             for (var player : Bukkit.getOnlinePlayers()) {
                 RecipeRegistrar.discoverRecipes(player);

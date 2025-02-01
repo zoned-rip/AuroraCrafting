@@ -10,6 +10,7 @@ import gg.auroramc.crafting.config.RecipeBookConfig;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,14 +62,21 @@ public class RecipeCategoryMenu {
             if (i < recipes.size()) {
                 var recipe = recipes.get(i);
                 var item = recipe.getResultItem();
+                if (item.getType() == Material.AIR) {
+                    item = new ItemStack(Material.BARRIER);
+                    var meta = item.getItemMeta();
+                    meta.displayName(Text.component("&c&lInvalid recipe result"));
+                    item.setItemMeta(meta);
+                }
                 if (recipe.hasPermission(player) || !mc.getSecretRecipeDisplay().getEnabled()) {
                     var builder = ItemBuilder.item(item).slot(slot);
 
                     if (item.hasItemMeta()) {
+                        ItemStack finalItem = item;
                         builder.loreCompute(() -> {
                             var lore = new ArrayList<Component>();
-                            if (item.hasItemMeta()) {
-                                var meta = item.getItemMeta();
+                            if (finalItem.hasItemMeta()) {
+                                var meta = finalItem.getItemMeta();
                                 if (meta.hasLore()) {
                                     lore.addAll(meta.lore());
                                 }

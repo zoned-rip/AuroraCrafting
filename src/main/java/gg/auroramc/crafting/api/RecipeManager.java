@@ -39,7 +39,7 @@ public class RecipeManager {
             for (var recipeConfig : recipeFile.getRecipes()) {
                 var recipe = RecipeFactory.createRecipe(
                         recipeConfig.getId(),
-                        getItemPair(recipeConfig.getResult(), recipeConfig.getId()),
+                        getItemPair(recipeConfig.getResult(), recipeConfig.getId(), Material.AIR),
                         recipeConfig.getShapeless(),
                         recipeConfig.getWorkbench(),
                         recipeConfig.getPermission(),
@@ -47,7 +47,7 @@ public class RecipeManager {
                 );
 
                 for (var ingredient : recipeConfig.getIngredients()) {
-                    recipe.addIngredient(getItemPair(ingredient, recipeConfig.getId()));
+                    recipe.addIngredient(getItemPair(ingredient, recipeConfig.getId(), Material.BARRIER));
                 }
 
                 registerRecipe(recipe, recipeConfig.getSourceFile());
@@ -83,7 +83,7 @@ public class RecipeManager {
         }
     }
 
-    private ItemPair getItemPair(String item, String recipeId) {
+    private ItemPair getItemPair(String item, String recipeId, Material invalidMaterial) {
         var split = item.split("/");
         if (split[0].isEmpty()) {
             return new ItemPair(TypeId.from(Material.AIR), 0);
@@ -93,7 +93,7 @@ public class RecipeManager {
         var itemStack = AuroraAPI.getItemManager().resolveItem(pair.id());
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             AuroraCrafting.logger().severe("Can't validate item id: " + pair.id() + " in recipe: " + recipeId);
-            return new ItemPair(TypeId.from(Material.BARRIER), 1);
+            return new ItemPair(TypeId.from(invalidMaterial), 1);
         }
 
         return pair;

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class ConfigManager {
         this.plugin = plugin;
     }
 
-    public void  reload() {
+    public void reload() {
         if (!new File(plugin.getDataFolder(), "config.yml").exists()) {
             plugin.saveResource("recipes/example.yml", false);
         }
@@ -143,12 +144,15 @@ public class ConfigManager {
         }
     }
 
-    @SneakyThrows
     private Map<String, RecipesConfig> getRecipesConfigs() {
         Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "recipes");
 
         if (Files.notExists(recipesFolder)) {
-            Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+            try {
+                Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         var recipes = new HashMap<String, RecipesConfig>();
@@ -161,11 +165,19 @@ public class ConfigManager {
                     .toList();
 
             for (var file : fileList) {
-                RecipesConfig recipesConfig = new RecipesConfig(file);
-                recipesConfig.load();
-                recipes.put(file.getName().replace(".yml", ""), recipesConfig);
+                try {
+                    RecipesConfig recipesConfig = new RecipesConfig(file);
+                    recipesConfig.load();
+                    recipes.put(file.getName().replace(".yml", ""), recipesConfig);
+                } catch (Exception e) {
+                    AuroraCrafting.logger().severe("Failed to load recipe file: " + file.getName());
+                    e.printStackTrace();
+                }
             }
 
+            return recipes;
+        } catch (IOException e) {
+            e.printStackTrace();
             return recipes;
         }
     }

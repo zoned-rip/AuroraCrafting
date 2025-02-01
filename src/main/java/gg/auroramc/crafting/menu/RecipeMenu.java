@@ -47,7 +47,16 @@ public class RecipeMenu {
             menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player));
         }
 
-        menu.addItem(ItemBuilder.item(recipe.getResultItem()).amount(recipe.getResult().amount()).slot(mc.getResultSlot()).build(player));
+        Integer resultSlot;
+        resultSlot = mc.getResultSlot().get(recipe.getWorkbench());
+        if (resultSlot == null) {
+            resultSlot = mc.getResultSlot().get("default");
+        }
+        if (resultSlot == null) {
+            resultSlot = workbenchConfig.getResultSlot();
+        }
+
+        menu.addItem(ItemBuilder.item(recipe.getResultItem()).amount(recipe.getResult().amount()).slot(resultSlot).build(player));
 
         if (backAction != null && recipe.getCategory() != null) {
             menu.addItem(ItemBuilder.of(mc.getItems().get("back")).build(player), (e) -> {

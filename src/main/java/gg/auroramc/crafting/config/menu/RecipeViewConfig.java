@@ -4,14 +4,17 @@ import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.crafting.AuroraCrafting;
 import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Getter
 public class RecipeViewConfig extends AuroraConfig {
     private String title = "Recipe";
-    private Integer resultSlot = 26;
+    private Map<String, Integer> resultSlot = Map.of("default", 25);
     private Map<String, ItemConfig> customItems;
     private Map<String, ItemConfig> items;
 
@@ -27,5 +30,15 @@ public class RecipeViewConfig extends AuroraConfig {
         if (!getFile(plugin).exists()) {
             plugin.saveResource("menus/recipe_view.yml", false);
         }
+    }
+
+    @Override
+    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+        return List.of(
+                (yaml) -> {
+                    yaml.set("result-slot.default", yaml.get("result-slot", 25));
+                    yaml.set("config-version", 1);
+                }
+        );
     }
 }

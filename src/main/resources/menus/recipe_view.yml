@@ -1,7 +1,11 @@
 config-version: 0
 
 title: "Recipe"
-result-slot: 25
+
+# You can override the result slot here for specific workbenches
+# workbenchID:slot
+result-slot:
+  default: 25
 
 items:
   back:

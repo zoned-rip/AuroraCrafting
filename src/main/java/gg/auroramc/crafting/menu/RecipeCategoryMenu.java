@@ -20,14 +20,19 @@ public class RecipeCategoryMenu {
     private final RecipeBookConfig.RecipeCategory category;
     private int page = 0;
 
-    public RecipeCategoryMenu(AuroraCrafting plugin, Player player, RecipeBookConfig.RecipeCategory category) {
+    public RecipeCategoryMenu(AuroraCrafting plugin, Player player, RecipeBookConfig.RecipeCategory category, int page) {
         this.plugin = plugin;
         this.player = player;
         this.category = category;
+        this.page = page;
     }
 
     public static RecipeCategoryMenu recipeCategoryMenu(AuroraCrafting plugin, Player player, RecipeBookConfig.RecipeCategory category) {
-        return new RecipeCategoryMenu(plugin, player, category);
+        return new RecipeCategoryMenu(plugin, player, category, 0);
+    }
+
+    public static RecipeCategoryMenu recipeCategoryMenu(AuroraCrafting plugin, Player player, RecipeBookConfig.RecipeCategory category, int page) {
+        return new RecipeCategoryMenu(plugin, player, category, page);
     }
 
     public void open() {
@@ -74,7 +79,7 @@ public class RecipeCategoryMenu {
                     }
 
                     menu.addItem(builder.build(player), (e) -> {
-                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory()).open()).open();
+                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory(), page).open()).open();
                     });
                 } else {
                     menu.addItem(ItemBuilder.of(mc.getSecretRecipeDisplay().getItem()).slot(slot).loreCompute(() -> {

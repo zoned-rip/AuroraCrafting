@@ -58,3 +58,5 @@ custom-items:
     material: barrier
     name: "&cClose"
     slot: 53
+    on-click:
+      - "[close]"

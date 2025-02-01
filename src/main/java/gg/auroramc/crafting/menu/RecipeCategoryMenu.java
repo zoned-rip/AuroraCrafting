@@ -109,7 +109,7 @@ public class RecipeCategoryMenu {
                     .placeholder(placeholders).build(player));
 
             menu.addItem(ItemBuilder.of(mc.getItems().get("next-page")).build(player), (e) -> {
-                if (page < maxPage) {
+                if (page < maxPage - 1) {
                     page++;
                     open();
                 }

@@ -57,17 +57,23 @@ public class RecipeCategoryMenu {
                 var recipe = recipes.get(i);
                 var item = recipe.getResultItem();
                 if (recipe.hasPermission(player) || !mc.getSecretRecipeDisplay().getEnabled()) {
-                    menu.addItem(ItemBuilder.item(item).slot(slot).loreCompute(() -> {
-                        var lore = new ArrayList<Component>();
-                        if (item.hasItemMeta()) {
-                            var meta = item.getItemMeta();
-                            if (meta.hasLore()) {
-                                lore.addAll(meta.lore());
+                    var builder = ItemBuilder.item(item).slot(slot);
+
+                    if (item.hasItemMeta()) {
+                        builder.loreCompute(() -> {
+                            var lore = new ArrayList<Component>();
+                            if (item.hasItemMeta()) {
+                                var meta = item.getItemMeta();
+                                if (meta.hasLore()) {
+                                    lore.addAll(meta.lore());
+                                }
                             }
-                        }
-                        lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
-                        return lore;
-                    }).build(player), (e) -> {
+                            lore.addAll(mc.getAppendLore().stream().map(l -> Text.component(player, l)).toList());
+                            return lore;
+                        });
+                    }
+
+                    menu.addItem(builder.build(player), (e) -> {
                         RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory()).open()).open();
                     });
                 } else {

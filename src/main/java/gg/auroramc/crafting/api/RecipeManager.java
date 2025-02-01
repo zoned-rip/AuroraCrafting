@@ -25,7 +25,6 @@ public class RecipeManager {
 
     public RecipeManager(AuroraCrafting plugin) {
         this.plugin = plugin;
-        reload();
     }
 
     public void reload() {
@@ -40,7 +39,7 @@ public class RecipeManager {
             for (var recipeConfig : recipeFile.getRecipes()) {
                 var recipe = RecipeFactory.createRecipe(
                         recipeConfig.getId(),
-                        getItemPair(recipeConfig.getResult()),
+                        getItemPair(recipeConfig.getResult(), recipeConfig.getId()),
                         recipeConfig.getShapeless(),
                         recipeConfig.getWorkbench(),
                         recipeConfig.getPermission(),
@@ -48,7 +47,7 @@ public class RecipeManager {
                 );
 
                 for (var ingredient : recipeConfig.getIngredients()) {
-                    recipe.addIngredient(getItemPair(ingredient));
+                    recipe.addIngredient(getItemPair(ingredient, recipeConfig.getId()));
                 }
 
                 registerRecipe(recipe, recipeConfig.getSourceFile());
@@ -84,12 +83,20 @@ public class RecipeManager {
         }
     }
 
-    private ItemPair getItemPair(String item) {
+    private ItemPair getItemPair(String item, String recipeId) {
         var split = item.split("/");
         if (split[0].isEmpty()) {
             return new ItemPair(TypeId.from(Material.AIR), 0);
         }
-        return new ItemPair(TypeId.fromDefault(split[0]), Integer.parseInt(split[1]));
+        var pair = new ItemPair(TypeId.fromDefault(split[0]), Integer.parseInt(split[1]));
+
+        var itemStack = AuroraAPI.getItemManager().resolveItem(pair.id());
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            AuroraCrafting.logger().severe("Can't validate item id: " + pair.id() + " in recipe: " + recipeId);
+            return new ItemPair(TypeId.from(Material.BARRIER), 1);
+        }
+
+        return pair;
     }
 
     public @Nullable AuroraRecipe getRecipeByMatrix(List<ItemStack> matrix) {
@@ -174,10 +181,10 @@ public class RecipeManager {
 
         if (recipe instanceof ShapelessAuroraRecipe) {
             shapelessRecipeLookup.put(key, recipe);
-            AuroraCrafting.logger().debug("Registered shapeless recipe: " + key + " for workbench: " + recipe.getWorkbench());
+            AuroraCrafting.logger().debug("Registered shapeless recipe: " + key + " with result: " + recipe.getResult().id() + " for workbench: " + recipe.getWorkbench());
         } else {
             shapedRecipeLookup.put(key, recipe);
-            AuroraCrafting.logger().debug("Registered shaped recipe: " + key + " for workbench: " + recipe.getWorkbench());
+            AuroraCrafting.logger().debug("Registered shaped recipe: " + key + " with result: " + recipe.getResult().id() + " for workbench: " + recipe.getWorkbench());
         }
 
         recipeResultLookup.put(recipe.getResult().id(), recipe);

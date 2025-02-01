@@ -57,7 +57,10 @@ public class AuroraCrafting extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
         }
 
-        Bukkit.getGlobalRegionScheduler().runDelayed(this, (t) -> RecipeRegistrar.reloadRecipes(configManager), 2);
+        Bukkit.getGlobalRegionScheduler().runDelayed(this, (t) -> {
+            recipeManager.reload();
+            RecipeRegistrar.reloadRecipes(configManager);
+        }, 2);
 
         HookManager.enableHooks(this);
 

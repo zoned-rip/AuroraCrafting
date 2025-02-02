@@ -111,7 +111,7 @@ public class RecipeCategoryMenu {
                     Placeholder.of("{max}", maxPage)
             );
 
-            menu.addItem(ItemBuilder.of(mc.getItems().get("previous-page")).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(mc.getItems().get("previous-page")).placeholder(placeholders).build(player), (e) -> {
                 if (page > 0) {
                     page--;
                     open();
@@ -121,7 +121,7 @@ public class RecipeCategoryMenu {
             menu.addItem(ItemBuilder.of(mc.getItems().get("current-page"))
                     .placeholder(placeholders).build(player));
 
-            menu.addItem(ItemBuilder.of(mc.getItems().get("next-page")).build(player), (e) -> {
+            menu.addItem(ItemBuilder.of(mc.getItems().get("next-page")).placeholder(placeholders).build(player), (e) -> {
                 if (page < maxPage - 1) {
                     page++;
                     open();

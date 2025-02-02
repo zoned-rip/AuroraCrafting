@@ -59,21 +59,4 @@ public class CraftingCommand extends BaseCommand {
             Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getWorkbenchNotFound(), Placeholder.of("{workbench}", workbenchId));
         }
     }
-
-    @Subcommand("forceopen")
-    @Description("Force open a crafting menu")
-    @CommandCompletion("@players @workbenches true|false @nothing")
-    @CommandPermission("aurora.crafting.admin.open")
-    public void onForceOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent) {
-        if (plugin.getConfigManager().getWorkbenchConfig().containsKey(workbenchId)) {
-            target.getScheduler().run(plugin, (t) -> {
-                CraftMenu.craftMenu(plugin, target, workbenchId).open();
-                if (!silent) {
-                    Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getForceOpened(), Placeholder.of("{workbench}", workbenchId), Placeholder.of("{player}", target.getName()));
-                }
-            }, null);
-        } else {
-            Chat.sendMessage(sender, plugin.getConfigManager().getMessageConfig().getWorkbenchNotFound(), Placeholder.of("{workbench}", workbenchId));
-        }
-    }
 }

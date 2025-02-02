@@ -43,7 +43,7 @@ public class CraftingCommand extends BaseCommand {
 
     @Subcommand("open")
     @Description("Force open a crafting menu")
-    @CommandCompletion("@players @workbenches @nothing")
+    @CommandCompletion("@players @workbenches true|false @nothing")
     @CommandPermission("aurora.crafting.admin.open")
     public void onOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent) {
         if (plugin.getConfigManager().getWorkbenchConfig().containsKey(workbenchId)) {
@@ -62,7 +62,7 @@ public class CraftingCommand extends BaseCommand {
 
     @Subcommand("forceopen")
     @Description("Force open a crafting menu")
-    @CommandCompletion("@players @workbenches @nothing")
+    @CommandCompletion("@players @workbenches true|false @nothing")
     @CommandPermission("aurora.crafting.admin.open")
     public void onForceOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent) {
         if (plugin.getConfigManager().getWorkbenchConfig().containsKey(workbenchId)) {

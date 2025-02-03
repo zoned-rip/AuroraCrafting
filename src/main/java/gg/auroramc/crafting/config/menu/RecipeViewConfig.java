@@ -36,7 +36,12 @@ public class RecipeViewConfig extends AuroraConfig {
     protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
         return List.of(
                 (yaml) -> {
-                    yaml.set("result-slot.default", yaml.get("result-slot", 25));
+                    // released config file was broken, so we need to fix it here
+                    if (yaml.getInt("config-version", 0) == 0 && !yaml.isInt("result-slot")) {
+                        yaml.set("config-version", 1);
+                        return;
+                    }
+                    yaml.set("result-slot.default", yaml.getInt("result-slot", 25));
                     yaml.set("config-version", 1);
                 }
         );

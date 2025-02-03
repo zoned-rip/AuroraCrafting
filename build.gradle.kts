@@ -18,17 +18,20 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "1.2.1"
+version = "1.2.2"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
 
 repositories {
+    flatDir {
+        dirs("libs")
+    }
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.auroramc.gg/repository/maven-public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
-    // Quests
+    // Quests (pikamug)
     maven("https://repo.codemc.io/repository/maven-public/")
     // BetonQuest (2)
     maven("https://nexus.betonquest.org/repository/betonquest/")
@@ -41,6 +44,8 @@ dependencies {
     compileOnly("gg.auroramc:AuroraQuests:1.3.14")
     // Quests
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
+    // Quests (LMBishop)
+    compileOnly(name = "Quests-3.15.2-lmbishop", group = "com.leonardobishop", version = "3.15.2")
     // BetonQuest (2)
     compileOnly("org.betonquest:betonquest:2.1.3")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")

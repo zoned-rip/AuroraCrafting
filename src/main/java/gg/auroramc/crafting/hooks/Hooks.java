@@ -3,6 +3,7 @@ package gg.auroramc.crafting.hooks;
 import gg.auroramc.crafting.hooks.auroraquests.AuroraQuestsHook;
 import gg.auroramc.crafting.hooks.betonquests.BetonQuestHook;
 import gg.auroramc.crafting.hooks.quests.QuestsHook;
+import gg.auroramc.crafting.hooks.quests2.QuestsLmBishopHook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 public enum Hooks {
     AURORA_QUESTS(AuroraQuestsHook.class, "AuroraQuests"),
     QUESTS(QuestsHook.class, "Quests"),
+    QUESTS_LMBISHOP(QuestsLmBishopHook.class, "Quests"),
     BETON_QUEST(BetonQuestHook.class, "BetonQuest"),
     ;
 

@@ -2,7 +2,8 @@ package gg.auroramc.crafting.hooks.auroraquests;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
+import gg.auroramc.crafting.api.event.BlueprintCraftEvent;
+import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import gg.auroramc.crafting.hooks.Hook;
 import gg.auroramc.quests.api.AuroraQuestsProvider;
 import gg.auroramc.quests.api.quest.TaskType;
@@ -18,7 +19,9 @@ public class AuroraQuestsHook implements Hook, Listener {
     }
 
     @EventHandler
-    public void onCraft(PlayerCraftItemEvent event) {
+    public void onCraft(BlueprintCraftEvent event) {
+        if (!(event.getBlueprint().getWorkbench() instanceof CustomWorkbench)) return;
+
         AuroraQuestsProvider.getQuestManager().progress(
                 event.getPlayer(),
                 TaskType.CRAFT,

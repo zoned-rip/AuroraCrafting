@@ -1,46 +1,43 @@
-config-version: 0
+config-version: 1
 
-command-completion: "default"
+# Title of the workbench inventory
+title: "Craft Item"
 
+# How many rows should the workbench inventory have?
 rows: 6
 
-title: "Craft Item"
+# Result slot is where the result of the recipe will be placed.
 result-slot: 23
+
+# Matrix slots are used to assemble the recipe.
 matrix-slots: [ 10, 11, 12, 19, 20, 21, 28, 29, 30 ]
+
+# Quick crafting slots are used to craft items without assembling the recipe in the recipe.
 quick-crafting-slots: [ 16, 25, 34 ]
 
-# DO NOT use AIR here
-invalid-result-item:
-  material: barrier
-  name: "&cRecipe required"
-  lore:
-    - "&7Add the items for a valid recipe in"
-    - "&7the crafting grid to the left!"
+# Where should we put the items that indicate the completion of a recipe?
+completion-indicator-slots: [ 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
 
-empty-quick-craft-item:
-  material: gray_stained_glass_pane
-  name: "&cQuick Crafting Slot"
-  lore:
-    - "&7Quick crafting allows you to craft"
-    - "&7items without assembling the recipe."
+# This is an experimental feature and it will probably be experimental forever.
+# Turning this on might cause performance issues.
+include-vanilla-recipes-in-quick-crafting: false
 
-no-permission-quick-craft-item:
-  material: red_stained_glass_pane
-  name: "&cQuick Crafting Slot"
-  lore:
-    - "&7Quick crafting allows you to craft"
-    - "&7items without assembling the recipe."
-    - " "
-    - "&cYou do not have permission to use this slot"
+# Options when a recipe is opened from the recipe book
+recipe-book:
+  # Previous recipe slot button (only when using grouping)
+  prev-recipe-slot: 52
+  # Next recipe slot button (only when using grouping)
+  next-recipe-slot: 53
+  # Recipe result slot
+  result-slot: 25
+  # Back slot if applicable
+  back-slot: 45
+  # Additional custom items to map to the recipe view inventory
+  custom-items: { }
 
-filler:
-  material: black_stained_glass_pane
-  name: ""
-  hide-tooltip: true
+# Other custom items to add to the workbench inventory
+# For example some cosmetic stuff
+custom-items: { }
 
-custom-items:
-  filler:
-    name: ""
-    hide-tooltip: true
-    material: red_stained_glass_pane
-    slots: [45, 46, 47, 48, 49, 50, 51, 52, 53]
+# You can also override every default item here for this workbench that are
+# defined in the menus/workbench_defaults.yml

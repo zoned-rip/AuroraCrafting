@@ -10,6 +10,9 @@ softdepend:
   - AuroraQuests
   - Quests
   - BetonQuest
+  - Jobs
+  - MythicMobs
+  - MythicCrucible
 
 permissions:
   aurora.crafting.*:

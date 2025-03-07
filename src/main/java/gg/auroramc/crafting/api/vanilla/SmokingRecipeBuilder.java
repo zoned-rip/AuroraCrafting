@@ -15,6 +15,6 @@ public class SmokingRecipeBuilder extends CookingRecipeBuilder<SmokingRecipe>{
 
     @Override
     public SmokingRecipe buildInternal() {
-        return new SmokingRecipe(key, result, input, experience, cookingTime);
+        return new SmokingRecipe(key, result, exactChoiceFor(input), experience, cookingTime);
     }
 }

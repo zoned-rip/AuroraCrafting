@@ -13,6 +13,6 @@ public class CampfireRecipeBuilder extends CookingRecipeBuilder<CampfireRecipe> 
 
     @Override
     public CampfireRecipe buildInternal() {
-        return new CampfireRecipe(key, result, input, experience, cookingTime);
+        return new CampfireRecipe(key, result, exactChoiceFor(input), experience, cookingTime);
     }
 }

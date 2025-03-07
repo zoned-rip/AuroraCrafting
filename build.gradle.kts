@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import xyz.jpenilla.runtask.task.AbstractRun
 import java.net.URI
 import java.util.*
 
@@ -15,10 +16,11 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.3"
     id("maven-publish")
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "gg.auroramc"
-version = "1.2.2"
+version = "2.0.0"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -28,8 +30,8 @@ repositories {
         dirs("libs")
     }
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
-    maven("https://repo.auroramc.gg/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.auroramc.gg/releases/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     // Quests (pikamug)
     maven("https://repo.codemc.io/repository/maven-public/")
@@ -39,9 +41,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.1.2")
-    compileOnly("gg.auroramc:AuroraQuests:1.3.14")
+    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("gg.auroramc:Aurora:2.1.6")
+    compileOnly("gg.auroramc:AuroraQuests:1.3.16")
     // Quests
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
     // Quests (LMBishop)
@@ -49,6 +51,8 @@ dependencies {
     // BetonQuest (2)
     compileOnly("org.betonquest:betonquest:2.1.3")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+    // Jobs
+    compileOnly(name = "Jobs5.2.4.6", group = "com.github.Zrips", version = "5.2.4.6")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
@@ -92,6 +96,21 @@ tasks.processResources {
 tasks {
     build {
         dependsOn(shadowJar)
+        dependsOn("apiJar")
+    }
+    runServer {
+        downloadPlugins {
+            modrinth("AuroraLib", "2.1.6")
+        }
+        minecraftVersion("1.21.4")
+    }
+}
+
+tasks.register<Jar>("apiJar") {
+    archiveBaseName.set("AuroraCraftingAPI")
+
+    from(sourceSets.main.get().output) {
+        include("gg/auroramc/crafting/api/**")
     }
 }
 
@@ -102,9 +121,9 @@ publishing {
         maven {
             name = "AuroraMC"
             url = if (version.toString().endsWith("SNAPSHOT")) {
-                URI.create("https://repo.auroramc.gg/repository/maven-snapshots/")
+                URI.create("https://repo.auroramc.gg/snapshots/")
             } else {
-                URI.create("https://repo.auroramc.gg/repository/maven-releases/")
+                URI.create("https://repo.auroramc.gg/releases/")
             }
             credentials {
                 username = publishing.getProperty("username")
@@ -115,9 +134,20 @@ publishing {
 
     publications.create<MavenPublication>("mavenJava") {
         groupId = "gg.auroramc"
-        artifactId = "AuroraCrafting"
+        artifactId = "AuroraCraftingAPI"
         version = project.version.toString()
 
-        from(components["java"])
+        artifact(tasks.named("apiJar"))
     }
+}
+
+tasks.withType<AbstractRun>().configureEach {
+//    javaLauncher = javaToolchains.launcherFor {
+//        vendor.set(JvmVendorSpec.JETBRAINS)
+//        languageVersion.set(JavaLanguageVersion.of(21))
+//    }
+    jvmArgs(
+        // "-XX:+AllowEnhancedClassRedefinition", //
+        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" // Enable remote debugging
+    )
 }

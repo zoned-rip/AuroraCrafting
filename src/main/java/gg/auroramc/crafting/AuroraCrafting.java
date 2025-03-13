@@ -80,6 +80,7 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
 
         Bukkit.getPluginManager().registerEvents(new MenuListener(this), this);
         Bukkit.getPluginManager().registerEvents(new RecipeDiscoverListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new BlueprintListener(), this);
 
         if (configManager.getConfig().getCraftHandlers().getSmithingTable()) {
             Bukkit.getPluginManager().registerEvents(new SmithingListener(this), this);

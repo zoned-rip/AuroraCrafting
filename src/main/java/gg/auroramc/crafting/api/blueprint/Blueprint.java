@@ -88,6 +88,12 @@ public abstract class Blueprint {
         return result;
     }
 
+    public void executeCraftActions(Player player, ItemStack result, int amount) {
+        for (var action : craftActions) {
+            action.accept(player, result, amount);
+        }
+    }
+
     protected List<Ingredient> getMatchedIngredientList(BlueprintContext context) {
         return ingredients;
     }

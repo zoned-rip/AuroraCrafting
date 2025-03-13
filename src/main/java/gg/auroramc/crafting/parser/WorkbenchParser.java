@@ -29,6 +29,7 @@ public class WorkbenchParser {
                 .nextRecipeItem(config.getNextRecipeItem())
                 .previousRecipeItem(config.getPreviousRecipeItem())
                 .backItem(config.getBackItem())
+                .customItems(config.getCustomItems().values().stream().toList())
                 .build());
 
         workbench.setRecipeBookOptions(RecipeBookOptions.builder()

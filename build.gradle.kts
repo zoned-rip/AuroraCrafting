@@ -16,7 +16,7 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.3"
     id("maven-publish")
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
 group = "gg.auroramc"
@@ -102,7 +102,7 @@ tasks {
         downloadPlugins {
             modrinth("AuroraLib", "2.1.6")
         }
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.5")
     }
 }
 

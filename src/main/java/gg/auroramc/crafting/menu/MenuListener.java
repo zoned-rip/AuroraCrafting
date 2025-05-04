@@ -18,6 +18,7 @@ import java.util.UUID;
 public class MenuListener implements Listener {
     private final AuroraCrafting plugin;
     private final Map<UUID, Long> cache = new HashMap<>();
+    private final Map<UUID, Long> afterMatrixCache = new HashMap<>();
     private final Map<UUID, Long> shiftCache = new HashMap<>();
 
     @EventHandler
@@ -34,10 +35,22 @@ public class MenuListener implements Listener {
                 return;
             }
 
+            if (menu.getResultSlot() == event.getSlot() && isOnAfterMatrixCooldown(event.getWhoClicked().getUniqueId())) {
+                event.setCancelled(true);
+                return;
+            }
+
             menu.onClick(event);
 
-            if (event.getClickedInventory() != menu.getInventory()) return;
+            if (event.getClickedInventory() != menu.getInventory()) {
+                if (event.isShiftClick()) {
+                    afterMatrixCache.put(event.getWhoClicked().getUniqueId(), System.currentTimeMillis());
+                }
+                return;
+            }
+
             if (menu.getMatrixLookup().contains(event.getSlot())) {
+                afterMatrixCache.put(event.getWhoClicked().getUniqueId(), System.currentTimeMillis());
                 return;
             }
 
@@ -51,6 +64,12 @@ public class MenuListener implements Listener {
 
     private boolean isOnCooldown(UUID uuid) {
         var time = cache.get(uuid);
+        if (time == null) return false;
+        return System.currentTimeMillis() - time < plugin.getConfigManager().getConfig().getClickCooldown();
+    }
+
+    private boolean isOnAfterMatrixCooldown(UUID uuid) {
+        var time = afterMatrixCache.get(uuid);
         if (time == null) return false;
         return System.currentTimeMillis() - time < plugin.getConfigManager().getConfig().getClickCooldown();
     }
@@ -81,5 +100,6 @@ public class MenuListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         cache.remove(event.getPlayer().getUniqueId());
         shiftCache.remove(event.getPlayer().getUniqueId());
+        afterMatrixCache.remove(event.getPlayer().getUniqueId());
     }
 }

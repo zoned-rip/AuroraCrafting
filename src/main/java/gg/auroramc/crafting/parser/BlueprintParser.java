@@ -78,9 +78,9 @@ public class BlueprintParser {
                 .onCraft((player, result, amount) -> {
                     for (var cmd : config.getOnCraft()) {
                         CommandDispatcher.dispatch(player, cmd,
-                                Placeholder.of("amount", amount),
-                                Placeholder.of("amount_formatted", AuroraAPI.formatNumber(amount)),
-                                Placeholder.of("result", getLocalizedResultName(result)));
+                                Placeholder.of("{amount}", amount),
+                                Placeholder.of("{amount_formatted}", AuroraAPI.formatNumber(amount)),
+                                Placeholder.of("{result}", getLocalizedResultName(result)));
                     }
                 });
 
@@ -185,9 +185,9 @@ public class BlueprintParser {
                 .onCraft(config.getOnCraft() != null ? (player, result, amount) -> {
                     for (var cmd : config.getOnCraft()) {
                         CommandDispatcher.dispatch(player, cmd,
-                                Placeholder.of("amount", amount),
-                                Placeholder.of("amount_formatted", AuroraAPI.formatNumber(amount)),
-                                Placeholder.of("result", getLocalizedResultName(result)));
+                                Placeholder.of("{amount}", amount),
+                                Placeholder.of("{amount_formatted}", AuroraAPI.formatNumber(amount)),
+                                Placeholder.of("{result}", getLocalizedResultName(result)));
                     }
                 } : null);
 

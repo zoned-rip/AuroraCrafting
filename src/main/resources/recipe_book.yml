@@ -90,3 +90,12 @@ categories:
             material: cauldron
             name: "&6Cauldron recipes"
             slot: 16
+      - id: my_brewing_recipes
+        files:
+          - "vanilla/brewing_stand/_example"
+        menu:
+          title: "Brewing recipes"
+          item:
+            material: brewing_stand
+            name: "&6Brewing recipes"
+            slot: 19

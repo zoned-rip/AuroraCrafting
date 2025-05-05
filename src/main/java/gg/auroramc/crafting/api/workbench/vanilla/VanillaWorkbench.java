@@ -43,17 +43,15 @@ public abstract class VanillaWorkbench<T extends Blueprint> extends Workbench {
 
         int count = 0;
         for (var blueprint : getBlueprints(type.getBlueprintTypes())) {
-            var recipe = BlueprintAdapter.adapt(blueprint);
-
             if (!shouldRegisterVanillaRecipeFor(blueprint)) {
                 count++;
                 continue;
             }
 
-            var success = Bukkit.addRecipe(recipe);
+            var key = registerVanillaRecipe(blueprint);
 
-            if (success) {
-                registeredRecipes.add(((Keyed) recipe).getKey());
+            if (key != null) {
+                registeredRecipes.add(key);
                 count++;
             }
         }
@@ -67,7 +65,7 @@ public abstract class VanillaWorkbench<T extends Blueprint> extends Workbench {
     public void dispose() {
         if (!shouldRegisterVanillaRecipes()) return;
         for (var key : registeredRecipes) {
-            Bukkit.removeRecipe(key);
+            removeVanillaRecipe(key);
         }
     }
 
@@ -77,5 +75,19 @@ public abstract class VanillaWorkbench<T extends Blueprint> extends Workbench {
 
     protected boolean shouldRegisterVanillaRecipeFor(Blueprint blueprint) {
         return true;
+    }
+
+    protected @Nullable NamespacedKey registerVanillaRecipe(Blueprint blueprint) {
+        var recipe = BlueprintAdapter.adapt(blueprint);
+        var success = Bukkit.addRecipe(recipe);
+        if (success) {
+            return ((Keyed) recipe).getKey();
+        } else {
+            return null;
+        }
+    }
+
+    protected void removeVanillaRecipe(NamespacedKey key) {
+        Bukkit.removeRecipe(key);
     }
 }

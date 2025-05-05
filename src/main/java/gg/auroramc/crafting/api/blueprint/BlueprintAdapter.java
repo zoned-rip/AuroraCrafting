@@ -1,6 +1,7 @@
 package gg.auroramc.crafting.api.blueprint;
 
 import gg.auroramc.crafting.api.vanilla.*;
+import io.papermc.paper.potion.PotionMix;
 import org.bukkit.inventory.*;
 
 public class BlueprintAdapter {
@@ -42,6 +43,14 @@ public class BlueprintAdapter {
                 .template(blueprint.getTemplateItem())
                 .base(blueprint.getBaseItem())
                 .addition(blueprint.getAdditionItem())
+                .result(blueprint.getResultItem())
+                .build();
+    }
+
+    public static PotionMix adapt(BrewingBlueprint blueprint) {
+        return BrewingRecipeBuilder.brewingRecipe(blueprint.getId())
+                .input(blueprint.getInputItem())
+                .ingredient(blueprint.getIngredientItem())
                 .result(blueprint.getResultItem())
                 .build();
     }

@@ -22,6 +22,7 @@ public class BlueprintLookupGenerator {
             case SmithingBlueprint smithingBlueprint -> toKey(smithingBlueprint);
             case CauldronBlueprint cauldronBlueprint -> toKey(cauldronBlueprint);
             case StoneCutterBlueprint stoneCutterBlueprint -> toKey(stoneCutterBlueprint);
+            case BrewingBlueprint brewingBlueprint -> toKey(brewingBlueprint);
             case null, default ->
                     throw new IllegalArgumentException("Unknown blueprint type: " + blueprint.getClass().getSimpleName());
         };
@@ -65,6 +66,10 @@ public class BlueprintLookupGenerator {
 
     public static String toKey(StoneCutterBlueprint stoneCutterBlueprint) {
         return stoneCutterBlueprint.getIngredients().getFirst().getItemPair().id().toString() + ";";
+    }
+
+    public static String toKey(BrewingBlueprint brewingBlueprint) {
+        return brewingBlueprint.getInput().toString() + ";" + brewingBlueprint.getIngredient().toString() + ";";
     }
 
     /**

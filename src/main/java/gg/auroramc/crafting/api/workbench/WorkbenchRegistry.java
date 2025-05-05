@@ -57,11 +57,17 @@ public class WorkbenchRegistry {
         return (StoneCutter) vanillaWorkbenches.get(VanillaType.STONE_CUTTER);
     }
 
+    public BrewingStand getBrewingStand() {
+        return (BrewingStand) vanillaWorkbenches.get(VanillaType.BREWING_STAND);
+    }
+
     public Collection<CustomWorkbench> getCustomWorkbenches() {
         return workbenches.values();
     }
 
-    public Cauldron getCauldron() { return (Cauldron) vanillaWorkbenches.get(VanillaType.CAULDRON); }
+    public Cauldron getCauldron() {
+        return (Cauldron) vanillaWorkbenches.get(VanillaType.CAULDRON);
+    }
 
     public Collection<VanillaWorkbench<?>> getVanillaWorkbenches() {
         return vanillaWorkbenches.values();
@@ -101,7 +107,8 @@ public class WorkbenchRegistry {
                 VanillaType.BLAST_FURNACE, new BlastFurnace(),
                 VanillaType.CAMPFIRE, new Campfire(),
                 VanillaType.CAULDRON, new Cauldron(),
-                VanillaType.STONE_CUTTER, new StoneCutter()
+                VanillaType.STONE_CUTTER, new StoneCutter(),
+                VanillaType.BREWING_STAND, new BrewingStand()
         );
     }
 }

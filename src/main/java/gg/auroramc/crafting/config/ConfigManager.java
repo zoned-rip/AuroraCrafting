@@ -47,6 +47,7 @@ public class ConfigManager {
     private SmokerRecipeViewConfig smokerRecipeViewConfig;
     private StoneCutterRecipeViewConfig stoneCutterRecipeViewConfig;
     private CauldronRecipeViewConfig cauldronRecipeViewConfig;
+    private BrewingStandRecipeViewConfig brewingStandRecipeViewConfig;
 
     private List<CraftingRecipesConfig> customRecipes;
     private List<CraftingRecipesConfig> craftingTableRecipes;
@@ -58,6 +59,7 @@ public class ConfigManager {
     private List<CookingRecipesConfig.RecipeConfig> campfireRecipes;
     private List<SmithingRecipesConfig.RecipeConfig> smithingRecipes;
     private List<StoneCutterRecipesConfig.RecipeConfig> stoneCutterRecipes;
+    private List<BrewingRecipesConfig.RecipeConfig> brewingStandRecipes;
 
     public ConfigManager(AuroraCrafting plugin) {
         this.plugin = plugin;
@@ -134,6 +136,10 @@ public class ConfigManager {
         cauldronRecipeViewConfig = new CauldronRecipeViewConfig(plugin);
         cauldronRecipeViewConfig.load();
 
+        BrewingStandRecipeViewConfig.saveDefault(plugin);
+        brewingStandRecipeViewConfig = new BrewingStandRecipeViewConfig(plugin);
+        brewingStandRecipeViewConfig.load();
+
         MenuOptions.setDefaultSupplier(workbenchDefaultConfig);
 
         workbenchConfig = loadWorkBenches();
@@ -166,6 +172,10 @@ public class ConfigManager {
                 .collect(Collectors.toList());
 
         stoneCutterRecipes = getStoneCutterRecipesConfigs().stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        brewingStandRecipes = getBrewingStandRecipesConfigs().stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
@@ -400,6 +410,29 @@ public class ConfigManager {
                     .map(Path::toFile)
                     .map((file) -> {
                         StoneCutterRecipesConfig recipesConfig = new StoneCutterRecipesConfig(file);
+                        recipesConfig.load();
+                        return recipesConfig;
+                    })
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @SneakyThrows
+    private List<BrewingRecipesConfig> getBrewingStandRecipesConfigs() {
+        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "blueprints/vanilla/brewing_stand");
+
+        if (Files.notExists(recipesFolder)) {
+            Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+            plugin.saveResource("blueprints/vanilla/brewing_stand/_example.yml", false);
+        }
+
+        try (Stream<Path> paths = Files.walk(recipesFolder, 10)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
+                    .map(Path::toFile)
+                    .map((file) -> {
+                        BrewingRecipesConfig recipesConfig = new BrewingRecipesConfig(file);
                         recipesConfig.load();
                         return recipesConfig;
                     })

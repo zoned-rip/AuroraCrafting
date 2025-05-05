@@ -7,6 +7,7 @@ import gg.auroramc.aurora.api.menu.MenuItem;
 import gg.auroramc.aurora.api.util.NamespacedId;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
+import gg.auroramc.crafting.api.blueprint.BrewingBlueprint;
 import gg.auroramc.crafting.api.blueprint.CauldronBlueprint;
 import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import gg.auroramc.crafting.api.workbench.vanilla.VanillaWorkbench;
@@ -50,8 +51,92 @@ public class BlueprintMenu {
                 case CRAFTING_TABLE -> openCraftingTable();
                 case STONE_CUTTER -> openStoneCutter();
                 case CAULDRON -> openCauldron();
+                case BREWING_STAND -> openBrewingStand();
             }
         }
+    }
+
+    private void openBrewingStand() {
+        var config = plugin.getConfigManager().getBrewingStandRecipeViewConfig();
+        var wb = plugin.getConfigManager().getWorkbenchDefaultConfig();
+
+        var menu = new AuroraMenu(player, config.getTitle(), config.getRows() * 9, false, key);
+        menu.addFiller(ItemBuilder.of(config.getItems().getFiller()).toItemStack(player));
+
+        if (backAction != null) {
+            menu.addItem(ItemBuilder.of(config.getItems().getBack()).build(player), (e) -> {
+                backAction.run();
+            });
+        }
+
+        for (var slot : config.getSlots().getResult()) {
+            menu.addItem(ItemBuilder.item(blueprint.getResultItem()).slot(slot).build(player));
+        }
+
+        var blueprint = (BrewingBlueprint) this.blueprint;
+        var input = ItemBuilder.item(blueprint.getInputItem()).slot(config.getSlots().getInput()).build(player);
+        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getInput());
+
+        if (recipe != null) {
+            menu.addItem(input, (e) -> {
+                BlueprintMenu.blueprintMenu(plugin, player, recipe, () -> {
+                    var m = BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction);
+                    m.groupIndex = groupIndex;
+                    m.open();
+                }).open();
+            });
+        } else {
+            menu.addItem(input);
+        }
+
+        var ingredientRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredient());
+        for (var slot : config.getSlots().getIngredient()) {
+            var ingredient = ItemBuilder.item(blueprint.getIngredientItem()).slot(slot).build(player);
+            if (ingredientRecipe != null) {
+                menu.addItem(ingredient, (e) -> {
+                    BlueprintMenu.blueprintMenu(plugin, player, ingredientRecipe, () -> {
+                        var m = BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction);
+                        m.groupIndex = groupIndex;
+                        m.open();
+                    }).open();
+                });
+            } else {
+                menu.addItem(ingredient);
+            }
+        }
+
+        var group = blueprint.getGroup();
+
+        if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
+            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
+            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+
+            if (next != null) {
+                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                    m.groupIndex = groupIndex + 1;
+                    m.open();
+                });
+            } else {
+                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
+            }
+
+            if (prev != null) {
+                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                    m.groupIndex = groupIndex - 1;
+                    m.open();
+                });
+            } else {
+                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
+            }
+        }
+
+        for (var customItem : config.getCustomItems().values()) {
+            menu.addItem(ItemBuilder.of(customItem).build(player));
+        }
+
+        menu.open();
     }
 
     private void openStoneCutter() {

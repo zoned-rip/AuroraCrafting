@@ -9,11 +9,7 @@ import gg.auroramc.crafting.api.ItemPair;
 import gg.auroramc.crafting.api.blueprint.*;
 import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.workbench.Workbench;
-import gg.auroramc.crafting.config.CauldronRecipesConfig;
-import gg.auroramc.crafting.config.CookingRecipesConfig;
-import gg.auroramc.crafting.config.CraftingRecipesConfig;
-import gg.auroramc.crafting.config.SmithingRecipesConfig;
-import gg.auroramc.crafting.config.StoneCutterRecipesConfig;
+import gg.auroramc.crafting.config.*;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -137,7 +133,7 @@ public class BlueprintParser {
 
     public Blueprint parse(CauldronRecipesConfig.RecipeConfig config) {
         Material fluid = Material.getMaterial(config.getFluid());
-        if(fluid == null) {
+        if (fluid == null) {
             throw new IllegalArgumentException("Invalid fluid material: " + config.getFluid() + " in recipe: " + recipeId);
         }
 
@@ -213,6 +209,19 @@ public class BlueprintParser {
         return StoneCutterBlueprint.stoneCutterBlueprint(workbench, config.getId())
                 .input(parseItemPair(config.getInput(), Material.BARRIER))
                 .vanillaOptions(StoneCutterBlueprint.VanillaOptions.builder().group(config.getVanillaOptions().getGroup()).build())
+                .category(category)
+                .source(config.getSourcePath())
+                .displayOptions(Blueprint.DisplayOptions.builder()
+                        .items(config.getDisplayOptions().getItems())
+                        .lockedLore(config.getDisplayOptions().getLockedLore())
+                        .build())
+                .result(parseItemPair(config.getResult(), Material.AIR)).complete();
+    }
+
+    public Blueprint parse(BrewingRecipesConfig.RecipeConfig config) {
+        return BrewingBlueprint.brewingBlueprint(workbench, config.getId())
+                .input(parseItemPair(config.getInput(), Material.BARRIER).id())
+                .ingredient(parseItemPair(config.getIngredient(), Material.BARRIER).id())
                 .category(category)
                 .source(config.getSourcePath())
                 .displayOptions(Blueprint.DisplayOptions.builder()

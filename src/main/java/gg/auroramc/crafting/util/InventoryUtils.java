@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -59,7 +60,7 @@ public final class InventoryUtils {
 
 
     public static Map<TypeId, ItemStackPair> buildItemCounts(Player player) {
-        Map<TypeId, ItemStackPair> itemCount = new HashMap<>(player.getInventory().getSize());
+        Map<TypeId, ItemStackPair> itemCount = new LinkedHashMap<>(player.getInventory().getSize());
 
         for (var item : player.getInventory().getContents()) {
             if (item == null || item.getType() == Material.AIR || item.getAmount() == 0) continue;

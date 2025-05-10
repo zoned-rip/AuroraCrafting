@@ -8,6 +8,7 @@ import gg.auroramc.aurora.api.util.TriConsumer;
 import gg.auroramc.aurora.api.util.Version;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.ItemPair;
+import gg.auroramc.crafting.api.ItemStackPair;
 import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.workbench.Workbench;
 import gg.auroramc.crafting.util.PersistentDataUtils;
@@ -369,14 +370,14 @@ public abstract class Blueprint {
      * @param itemCount the item count map
      * @return the number of times the player can quick craft the recipe
      */
-    public int getQuickCraftTimes(Map<TypeId, Integer> itemCount) {
+    public int getQuickCraftTimes(Map<TypeId, ItemStackPair> itemCount) {
         int maxCraftable = Integer.MAX_VALUE;
         var matches = true;
 
         for (var entry : ingredientCount.entrySet()) {
             var ingredient = entry.getKey();
             var ingredientAmount = entry.getValue();
-            var itemAmount = itemCount.getOrDefault(ingredient, 0);
+            var itemAmount = itemCount.getOrDefault(ingredient, ItemStackPair.empty()).getAmount();
 
             if (itemAmount < ingredientAmount) {
                 matches = false;
@@ -406,6 +407,7 @@ public abstract class Blueprint {
                 .toList();
 
         // Remove items based on their IDs
+        var reducedItems = new HashMap<TypeId, ItemStack>();
         var failedToRemove = false;
         for (var entry : totalIngredients) {
             TypeId itemId = entry.getKey();
@@ -413,6 +415,8 @@ public abstract class Blueprint {
 
             // Iterate through the player's inventory to remove items
             var inventory = player.getInventory();
+
+
             for (int slot = 0; slot < inventory.getSize(); slot++) {
                 ItemStack itemStack = inventory.getItem(slot);
                 if (itemStack == null) continue;
@@ -420,9 +424,11 @@ public abstract class Blueprint {
                 // Resolve the item ID for the current stack
                 TypeId currentItemId = AuroraAPI.getItemManager().resolveId(itemStack);
                 if (currentItemId != null && currentItemId.equals(itemId)) {
-                    int stackAmount = itemStack.getAmount();
+                    reducedItems.putIfAbsent(currentItemId, itemStack.clone());
 
+                    int stackAmount = itemStack.getAmount();
                     if (stackAmount >= requiredAmount) {
+
                         // Reduce the stack size or remove the item
                         itemStack.setAmount(stackAmount - requiredAmount);
                         if (itemStack.getAmount() <= 0) {
@@ -446,8 +452,22 @@ public abstract class Blueprint {
         }
 
         if (!failedToRemove) {
+            // Create a proper context for the result
+            var properContext = context;
+
+            if (this instanceof ShapedBlueprint && isMergeOptionsEnabled()) {
+                var items = new ItemStack[workbench.getMatrixSlots().size()];
+
+                for (int i = 0; i < items.length; i++) {
+                    var ingredientId = ingredients.get(i).getItemPair().id();
+                    items[i] = reducedItems.get(ingredientId);
+                }
+
+                properContext = workbench.createContext(player, items);
+            }
+
             // Add the crafted result to the inventory
-            player.getInventory().addItem(this.getTotalResult(context, addMinusOneResult ? times - 1 : times));
+            player.getInventory().addItem(this.getTotalResult(properContext, addMinusOneResult ? times - 1 : times));
         } else {
             // Log a warning if the recipe couldn't be completed
             AuroraCrafting.logger().severe("Failed to quick craft recipe " + id + " for player " + player.getName() +

@@ -1,6 +1,8 @@
 package gg.auroramc.crafting.api.workbench.custom;
 
+import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.api.ItemStackPair;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
 import gg.auroramc.crafting.api.blueprint.BlueprintGroup;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
@@ -46,10 +48,12 @@ public class CustomWorkbench extends Workbench {
     }
 
     public @NotNull List<Blueprint> getCraftableBlueprints(Player player, int maxCount, BlueprintType... types) {
+        return getCraftableBlueprints(player, maxCount, InventoryUtils.buildItemCounts(player), types);
+    }
+
+    public @NotNull List<Blueprint> getCraftableBlueprints(Player player, int maxCount, Map<TypeId, ItemStackPair> itemCount, BlueprintType... types) {
         var groups = new HashSet<BlueprintGroup>();
         var craftableBlueprints = new ArrayList<Blueprint>();
-
-        var itemCount = InventoryUtils.buildItemCounts(player);
 
         for (var type : types) {
             for (var blueprint : categorizedBlueprints.computeIfAbsent(type, (k) -> new HashMap<>()).values()) {

@@ -7,6 +7,7 @@ package gg.auroramc.crafting.util;
 
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
+import gg.auroramc.crafting.api.ItemStackPair;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -57,13 +58,13 @@ public final class InventoryUtils {
     }
 
 
-    public static Map<TypeId, Integer> buildItemCounts(Player player) {
-        Map<TypeId, Integer> itemCount = new HashMap<>(player.getInventory().getSize());
+    public static Map<TypeId, ItemStackPair> buildItemCounts(Player player) {
+        Map<TypeId, ItemStackPair> itemCount = new HashMap<>(player.getInventory().getSize());
 
         for (var item : player.getInventory().getContents()) {
             if (item == null || item.getType() == Material.AIR || item.getAmount() == 0) continue;
             var id = AuroraAPI.getItemManager().resolveId(item);
-            itemCount.merge(id, item.getAmount(), Integer::sum);
+            itemCount.merge(id, new ItemStackPair(item.clone(), item.getAmount()), (oldPair, newPair) -> oldPair.add(newPair.getAmount()));
         }
 
         return itemCount;

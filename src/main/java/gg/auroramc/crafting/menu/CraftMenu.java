@@ -6,7 +6,10 @@ import gg.auroramc.aurora.api.menu.MenuItem;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.api.blueprint.*;
+import gg.auroramc.crafting.api.blueprint.Blueprint;
+import gg.auroramc.crafting.api.blueprint.BlueprintContext;
+import gg.auroramc.crafting.api.blueprint.BlueprintType;
+import gg.auroramc.crafting.api.blueprint.RecipeWrapperBlueprint;
 import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import gg.auroramc.crafting.util.InventoryUtils;
 import lombok.Getter;
@@ -90,8 +93,7 @@ public class CraftMenu implements InventoryHolder {
 
     private void setUpQuickCraft() {
         this.quickCraftBlueprints.clear();
-        var itemCounts = InventoryUtils.buildItemCounts(player);
-        var quickCraftRecipes = workbench.getCraftableBlueprints(player, workbench.getQuickCraftSlots().size(), itemCounts, BlueprintType.SHAPED, BlueprintType.SHAPELESS);
+        var quickCraftRecipes = workbench.getCraftableBlueprints(player, workbench.getQuickCraftSlots().size(), BlueprintType.SHAPED, BlueprintType.SHAPELESS);
         var quickCraftSlots = new ArrayList<>(this.quickCraftSlots);
         quickCraftSlots.sort(Integer::compareTo);
 
@@ -100,19 +102,7 @@ public class CraftMenu implements InventoryHolder {
             if (i < quickCraftRecipes.size()) {
                 if (player.hasPermission("aurora.quickcraft." + workbench.getId() + "." + slot)) {
                     var recipe = quickCraftRecipes.get(i);
-                    var resultItem = recipe.getResultItem();
-
-                    if (recipe instanceof ShapedBlueprint && recipe.isMergeOptionsEnabled()) {
-                        var items = new ItemStack[workbench.getMatrixSlots().size()];
-                        for(int j = 0; j < items.length; j++) {
-                            var ingredientId = recipe.getIngredients().get(j).getItemPair().id();
-                            var itemStackPair = itemCounts.get(ingredientId);
-                            items[j] = itemStackPair == null ? ItemStack.empty() : itemStackPair.getItem();
-                        }
-                        resultItem = recipe.getResultItem(workbench.createContext(player, items));
-                    }
-
-                    inventory.setItem(slot, resultItem);
+                    inventory.setItem(slot, recipe.getResultItem());
                     this.quickCraftBlueprints.put(slot, recipe);
                 } else {
                     inventory.setItem(slot, noPermQuickCraftItem);

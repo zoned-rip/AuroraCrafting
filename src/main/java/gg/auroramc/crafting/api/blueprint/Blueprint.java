@@ -57,6 +57,9 @@ public abstract class Blueprint {
         }
 
         var matchedIngredients = getMatchedIngredientList(context);
+        if (matchedIngredients == null) {
+            return resultItem.clone();
+        }
 
         ItemStack result;
 

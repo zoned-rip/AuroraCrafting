@@ -1,7 +1,6 @@
 package gg.auroramc.crafting.util;
 
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -10,8 +9,8 @@ import java.util.List;
 
 public class PersistentDataUtils {
 
-    public static void mergePaths(ItemStack ingredient, ItemMeta resultMeta, List<String> paths) {
-        var ingredientPdc = ingredient.getPersistentDataContainer();
+    public static void mergePaths(ItemMeta ingredientMeta, ItemMeta resultMeta, List<String> paths) {
+        var ingredientPdc = ingredientMeta.getPersistentDataContainer();
         var resultPdc = resultMeta.getPersistentDataContainer();
 
         for (var path : paths) {

@@ -145,7 +145,7 @@ public abstract class Blueprint {
         }
 
         if (!options.pdc.isEmpty()) {
-            PersistentDataUtils.mergePaths(ingredient, resultMeta, options.pdc);
+            PersistentDataUtils.mergePaths(ingredientMeta, resultMeta, options.pdc);
         }
 
         if (options.copyDurability) {

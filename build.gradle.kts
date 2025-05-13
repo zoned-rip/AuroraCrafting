@@ -30,6 +30,7 @@ repositories {
         dirs("libs")
     }
     mavenCentral()
+    maven("https://jitpack.io")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.auroramc.gg/releases/")
     maven("https://repo.aikar.co/content/groups/aikar/")
@@ -51,6 +52,10 @@ dependencies {
     // BetonQuest (2)
     compileOnly("org.betonquest:betonquest:2.1.3")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+    // ItemsAdder
+    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
+    // HeadDatabase
+    compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
     // Jobs
     compileOnly(name = "Jobs5.2.4.6", group = "com.github.Zrips", version = "5.2.4.6")
 

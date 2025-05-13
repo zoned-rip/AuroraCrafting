@@ -2,7 +2,10 @@ package gg.auroramc.crafting.hooks;
 
 import gg.auroramc.crafting.hooks.auroraquests.AuroraQuestsHook;
 import gg.auroramc.crafting.hooks.betonquests.BetonQuestHook;
+import gg.auroramc.crafting.hooks.hdb.HdbHook;
+import gg.auroramc.crafting.hooks.itemsadder.ItemsAdderHook;
 import gg.auroramc.crafting.hooks.jobsreborn.JobsRebornHook;
+import gg.auroramc.crafting.hooks.mythicmobs.MythicHook;
 import gg.auroramc.crafting.hooks.quests.QuestsHook;
 import gg.auroramc.crafting.hooks.quests2.QuestsLmBishopHook;
 import lombok.Getter;
@@ -17,6 +20,9 @@ public enum Hooks {
     QUESTS_LMBISHOP(QuestsLmBishopHook.class, "Quests"),
     BETON_QUEST(BetonQuestHook.class, "BetonQuest"),
     JOBS_REBORN(JobsRebornHook.class, "Jobs"),
+    ITEMS_ADDER(ItemsAdderHook.class, "ItemsAdder"),
+    MYTHIC_MOBS(MythicHook.class, "MythicMobs"),
+    HEAD_DATABASE(HdbHook.class, "HeadDatabase"),
     ;
 
     private final Class<? extends Hook> clazz;

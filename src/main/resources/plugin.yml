@@ -13,6 +13,8 @@ softdepend:
   - Jobs
   - MythicMobs
   - MythicCrucible
+  - ItemsAdder
+  - HeadDatabase
 
 permissions:
   aurora.crafting.*:

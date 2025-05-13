@@ -12,8 +12,10 @@ import gg.auroramc.crafting.api.blueprint.BlueprintRegistry;
 import gg.auroramc.crafting.api.book.Book;
 import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.event.BlueprintCraftEvent;
+import gg.auroramc.crafting.api.event.ItemsLoadedEvent;
 import gg.auroramc.crafting.api.event.RegistryLoadEvent;
 import gg.auroramc.crafting.api.event.RegistryLoadedEvent;
+import gg.auroramc.crafting.api.item.ItemLoader;
 import gg.auroramc.crafting.api.workbench.WorkbenchRegistry;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
@@ -32,16 +34,23 @@ import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AuroraCrafting extends AuroraCraftingPlugin {
+public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
     private static final AtomicBoolean loading = new AtomicBoolean(true);
 
     public static boolean isLoading() {
         return loading.get();
     }
+
+    private boolean firstInit = true;
+
+    @Getter
+    private final ItemLoader itemLoader = new ItemLoader();
 
     @Getter
     private ConfigManager configManager;
@@ -72,6 +81,7 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
 
     @Override
     public void onEnable() {
+        Bukkit.getPluginManager().registerEvents(this, this);
         commandManager = new CommandManager(this);
         commandManager.reload();
 
@@ -98,12 +108,6 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         if (configManager.getConfig().getOpenInsteadOfCraftingTable() || configManager.getConfig().getOpenShiftClickCraftingTable()) {
             Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
         }
-
-        // Have to delay the initialization because mythic doesn't initialize enchants and some other stuff before
-        Bukkit.getGlobalRegionScheduler().runDelayed(this, (t) -> {
-            initState();
-            loading.set(false);
-        }, 40);
 
         HookManager.enableHooks(this);
 
@@ -143,6 +147,10 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
     }
 
     public void reload() {
+        if (firstInit) {
+            logger().warning("Reload was prevented since the plugin didn't even had a chance to load yet.");
+            return;
+        }
         loading.set(true);
 
         if (Version.isAtLeastVersion(21) && !Version.isFolia()) {
@@ -194,5 +202,14 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
 
     public void callCraftEvent(Player player, ItemStack item, int amount, Blueprint blueprint) {
         Bukkit.getPluginManager().callEvent(new BlueprintCraftEvent(player, item, blueprint, amount));
+    }
+
+    @EventHandler
+    public void onItemsLoaded(ItemsLoadedEvent event) {
+        if (firstInit) {
+            initState();
+            loading.set(false);
+            firstInit = false;
+        }
     }
 }

@@ -50,7 +50,7 @@ public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
     private boolean firstInit = true;
 
     @Getter
-    private final ItemLoader itemLoader = new ItemLoader();
+    private ItemLoader itemLoader;
 
     @Getter
     private ConfigManager configManager;
@@ -67,10 +67,10 @@ public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        RecipeFolderMigrator.tryMigrate(this);
-
         instance = this;
         AuroraCraftingPlugin.instance = this;
+
+        RecipeFolderMigrator.tryMigrate(this);
 
         configManager = new ConfigManager(this);
         l = AuroraAPI.createLogger("AuroraCrafting", () -> configManager.getConfig().getDebug());
@@ -81,6 +81,8 @@ public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        itemLoader = new ItemLoader();
+
         Bukkit.getPluginManager().registerEvents(this, this);
         commandManager = new CommandManager(this);
         commandManager.reload();

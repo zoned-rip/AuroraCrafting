@@ -10,13 +10,9 @@ public class ItemsAdderHook implements Hook, Listener {
     private AuroraCrafting plugin;
 
     @Override
-    public void hookAtStartUp(AuroraCrafting plugin) {
-        plugin.getItemLoader().addToWaitFor("ItemsAdder", 400);
-    }
-
-    @Override
     public void hook(AuroraCrafting plugin) {
         this.plugin = plugin;
+        plugin.getItemLoader().addToWaitFor("ItemsAdder", 400);
     }
 
     @EventHandler

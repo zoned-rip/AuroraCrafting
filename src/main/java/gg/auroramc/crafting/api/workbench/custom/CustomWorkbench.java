@@ -46,6 +46,10 @@ public class CustomWorkbench extends Workbench {
     }
 
     public @NotNull List<Blueprint> getCraftableBlueprints(Player player, int maxCount, BlueprintType... types) {
+        return getCraftableBlueprints(player, maxCount, false, types);
+    }
+
+    public @NotNull List<Blueprint> getCraftableBlueprints(Player player, int maxCount, boolean quickCraftable, BlueprintType... types) {
         var groups = new HashSet<BlueprintGroup>();
         var craftableBlueprints = new ArrayList<Blueprint>();
 
@@ -53,7 +57,7 @@ public class CustomWorkbench extends Workbench {
 
         for (var type : types) {
             for (var blueprint : categorizedBlueprints.computeIfAbsent(type, (k) -> new HashMap<>()).values()) {
-                if (blueprint.hasAccess(player) && blueprint.getQuickCraftTimes(itemCount) > 0) {
+                if (blueprint.hasAccess(player) && (!quickCraftable || blueprint.isQuickCraft()) && blueprint.getQuickCraftTimes(itemCount) > 0) {
                     if (blueprint.getGroup() != null) {
                         if (groups.add(blueprint.getGroup())) {
                             craftableBlueprints.add(blueprint);

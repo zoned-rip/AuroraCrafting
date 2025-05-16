@@ -30,6 +30,7 @@ public class CraftingRecipesConfig extends AuroraConfig {
         private String workbench = "default";
         private Boolean shapeless = false;
         private Boolean symmetry = false;
+        private Boolean quickCraft = true;
         private String result;
         private VanillaOptions vanillaOptions = new VanillaOptions();
         private DisplayOptions displayOptions = new DisplayOptions();

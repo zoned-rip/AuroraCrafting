@@ -70,6 +70,7 @@ public class BlueprintParser {
                 .permission(config.getPermission())
                 .ingredients(config.getIngredients().stream().map(i -> parseItemPair(i, Material.BARRIER)).toList())
                 .category(category)
+                .quickCraftEnabled(config.getQuickCraft())
                 .source(config.getSourcePath())
                 .onCraft((player, result, amount) -> {
                     for (var cmd : config.getOnCraft()) {

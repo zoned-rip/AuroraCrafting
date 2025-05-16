@@ -93,7 +93,7 @@ public class CraftMenu implements InventoryHolder {
 
     private void setUpQuickCraft() {
         this.quickCraftBlueprints.clear();
-        var quickCraftRecipes = workbench.getCraftableBlueprints(player, workbench.getQuickCraftSlots().size(), BlueprintType.SHAPED, BlueprintType.SHAPELESS);
+        var quickCraftRecipes = workbench.getCraftableBlueprints(player, workbench.getQuickCraftSlots().size(), true, BlueprintType.SHAPED, BlueprintType.SHAPELESS);
         var quickCraftSlots = new ArrayList<>(this.quickCraftSlots);
         quickCraftSlots.sort(Integer::compareTo);
 

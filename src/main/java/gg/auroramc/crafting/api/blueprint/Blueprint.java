@@ -34,6 +34,7 @@ public abstract class Blueprint {
     protected DisplayOptions displayOptions;
     protected boolean mergeOptionsEnabled = false;
     protected boolean ingredientAsResult = false;
+    protected boolean quickCraft = true;
     protected final List<TriConsumer<Player, ItemStack, Integer>> craftActions = new ArrayList<>();
     protected final List<Ingredient> ingredients = new ArrayList<>();
     protected final List<ItemStack> ingredientItems = new ArrayList<>();
@@ -247,6 +248,11 @@ public abstract class Blueprint {
 
     public Blueprint group(BlueprintGroup group) {
         this.group = group;
+        return this;
+    }
+
+    public Blueprint quickCraftEnabled(boolean enabled) {
+        this.quickCraft = enabled;
         return this;
     }
 

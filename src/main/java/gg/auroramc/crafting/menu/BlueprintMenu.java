@@ -111,25 +111,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -175,25 +167,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -264,25 +248,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -327,25 +303,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -390,25 +358,18 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
+
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -453,25 +414,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -515,25 +468,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -609,25 +554,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -677,25 +614,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(wb.getPreviousRecipeItem()).slot(config.getSlots().getPrevRecipe()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -704,7 +633,6 @@ public class BlueprintMenu {
 
         menu.open();
     }
-
 
     private void open(CustomWorkbench workbench) {
         var mcc = plugin.getConfigManager().getRecipeBookCategoryConfig();
@@ -756,25 +684,17 @@ public class BlueprintMenu {
             var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
             var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
 
-            if (next != null) {
-                menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getNextRecipeItem()).slot(workbench.getRecipeBookOptions().getNextRecipeSlot()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                    m.groupIndex = groupIndex + 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getNextRecipeItem()).slot(workbench.getRecipeBookOptions().getNextRecipeSlot()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getNextRecipeItem()).slot(workbench.getRecipeBookOptions().getNextRecipeSlot()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
+                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.open();
+            });
 
-            if (prev != null) {
-                menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getPreviousRecipeItem()).slot(workbench.getRecipeBookOptions().getPrevRecipeSlot()).build(player), (e) -> {
-                    var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                    m.groupIndex = groupIndex - 1;
-                    m.open();
-                });
-            } else {
-                menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getPreviousRecipeItem()).slot(workbench.getRecipeBookOptions().getPrevRecipeSlot()).build(player));
-            }
+            menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getPreviousRecipeItem()).slot(workbench.getRecipeBookOptions().getPrevRecipeSlot()).build(player), (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
+                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.open();
+            });
         }
 
         for (var item : workbench.getRecipeBookOptions().getCustomItems().values()) {

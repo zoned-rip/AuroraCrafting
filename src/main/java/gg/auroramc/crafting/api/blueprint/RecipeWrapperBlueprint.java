@@ -93,7 +93,6 @@ public class RecipeWrapperBlueprint extends Blueprint {
 
     @Override
     public ItemStack getResultItem(BlueprintContext context) {
-        System.out.println(backingRecipe.getKey());
         if (matches("armor_dye")) {
             return getDyeResult(context.getMatrix());
 

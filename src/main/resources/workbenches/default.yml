@@ -24,6 +24,8 @@ include-vanilla-recipes-in-quick-crafting: false
 
 # Options when a recipe is opened from the recipe book
 recipe-book:
+  # Title in the recipe book when you view a recipe from this workbench
+  title: "Crafting recipe"
   # Previous recipe slot button (only when using grouping)
   prev-recipe-slot: 52
   # Next recipe slot button (only when using grouping)

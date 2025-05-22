@@ -108,18 +108,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -164,18 +167,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -245,18 +251,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -300,18 +309,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -355,21 +367,23 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
-
         }
 
         for (var customItem : config.getCustomItems().values()) {
@@ -411,18 +425,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -465,18 +482,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -551,18 +571,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -611,18 +634,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && config.getSlots().getNextRecipe() != null && config.getSlots().getPrevRecipe() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(wb.getNextRecipe()).slot(config.getSlots().getNextRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(wb.getPreviousRecipe()).slot(config.getSlots().getPrevRecipe()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }
@@ -681,18 +707,21 @@ public class BlueprintMenu {
         var group = blueprint.getGroup();
 
         if (group != null && group.getBlueprints().size() > 1 && workbench.getRecipeBookOptions().getNextRecipeSlot() != null && workbench.getRecipeBookOptions().getPrevRecipeSlot() != null) {
-            var next = group.getBlueprints().size() > groupIndex + 1 ? group.getBlueprints().get(groupIndex + 1) : null;
-            var prev = groupIndex > 0 ? group.getBlueprints().get(groupIndex - 1) : null;
+            var size = group.getBlueprints().size();
+            var nextIndex = (groupIndex + 1) % size;
+            var prevIndex = (groupIndex - 1 + size) % size;
+            var next = group.getBlueprints().get(nextIndex);
+            var prev = group.getBlueprints().get(prevIndex);
 
             menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getNextRecipeItem()).slot(workbench.getRecipeBookOptions().getNextRecipeSlot()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, next, this.backAction);
-                m.groupIndex = next != null ? groupIndex + 1 : 0;
+                m.groupIndex = nextIndex;
                 m.open();
             });
 
             menu.addItem(ItemBuilder.of(workbench.getMenuOptions().getPreviousRecipeItem()).slot(workbench.getRecipeBookOptions().getPrevRecipeSlot()).build(player), (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, prev, this.backAction);
-                m.groupIndex = prev != null ? groupIndex - 1 : group.getBlueprints().size() - 1;
+                m.groupIndex = prevIndex;
                 m.open();
             });
         }

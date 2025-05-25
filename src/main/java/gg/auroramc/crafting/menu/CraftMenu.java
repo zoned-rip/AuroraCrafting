@@ -126,8 +126,7 @@ public class CraftMenu implements InventoryHolder {
         return event.getClickedInventory() == inventory
                 && !matrixLookup.contains(event.getSlot()) && event.getSlot() != resultSlot
                 && !quickCraftSlots.contains(event.getSlot())
-                && !completedItem.getSlots().contains(event.getSlot())
-                && !notCompletedItem.getSlots().contains(event.getSlot());
+                && !workbench.getCompletionIndicatorSlots().contains(event.getSlot());
     }
 
     private boolean isUpdateRequired(InventoryClickEvent event) {
@@ -170,6 +169,12 @@ public class CraftMenu implements InventoryHolder {
 
     public void onClick(InventoryClickEvent event) {
         if (event.getClick() == ClickType.DOUBLE_CLICK) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (workbench.getCompletionIndicatorSlots().contains(event.getSlot())) {
+            // If the player clicked on a completion indicator slot, we don't care about the click
             event.setCancelled(true);
             return;
         }

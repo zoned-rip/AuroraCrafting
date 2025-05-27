@@ -44,11 +44,11 @@ public class CraftingCommand extends BaseCommand {
 
     @Subcommand("open")
     @Description("Force open a crafting menu")
-    @CommandCompletion("@players @workbenches true|false @nothing")
+    @CommandCompletion("@players @workbenches true|false true|false @nothing")
     @CommandPermission("aurora.crafting.admin.open")
-    public void onOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent) {
+    public void onOpen(CommandSender sender, @Flags("other") Player target, @Default("default") String workbenchId, @Default("false") Boolean silent, @Default("false") Boolean ignorePermission) {
         if (plugin.getWorkbenchRegistry().getWorkbench(workbenchId) != null) {
-            if (target.hasPermission("aurora.crafting.use." + workbenchId)) {
+            if (ignorePermission || target.hasPermission("aurora.crafting.use." + workbenchId)) {
                 target.getScheduler().run(plugin, (t) -> {
                     var workbench = plugin.getWorkbenchRegistry().getWorkbench(workbenchId);
                     CraftMenu.craftMenu(plugin, target, workbench).open();

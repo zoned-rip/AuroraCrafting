@@ -1,11 +1,11 @@
-config-version: 0
+config-version: 1
 
 title: "Brewing recipe"
 rows: 6
 
 slots:
-  input: 13
-  ingredient:
+  ingredient: 13
+  input:
     - 21
     - 22
     - 23

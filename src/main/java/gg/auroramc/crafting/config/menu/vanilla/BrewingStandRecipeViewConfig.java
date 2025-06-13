@@ -4,10 +4,12 @@ import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.crafting.AuroraCrafting;
 import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static gg.auroramc.crafting.config.ConfigManager.VANILLA_RECIPE_VIEW_PATH;
 
@@ -23,8 +25,8 @@ public class BrewingStandRecipeViewConfig extends AuroraConfig {
     @Getter
     public static final class Slots {
         private List<Integer> result = List.of(40);
-        private List<Integer> ingredient = List.of(22);
-        private Integer input = 13;
+        private List<Integer> input = List.of(22);
+        private Integer ingredient = 13;
         private Integer prevRecipe = 52;
         private Integer nextRecipe = 53;
     }
@@ -47,5 +49,20 @@ public class BrewingStandRecipeViewConfig extends AuroraConfig {
         if (!getFile(plugin).exists()) {
             plugin.saveResource(VANILLA_RECIPE_VIEW_PATH + "/brewing_stand.yml", false);
         }
+    }
+
+    @Override
+    protected List<Consumer<YamlConfiguration>> getMigrationSteps() {
+        return List.of(
+                (yaml) -> {
+                    var oldInput = yaml.getInt("slots.input", 13);
+                    var oldIngredient = yaml.getIntegerList("slots.ingredient");
+
+                    yaml.set("slots.input", oldIngredient);
+                    yaml.set("slots.ingredient", oldInput);
+
+                    yaml.set("config-version", 1);
+                }
+        );
     }
 }

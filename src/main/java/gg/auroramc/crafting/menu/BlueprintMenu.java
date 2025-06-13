@@ -11,15 +11,12 @@ import gg.auroramc.crafting.api.blueprint.BrewingBlueprint;
 import gg.auroramc.crafting.api.blueprint.CauldronBlueprint;
 import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import gg.auroramc.crafting.api.workbench.vanilla.VanillaWorkbench;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class BlueprintMenu {
@@ -74,11 +71,11 @@ public class BlueprintMenu {
         }
 
         var blueprint = (BrewingBlueprint) this.blueprint;
-        var input = ItemBuilder.item(blueprint.getInputItem()).slot(config.getSlots().getInput()).build(player);
-        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getInput());
+        var ingredient = ItemBuilder.item(blueprint.getIngredientItem()).slot(config.getSlots().getIngredient()).build(player);
+        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredient());
 
         if (recipe != null) {
-            menu.addItem(input, (e) -> {
+            menu.addItem(ingredient, (e) -> {
                 BlueprintMenu.blueprintMenu(plugin, player, recipe, () -> {
                     var m = BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction);
                     m.groupIndex = groupIndex;
@@ -86,22 +83,22 @@ public class BlueprintMenu {
                 }).open();
             });
         } else {
-            menu.addItem(input);
+            menu.addItem(ingredient);
         }
 
-        var ingredientRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredient());
-        for (var slot : config.getSlots().getIngredient()) {
-            var ingredient = ItemBuilder.item(blueprint.getIngredientItem()).slot(slot).build(player);
-            if (ingredientRecipe != null) {
-                menu.addItem(ingredient, (e) -> {
-                    BlueprintMenu.blueprintMenu(plugin, player, ingredientRecipe, () -> {
+        var inputRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getInput());
+        for (var slot : config.getSlots().getInput()) {
+            var input = ItemBuilder.item(blueprint.getInputItem()).slot(slot).build(player);
+            if (inputRecipe != null) {
+                menu.addItem(input, (e) -> {
+                    BlueprintMenu.blueprintMenu(plugin, player, inputRecipe, () -> {
                         var m = BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction);
                         m.groupIndex = groupIndex;
                         m.open();
                     }).open();
                 });
             } else {
-                menu.addItem(ingredient);
+                menu.addItem(input);
             }
         }
 

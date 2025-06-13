@@ -105,7 +105,8 @@ tasks {
     }
     runServer {
         downloadPlugins {
-            modrinth("AuroraLib", "2.1.6")
+            modrinth("AuroraLib", "2.3.1")
+            hangar("PlaceholderAPI", "2.11.6")
         }
         minecraftVersion("1.21.5")
     }

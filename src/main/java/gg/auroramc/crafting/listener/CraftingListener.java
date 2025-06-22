@@ -26,6 +26,7 @@ public class CraftingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareCrafting(PrepareItemCraftEvent event) {
+        if (event.getViewers().isEmpty()) return;
         if (!(event.getViewers().getFirst() instanceof Player player)) return;
 
         var workbench = plugin.getWorkbenchRegistry().getCraftingTable();

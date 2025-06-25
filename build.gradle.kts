@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "2.1.5"
+version = "2.1.6"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -33,6 +33,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.auroramc.gg/releases/")
+    maven("https://repo.auroramc.gg/snapshots/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     // Quests (pikamug)
     maven("https://repo.codemc.io/repository/maven-public/")
@@ -44,7 +45,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly("gg.auroramc:Aurora:2.1.6")
-    compileOnly("gg.auroramc:AuroraQuests:1.3.16")
+    compileOnly("gg.auroramc:AuroraQuests:2.0.0-SNAPSHOT")
     // Quests
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
     // Quests (LMBishop)
@@ -106,9 +107,12 @@ tasks {
     runServer {
         downloadPlugins {
             modrinth("AuroraLib", "2.3.1")
+            modrinth("AuroraLevels", "2.0.1")
+            modrinth("AuroraCollections", "1.5.3")
+            modrinth("AuroraQuests", "1.3.16")
             hangar("PlaceholderAPI", "2.11.6")
         }
-        minecraftVersion("1.21.5")
+        minecraftVersion("1.21.6")
     }
 }
 

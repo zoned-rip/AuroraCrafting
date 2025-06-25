@@ -5,12 +5,10 @@ import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.event.BlueprintCraftEvent;
 import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import gg.auroramc.crafting.hooks.Hook;
-import gg.auroramc.quests.api.AuroraQuestsProvider;
-import gg.auroramc.quests.api.quest.TaskType;
+import gg.auroramc.quests.api.event.objective.PlayerCraftedItemEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.Map;
 
 public class AuroraQuestsHook implements Hook, Listener {
     @Override
@@ -22,11 +20,13 @@ public class AuroraQuestsHook implements Hook, Listener {
     public void onCraft(BlueprintCraftEvent event) {
         if (!(event.getBlueprint().getWorkbench() instanceof CustomWorkbench)) return;
 
-        AuroraQuestsProvider.getQuestManager().progress(
-                event.getPlayer(),
-                TaskType.CRAFT,
-                event.getAmount(),
-                Map.of("type", AuroraAPI.getItemManager().resolveId(event.getItem()))
+        Bukkit.getPluginManager().callEvent(
+                new PlayerCraftedItemEvent(
+                        event.getPlayer(),
+                        AuroraAPI.getItemManager().resolveId(event.getItem()),
+                        event.getAmount()
+                )
         );
+
     }
 }

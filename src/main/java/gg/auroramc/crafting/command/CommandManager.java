@@ -7,8 +7,8 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
+import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.workbench.Workbench;
-import gg.auroramc.crafting.config.WorkbenchConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
@@ -39,6 +39,7 @@ public class CommandManager {
             commandManager.getCommandReplacements().addReplacement("merchantsAlias", a(aliases.getMerchants()));
 
             commandManager.getCommandCompletions().registerCompletion("recipes", c -> plugin.getBlueprintRegistry().getBlueprints().stream().map(Blueprint::getId).toList());
+            commandManager.getCommandCompletions().registerCompletion("recipe-categories", c -> plugin.getBook().getRegistry().stream().map(BookCategory::getId).toList());
             commandManager.getCommandCompletions().registerCompletion("workbenches", c -> plugin.getWorkbenchRegistry().getCustomWorkbenches().stream().map(Workbench::getId).toList());
             commandManager.getCommandCompletions().registerCompletion("merchants", c -> plugin.getConfigManager().getMerchantsConfig()
                     .getMerchants().entrySet().stream().filter(e -> {

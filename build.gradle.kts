@@ -51,7 +51,9 @@ dependencies {
     // Quests (LMBishop)
     compileOnly(name = "Quests-3.15.2-lmbishop", group = "com.leonardobishop", version = "3.15.2")
     // BetonQuest (2)
-    compileOnly("org.betonquest:betonquest:2.1.3")
+    compileOnly("org.betonquest:betonquest:2.1.3") {
+        exclude("com.comphenix.packetwrapper")
+    }
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     // ItemsAdder
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
@@ -107,12 +109,9 @@ tasks {
     runServer {
         downloadPlugins {
             modrinth("AuroraLib", "2.3.1")
-            modrinth("AuroraLevels", "2.0.1")
-            modrinth("AuroraCollections", "1.5.3")
-            modrinth("AuroraQuests", "1.3.16")
             hangar("PlaceholderAPI", "2.11.6")
         }
-        minecraftVersion("1.21.6")
+        minecraftVersion("1.21.7")
     }
 }
 

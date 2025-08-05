@@ -8,6 +8,7 @@ import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class SmithingTable extends VanillaWorkbench<SmithingBlueprint> {
     private final Map<String, Blueprint> vanillaLookup = new HashMap<>();
@@ -44,7 +45,8 @@ public class SmithingTable extends VanillaWorkbench<SmithingBlueprint> {
     }
 
     public boolean matchesRegisteredVanillaRecipe(BlueprintContext context) {
-        return vanillaLookup.containsKey(context.getShapedLookupKey());
+        var key = BlueprintLookupGenerator.toShapedKey(Stream.of(context.getMatrix()).map(i -> new ItemPair(TypeId.from(i.getType()), 1)).toList());
+        return vanillaLookup.containsKey(key);
     }
 
     @Override

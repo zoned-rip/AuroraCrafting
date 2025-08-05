@@ -45,7 +45,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly("gg.auroramc:Aurora:2.1.6")
-    compileOnly("gg.auroramc:AuroraQuests:2.0.0-SNAPSHOT")
+    compileOnly("gg.auroramc:AuroraQuests:2.0.0")
     // Quests
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
     // Quests (LMBishop)

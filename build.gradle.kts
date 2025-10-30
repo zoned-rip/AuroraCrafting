@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "2.1.6"
+version = "2.1.7"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -44,7 +44,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("gg.auroramc:Aurora:2.1.6")
+    compileOnly("gg.auroramc:Aurora:2.4.0")
     compileOnly("gg.auroramc:AuroraQuests:2.0.0")
     // Quests
     compileOnly("me.pikamug.quests:quests-core:5.1.4")
@@ -108,10 +108,10 @@ tasks {
     }
     runServer {
         downloadPlugins {
-            modrinth("AuroraLib", "2.3.1")
+            modrinth("AuroraLib", "2.4.0")
             hangar("PlaceholderAPI", "2.11.6")
         }
-        minecraftVersion("1.21.7")
+        minecraftVersion("1.21.10")
     }
 }
 

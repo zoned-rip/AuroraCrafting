@@ -1,5 +1,7 @@
 package gg.auroramc.crafting.hooks;
 
+import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.hooks.advancedenchantments.AEHook;
 import gg.auroramc.crafting.hooks.auroraquests.AuroraQuestsHook;
 import gg.auroramc.crafting.hooks.betonquests.BetonQuestHook;
 import gg.auroramc.crafting.hooks.hdb.HdbHook;
@@ -23,6 +25,7 @@ public enum Hooks {
     ITEMS_ADDER(ItemsAdderHook.class, "ItemsAdder"),
     MYTHIC_MOBS(MythicHook.class, "MythicMobs"),
     HEAD_DATABASE(HdbHook.class, "HeadDatabase"),
+    ADVANCED_ENCHANTMENTS(AEHook.class, "AdvancedEnchantments"),
     ;
 
     private final Class<? extends Hook> clazz;
@@ -41,7 +44,9 @@ public enum Hooks {
     public boolean canHook() {
         for (String plugin : plugins) {
             if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
-                return true;
+                if (AuroraCrafting.getInstance().getConfigManager().getConfig().getHooks().getOrDefault(plugin, true)) {
+                    return true;
+                }
             }
         }
         return false;

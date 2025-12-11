@@ -1,4 +1,4 @@
-config-version: 3
+config-version: 4
 
 debug: false
 language: en
@@ -47,3 +47,14 @@ craft-handlers:
 # These values are in milliseconds and they are only applying for the workbench gui
 click-cooldown: 75
 shift-click-cooldown: 200
+
+# Enabled hooks
+hooks:
+  AuroraQuests: true
+  Quests: true
+  BetonQuest: true
+  Jobs: true
+  ItemsAdder: true
+  MythicMobs: true
+  HeadDatabase: true
+  AdvancedEnchantments: true

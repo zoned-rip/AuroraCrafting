@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "gg.auroramc"
-version = "2.1.7"
+version = "2.2.0"
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -61,6 +61,8 @@ dependencies {
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
     // Jobs
     compileOnly(name = "Jobs5.2.4.6", group = "com.github.Zrips", version = "5.2.4.6")
+    // AdvancedEnchantments
+    compileOnly(name = "AdvancedEnchantments-8.7.4", group = "net.advancedplugins", version = "8.7.4")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")

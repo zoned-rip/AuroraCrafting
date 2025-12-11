@@ -10,6 +10,7 @@ import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.ItemPair;
 import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.workbench.Workbench;
+import gg.auroramc.crafting.api.enchant.CustomEnchantMerger;
 import gg.auroramc.crafting.util.PersistentDataUtils;
 import lombok.*;
 import org.bukkit.Material;
@@ -134,6 +135,11 @@ public abstract class Blueprint {
                         resultMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
                     }
                 }
+            }
+
+            if (CustomEnchantMerger.hasAnyMerger()) {
+                result.setItemMeta(resultMeta);
+                resultMeta = CustomEnchantMerger.merge(ingredient, result).getItemMeta();
             }
         }
 

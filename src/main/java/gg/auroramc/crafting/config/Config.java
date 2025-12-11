@@ -6,9 +6,7 @@ import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Getter
@@ -25,6 +23,7 @@ public class Config extends AuroraConfig {
     private Integer shiftClickCooldown = 200;
     private Boolean autoDiscoverVanillaRecipes = false;
     private CraftHandlersConfig craftHandlers;
+    private Map<String, Boolean> hooks = new HashMap<>();
 
     @Getter
     public static final class CommandAliasConfig {
@@ -99,6 +98,17 @@ public class Config extends AuroraConfig {
                             "if you don't have any recipes that are using these.",
                             "Changing these, requires a server restart to take effect."
                     ));
+                },
+                (yaml) -> {
+                    yaml.set("config-version", 4);
+                    yaml.set("hooks.AuroraQuests", true);
+                    yaml.set("hooks.Quests", true);
+                    yaml.set("hooks.BetonQuest", true);
+                    yaml.set("hooks.Jobs", true);
+                    yaml.set("hooks.ItemsAdder", true);
+                    yaml.set("hooks.MythicMobs", true);
+                    yaml.set("hooks.HeadDatabase", true);
+                    yaml.set("hooks.AdvancedEnchantments", true);
                 }
         );
     }

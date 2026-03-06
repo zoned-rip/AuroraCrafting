@@ -27,9 +27,14 @@ public class HookManager {
         for (var hook : Hooks.values()) {
             try {
                 if (hook.canHook()) {
-                    var instance = hook.getClazz().getDeclaredConstructor().newInstance();
+                    var hookClass = hook.resolveHookClass();
+                    if (hookClass == null) {
+                        AuroraCrafting.logger().warning("Failed to hook " + String.join(", ", hook.getPlugins()) + ": hook class not available: " + hook.getClassName());
+                        continue;
+                    }
+                    var instance = hookClass.getDeclaredConstructor().newInstance();
                     instance.hookAtStartUp(plugin);
-                    hooks.put(hook.getClazz(), instance);
+                    hooks.put(hookClass, instance);
                 }
             } catch (Throwable e) {
                 AuroraCrafting.logger().warning("Failed to hook " + String.join(", ", hook.getPlugins()) + ": " + e.getMessage());

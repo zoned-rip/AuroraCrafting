@@ -140,12 +140,18 @@ public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
             }
         });
 
-        new Metrics(this, 24580);
+        try {
+            new Metrics(this, 24580);
+        } catch (Throwable throwable) {
+            logger().warning("Failed to initialize bStats metrics: " + throwable.getMessage());
+        }
     }
 
     @Override
     public void onDisable() {
-        commandManager.unregisterCommands();
+        if (commandManager != null) {
+            commandManager.unregisterCommands();
+        }
     }
 
     public void reload() {

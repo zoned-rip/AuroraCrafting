@@ -1,7 +1,6 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import xyz.jpenilla.runtask.task.AbstractRun
 import java.net.URI
 import java.util.*
+import org.gradle.api.file.DuplicatesStrategy
 
 fun loadProperties(filename: String): Properties {
     val properties = Properties()
@@ -14,13 +13,16 @@ fun loadProperties(filename: String): Properties {
 
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "8.3.3"
     id("maven-publish")
-    id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
 group = "gg.auroramc"
 version = "2.2.0"
+
+val includeExternalHooks = providers.gradleProperty("includeExternalHooks")
+    .map(String::toBoolean)
+    .orElse(false)
+    .get()
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
@@ -46,23 +48,26 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly("gg.auroramc:Aurora:2.4.0")
     compileOnly("gg.auroramc:AuroraQuests:2.0.0")
-    // Quests
-    compileOnly("me.pikamug.quests:quests-core:5.1.4")
-    // Quests (LMBishop)
-    compileOnly(name = "Quests-3.15.2-lmbishop", group = "com.leonardobishop", version = "3.15.2")
-    // BetonQuest (2)
-    compileOnly("org.betonquest:betonquest:2.1.3") {
-        exclude("com.comphenix.packetwrapper")
+
+    if (includeExternalHooks) {
+        // Quests
+        compileOnly("me.pikamug.quests:quests-core:5.1.4")
+        // Quests (LMBishop)
+        compileOnly(name = "Quests-3.15.2-lmbishop", group = "com.leonardobishop", version = "3.15.2")
+        // BetonQuest (2)
+        compileOnly("org.betonquest:betonquest:2.1.3") {
+            exclude("com.comphenix.packetwrapper")
+        }
+        compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+        // ItemsAdder
+        compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
+        // HeadDatabase
+        compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
+        // Jobs
+        compileOnly(name = "Jobs5.2.4.6", group = "com.github.Zrips", version = "5.2.4.6")
+        // AdvancedEnchantments
+        compileOnly(name = "AdvancedEnchantments-8.7.4", group = "net.advancedplugins", version = "8.7.4")
     }
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
-    // ItemsAdder
-    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
-    // HeadDatabase
-    compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
-    // Jobs
-    compileOnly(name = "Jobs5.2.4.6", group = "com.github.Zrips", version = "5.2.4.6")
-    // AdvancedEnchantments
-    compileOnly(name = "AdvancedEnchantments-8.7.4", group = "net.advancedplugins", version = "8.7.4")
 
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
@@ -82,18 +87,38 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<ShadowJar> {
+tasks.jar {
     archiveFileName.set("AuroraCrafting-${project.version}.jar")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     manifest {
         attributes["paperweight-mappings-namespace"] = "mojang"
     }
 
-    relocate("co.aikar.commands", "gg.auroramc.crafting.libs.acf")
-    relocate("co.aikar.locales", "gg.auroramc.crafting.libs.locales")
-    relocate("org.bstats", "gg.auroramc.crafting.libs.bstats")
+    from({
+        configurations.runtimeClasspath.get()
+            .filter { it.name.endsWith(".jar") }
+            .map { zipTree(it) }
+    })
 
-    exclude("acf-*.properties")
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA", "META-INF/INDEX.LIST")
+}
+
+sourceSets {
+    main {
+        java {
+            if (!includeExternalHooks) {
+                exclude("gg/auroramc/crafting/hooks/advancedenchantments/**")
+                exclude("gg/auroramc/crafting/hooks/betonquests/**")
+                exclude("gg/auroramc/crafting/hooks/hdb/**")
+                exclude("gg/auroramc/crafting/hooks/itemsadder/**")
+                exclude("gg/auroramc/crafting/hooks/jobsreborn/**")
+                exclude("gg/auroramc/crafting/hooks/mythicmobs/**")
+                exclude("gg/auroramc/crafting/hooks/quests/**")
+                exclude("gg/auroramc/crafting/hooks/quests2/**")
+            }
+        }
+    }
 }
 
 tasks.processResources {
@@ -105,15 +130,7 @@ tasks.processResources {
 
 tasks {
     build {
-        dependsOn(shadowJar)
         dependsOn("apiJar")
-    }
-    runServer {
-        downloadPlugins {
-            modrinth("AuroraLib", "2.4.0")
-            hangar("PlaceholderAPI", "2.11.6")
-        }
-        minecraftVersion("1.21.10")
     }
 }
 
@@ -150,15 +167,4 @@ publishing {
 
         artifact(tasks.named("apiJar"))
     }
-}
-
-tasks.withType<AbstractRun>().configureEach {
-//    javaLauncher = javaToolchains.launcherFor {
-//        vendor.set(JvmVendorSpec.JETBRAINS)
-//        languageVersion.set(JavaLanguageVersion.of(21))
-//    }
-    jvmArgs(
-        // "-XX:+AllowEnhancedClassRedefinition", //
-        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" // Enable remote debugging
-    )
 }

@@ -79,16 +79,32 @@ public class ShapedBlueprint extends CraftingBlueprint<ShapedBlueprint> {
 
     private Map<String, List<Ingredient>> generateShiftedIngredients(Ingredient[] ingredients, int craftingSize) {
         Map<String, List<Ingredient>> variations = new HashMap<>();
-        variations.put(BlueprintLookupGenerator.toShapedKey(Arrays.stream(ingredients).map(Ingredient::getItemPair).toArray(ItemPair[]::new)), Arrays.asList(ingredients));
 
-        // Convert to 2D matrix representation
         Ingredient[][] matrix = new Ingredient[craftingSize][craftingSize];
         for (int i = 0; i < craftingSize * craftingSize; i++) {
             matrix[i / craftingSize][i % craftingSize] = ingredients[i];
         }
 
-        // Find bounding box of the recipe
-        int minX = craftingSize, maxX = 0, minY = craftingSize, maxY = 0;
+        addShiftedVariations(variations, matrix, craftingSize);
+
+        Ingredient[][] mirroredMatrix = new Ingredient[craftingSize][craftingSize];
+        for (int r = 0; r < craftingSize; r++) {
+            for (int c = 0; c < craftingSize; c++) {
+                mirroredMatrix[r][c] = matrix[r][craftingSize - 1 - c];
+            }
+        }
+
+        addShiftedVariations(variations, mirroredMatrix, craftingSize);
+
+        return variations;
+    }
+
+    private void addShiftedVariations(Map<String, List<Ingredient>> variations, Ingredient[][] matrix, int craftingSize) {
+        int minX = craftingSize;
+        int maxX = -1;
+        int minY = craftingSize;
+        int maxY = -1;
+
         for (int r = 0; r < craftingSize; r++) {
             for (int c = 0; c < craftingSize; c++) {
                 if (!matrix[r][c].getItemPair().id().equals(TypeId.from(Material.AIR))) {
@@ -100,10 +116,13 @@ public class ShapedBlueprint extends CraftingBlueprint<ShapedBlueprint> {
             }
         }
 
+        if (maxX == -1 || maxY == -1) {
+            return;
+        }
+
         int width = maxX - minX + 1;
         int height = maxY - minY + 1;
 
-        // Generate all possible shifted versions
         for (int dx = 0; dx <= craftingSize - width; dx++) {
             for (int dy = 0; dy <= craftingSize - height; dy++) {
                 List<Ingredient> shifted = new ArrayList<>(Collections.nCopies(craftingSize * craftingSize, new Ingredient(new ItemPair(TypeId.from(Material.AIR), 0))));
@@ -121,8 +140,6 @@ public class ShapedBlueprint extends CraftingBlueprint<ShapedBlueprint> {
                 variations.put(BlueprintLookupGenerator.toShapedKey(shifted.stream().map(Ingredient::getItemPair).toList()), shifted);
             }
         }
-
-        return variations;
     }
 
     @Override

@@ -1,15 +1,6 @@
 package gg.auroramc.crafting.hooks;
 
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.hooks.advancedenchantments.AEHook;
-import gg.auroramc.crafting.hooks.auroraquests.AuroraQuestsHook;
-import gg.auroramc.crafting.hooks.betonquests.BetonQuestHook;
-import gg.auroramc.crafting.hooks.hdb.HdbHook;
-import gg.auroramc.crafting.hooks.itemsadder.ItemsAdderHook;
-import gg.auroramc.crafting.hooks.jobsreborn.JobsRebornHook;
-import gg.auroramc.crafting.hooks.mythicmobs.MythicHook;
-import gg.auroramc.crafting.hooks.quests.QuestsHook;
-import gg.auroramc.crafting.hooks.quests2.QuestsLmBishopHook;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -17,28 +8,42 @@ import java.util.Set;
 
 @Getter
 public enum Hooks {
-    AURORA_QUESTS(AuroraQuestsHook.class, "AuroraQuests"),
-    QUESTS(QuestsHook.class, "Quests"),
-    QUESTS_LMBISHOP(QuestsLmBishopHook.class, "Quests"),
-    BETON_QUEST(BetonQuestHook.class, "BetonQuest"),
-    JOBS_REBORN(JobsRebornHook.class, "Jobs"),
-    ITEMS_ADDER(ItemsAdderHook.class, "ItemsAdder"),
-    MYTHIC_MOBS(MythicHook.class, "MythicMobs"),
-    HEAD_DATABASE(HdbHook.class, "HeadDatabase"),
-    ADVANCED_ENCHANTMENTS(AEHook.class, "AdvancedEnchantments"),
+    AURORA_QUESTS("gg.auroramc.crafting.hooks.auroraquests.AuroraQuestsHook", "AuroraQuests"),
+    QUESTS("gg.auroramc.crafting.hooks.quests.QuestsHook", "Quests"),
+    QUESTS_LMBISHOP("gg.auroramc.crafting.hooks.quests2.QuestsLmBishopHook", "Quests"),
+    BETON_QUEST("gg.auroramc.crafting.hooks.betonquests.BetonQuestHook", "BetonQuest"),
+    JOBS_REBORN("gg.auroramc.crafting.hooks.jobsreborn.JobsRebornHook", "Jobs"),
+    ITEMS_ADDER("gg.auroramc.crafting.hooks.itemsadder.ItemsAdderHook", "ItemsAdder"),
+    MYTHIC_MOBS("gg.auroramc.crafting.hooks.mythicmobs.MythicHook", "MythicMobs"),
+    HEAD_DATABASE("gg.auroramc.crafting.hooks.hdb.HdbHook", "HeadDatabase"),
+    ADVANCED_ENCHANTMENTS("gg.auroramc.crafting.hooks.advancedenchantments.AEHook", "AdvancedEnchantments"),
     ;
 
-    private final Class<? extends Hook> clazz;
+    private final String className;
     private final Set<String> plugins;
 
-    Hooks(Class<? extends Hook> clazz, String plugin) {
-        this.clazz = clazz;
+    Hooks(String className, String plugin) {
+        this.className = className;
         this.plugins = Set.of(plugin);
     }
 
-    Hooks(Class<? extends Hook> clazz, Set<String> plugins) {
-        this.clazz = clazz;
+    Hooks(String className, Set<String> plugins) {
+        this.className = className;
         this.plugins = plugins;
+    }
+
+    public Class<? extends Hook> resolveHookClass() {
+        try {
+            var clazz = Class.forName(className);
+            if (!Hook.class.isAssignableFrom(clazz)) {
+                return null;
+            }
+            @SuppressWarnings("unchecked")
+            var hookClass = (Class<? extends Hook>) clazz;
+            return hookClass;
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 
     public boolean canHook() {

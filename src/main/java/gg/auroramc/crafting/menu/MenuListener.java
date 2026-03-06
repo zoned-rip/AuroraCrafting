@@ -59,6 +59,10 @@ public class MenuListener implements Listener {
             } else {
                 cache.put(event.getWhoClicked().getUniqueId(), System.currentTimeMillis());
             }
+
+            // Reuse the click cooldown for shift clicks to prevent spamming shift clicks to bypass the after matrix cooldown
+        } else if (holder instanceof CraftingListMenu menu) {
+            menu.onClick(event);
         }
     }
 

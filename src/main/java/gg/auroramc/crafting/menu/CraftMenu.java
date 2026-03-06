@@ -45,6 +45,7 @@ public class CraftMenu implements InventoryHolder {
     private final Map<Integer, MenuEntry> customItems = new HashMap<>();
     private boolean updateQuickCraftOnPlace = false;
     private final CustomWorkbench workbench;
+    private final int MoreCraftingSlot = 26;
 
     public static CraftMenu craftMenu(AuroraCrafting plugin, Player player, CustomWorkbench workbench) {
         return new CraftMenu(plugin, player, workbench);
@@ -89,6 +90,44 @@ public class CraftMenu implements InventoryHolder {
         for (var entry : customItems.entrySet()) {
             inventory.setItem(entry.getKey(), entry.getValue().getItem().getItemStack());
         }
+
+        var allRecipes = workbench.getCraftableBlueprints(player, Integer.MAX_VALUE, true, BlueprintType.SHAPED, BlueprintType.SHAPELESS);
+        int remainingCount = Math.max(0, allRecipes.size() - quickCraftSlots.size());
+
+        if (remainingCount > 0) {
+            var moreCraftingButton = new ItemStack(org.bukkit.Material.EMERALD);
+            var meta = moreCraftingButton.getItemMeta();
+            meta.displayName(Text.component("<green>More Quick Craft Options"));
+            meta.lore(List.of(
+                    Text.component("<white>There are <yellow>" + remainingCount + " <white>more recipes that you may quick craft!"),
+                    Text.component(""),
+                    Text.component("<yellow>Click to view them!")
+            ));
+            moreCraftingButton.setItemMeta(meta);
+            inventory.setItem(MoreCraftingSlot, moreCraftingButton);
+        }
+
+    }
+
+    private void updateMoreCraftingButton() {
+        var allRecipes = workbench.getCraftableBlueprints(player, Integer.MAX_VALUE, true, BlueprintType.SHAPED, BlueprintType.SHAPELESS);
+        int remainingCount = Math.max(0, allRecipes.size() - quickCraftSlots.size());
+
+        if (remainingCount == 0) {
+            inventory.setItem(MoreCraftingSlot, fillerItem);
+            return;
+        }
+
+        var moreCraftingButton = new ItemStack(org.bukkit.Material.EMERALD);
+        var meta = moreCraftingButton.getItemMeta();
+        meta.displayName(Text.component("<green>More Quick Craft Options"));
+        meta.lore(List.of(
+                Text.component("<white>There are <yellow>" + remainingCount + " <white>more recipes that you may quick craft!"),
+                Text.component(""),
+                Text.component("<yellow>Click to view them!")
+        ));
+        moreCraftingButton.setItemMeta(meta);
+        inventory.setItem(MoreCraftingSlot, moreCraftingButton);
     }
 
     private void setUpQuickCraft() {
@@ -187,7 +226,11 @@ public class CraftMenu implements InventoryHolder {
 
         if (event.getClickedInventory() == player.getInventory()) {
             if (updateQuickCraftOnPlace && (event.getAction() == InventoryAction.PLACE_ALL || event.getAction() == InventoryAction.PLACE_ONE || event.getAction() == InventoryAction.PLACE_SOME)) {
-                player.getScheduler().run(plugin, (t) -> setUpQuickCraft(), null);
+                player.getScheduler().run(plugin, (t) -> {
+                    setUpQuickCraft();
+                    // After placing an item from quick craft, we need to update the result and the quick craft options because the player might have changed the crafting matrix by placing an item, or they might have placed an item from quick craft which would change the available quick craft options
+                    updateMoreCraftingButton();
+                    }, null);
                 updateQuickCraftOnPlace = false;
             }
         }
@@ -211,6 +254,12 @@ public class CraftMenu implements InventoryHolder {
             if (customItems.containsKey(event.getSlot())) {
                 customItems.get(event.getSlot()).handleEvent(event);
             }
+
+
+            if (event.getSlot() == MoreCraftingSlot) {
+                CraftingListMenu.open(plugin, player, workbench);
+            }
+
             return;
         }
 

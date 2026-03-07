@@ -59,7 +59,7 @@ public class CraftingListMenu implements InventoryHolder {
         for (int slot : BORDER_SLOTS) inventory.setItem(slot, pane);
     }
 
-    private void setUpRecipeList() {
+    public void setUpRecipeList() {
         slotBlueprints.clear();
 
         // Clear all inner slots first
@@ -79,7 +79,7 @@ public class CraftingListMenu implements InventoryHolder {
     private void setReturnButton() {
         var arrow = new ItemStack(Material.ARROW);
         var meta = arrow.getItemMeta();
-        meta.displayName(Text.component("<yellow>Return"));
+        meta.displayName(Text.component("<yellow>Return To Crafting Menu"));
         arrow.setItemMeta(meta);
         inventory.setItem(RETURN_SLOT, arrow);
     }
@@ -101,7 +101,13 @@ public class CraftingListMenu implements InventoryHolder {
             event.setCancelled(true);
         }
 
-        if (event.getClickedInventory() != inventory) return;
+        // Otherwise we don't care what the players do in their inventory
+        if (event.getClickedInventory() != inventory) {
+            // Should cancel DROP actions though to make quick crafting safe
+            if (event.getAction().name().startsWith("DROP")) {
+                event.setCancelled(true);
+            }
+        }
 
         if (event.getSlot() == RETURN_SLOT) {
             player.getScheduler().run(plugin, (t) -> CraftMenu.craftMenu(plugin, player, workbench).open(), null);
@@ -112,8 +118,8 @@ public class CraftingListMenu implements InventoryHolder {
         if (blueprint == null) return;
 
         handleQuickCraftSlot(event, blueprint);
-        // After any click update the recipe list, this is needed to update the craftable amount of each recipe and to remove recipes that are no longer craftable
-        setUpRecipeList();
+
+
     }
 
     private void handleQuickCraftSlot(InventoryClickEvent event, Blueprint blueprint) {
@@ -180,6 +186,7 @@ public class CraftingListMenu implements InventoryHolder {
     public void open() {
         player.openInventory(inventory);
     }
+
 
     @Override
     public @NotNull Inventory getInventory() {

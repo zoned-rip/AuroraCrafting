@@ -28,6 +28,7 @@ import gg.auroramc.crafting.menu.BlueprintMenu;
 import gg.auroramc.crafting.menu.BookCategoryListMenu;
 import gg.auroramc.crafting.menu.CraftMenu;
 import gg.auroramc.crafting.menu.MenuListener;
+import gg.auroramc.crafting.util.FarmingBlueprintManager;
 import gg.auroramc.crafting.util.RecipeFolderMigrator;
 import gg.auroramc.crafting.util.RecipeUtil;
 import lombok.Getter;
@@ -56,6 +57,9 @@ public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
     private ConfigManager configManager;
 
     private CommandManager commandManager;
+
+    @Getter
+    private FarmingBlueprintManager farmingBlueprintManager;
 
     @Getter
     private static AuroraCrafting instance;
@@ -112,6 +116,9 @@ public class AuroraCrafting extends AuroraCraftingPlugin implements Listener {
         }
 
         HookManager.enableHooks(this);
+
+        farmingBlueprintManager = new FarmingBlueprintManager(this);
+        farmingBlueprintManager.load();
 
         CommandDispatcher.registerActionHandler("recipe", (player, input) -> {
             var split = input.split("---");

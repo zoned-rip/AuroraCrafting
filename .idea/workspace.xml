@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="414d77b8-efcb-430c-8b9f-952b42633a6c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/util/FarmingBlueprintManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/MinionsId.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/AuroraCrafting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/AuroraCrafting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/menu/CraftMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/menu/CraftMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/menu/CraftingListMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/menu/CraftingListMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/menu/MenuListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gg/auroramc/crafting/menu/MenuListener.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,12 +83,12 @@
     &quot;assignee&quot;: &quot;cheezypotatoes&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:zoned-rip/AuroraCrafting.git",
-    "accountId": "a409f403-8978-4a50-abb0-432bd07cac8f"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:zoned-rip/AuroraCrafting.git&quot;,
+    &quot;accountId&quot;: &quot;a409f403-8978-4a50-abb0-432bd07cac8f&quot;
   }
-}]]></component>
+}</component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\toxic\.gradle\wrapper\dists\gradle-8.14-bin\38aieal9i53h9rfe7vjup95b9\gradle-8.14" javaHome="C:\Program Files\Java\jdk-21" gradleVersion="8.14" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,

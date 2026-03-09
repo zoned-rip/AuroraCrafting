@@ -47,6 +47,7 @@ public class CraftMenu implements InventoryHolder {
     private final CustomWorkbench workbench;
     private final int MoreCraftingSlot = 26;
 
+
     public static CraftMenu craftMenu(AuroraCrafting plugin, Player player, CustomWorkbench workbench) {
         return new CraftMenu(plugin, player, workbench);
     }
@@ -305,6 +306,7 @@ public class CraftMenu implements InventoryHolder {
             return;
         }
 
+
         var timesCraftable = blueprint.getQuickCraftTimes(InventoryUtils.buildItemCounts(player));
         if (timesCraftable == 0) {
             event.setCancelled(true);
@@ -313,7 +315,22 @@ public class CraftMenu implements InventoryHolder {
 
         final var currentItem = event.getCurrentItem() != null ? event.getCurrentItem().clone() : ItemStack.empty();
 
+
+        var manager = plugin.getFarmingBlueprintManager();
+        if (manager.isFarmingBlueprint(blueprint.getId())) {
+            int tier = manager.getTier(blueprint.getId());
+            String robotType = manager.getRobotType(blueprint.getId());
+            if (tier != -1) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                        "robots settier " + player.getUniqueId() + " " + robotType + " " + tier);
+            }
+        }
+
+
         if (event.isShiftClick()) {
+
+
+
             // Check the player inventory for space. If one crafting result fits, allow the shift click
             int currentSpace = InventoryUtils.calculateSpaceForItem(player.getInventory(), event.getCurrentItem());
             if (currentSpace < blueprint.getResult().amount()) {
@@ -335,6 +352,8 @@ public class CraftMenu implements InventoryHolder {
                 return;
             }
 
+
+
             // If there is more space, add the remaining items to the player inventory and update the matrix
             player.getScheduler().run(plugin, (t) -> {
                 blueprint.quickCraft(context(inventory), timesCrafted, true);
@@ -343,6 +362,10 @@ public class CraftMenu implements InventoryHolder {
                 plugin.callCraftEvent(player, currentItem, timesCrafted * blueprint.getResult().amount(), blueprint);
             }, null);
         } else {
+
+
+
+
             if (event.getCursor().isEmpty()) {
                 // Allow taking the result and deduct the matrix
                 updateQuickCraftOnPlace = true;
@@ -378,6 +401,7 @@ public class CraftMenu implements InventoryHolder {
         }
 
     }
+
 
     private void handleResultClick(InventoryClickEvent event) {
         // If the player clicked on the result slot but used some weird ass click action, cancel the event
